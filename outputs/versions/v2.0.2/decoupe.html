@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101215" />
+  <meta name="description" content="Détourez vos images localement et exportez-les en PNG, SVG ou WebP." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Découpe v2 — pinceau de sélection IA</title>
+  <style>
+    :root{--bg:#0e1012;--panel:#15181d;--panel2:#1c2027;--line:#2b3038;--text:#f1f2f4;--muted:#8f98a6;--accent:#b4ed66;--accent2:#8bd54a;--danger:#ff7b7b;--shadow:0 20px 60px #0008}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% -10%,#263021 0,#0e1012 34%),var(--bg);color:var(--text);font:15px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-rows:72px 1fr}.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);background:#101215cc;backdrop-filter:blur(18px);position:sticky;top:0;z-index:5}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em;font-size:21px}.mark{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#131710;display:grid;place-items:center;font-weight:900;font-size:17px}.top-actions{display:flex;align-items:center;gap:10px}.status{color:var(--muted);font-size:13px;margin-right:10px}.ghost,.primary{border:1px solid var(--line);background:transparent;color:var(--text);padding:10px 15px;border-radius:10px;transition:.2s}.ghost:hover{border-color:#616a78;background:var(--panel2)}.primary{background:var(--accent);border-color:var(--accent);color:#11160d;font-weight:800}.primary:hover{background:#c5f984;transform:translateY(-1px)}main{display:grid;grid-template-columns:280px minmax(440px,1fr) 270px;gap:0;max-width:1600px;width:100%;margin:0 auto}.side{padding:28px 22px;border-right:1px solid var(--line)}.right{border-left:1px solid var(--line);border-right:0}.eyebrow{color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;margin:0 0 10px}.title{font-size:29px;line-height:1.05;letter-spacing:-.06em;margin:0 0 10px}.intro{color:var(--muted);margin:0 0 28px}.step{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #22262c}.num{width:25px;height:25px;border:1px solid #414851;border-radius:50%;display:grid;place-items:center;color:var(--muted);font-size:12px;flex:none}.step.active .num{background:var(--accent);border-color:var(--accent);color:#11160d;font-weight:800}.step strong{display:block;font-size:14px}.step span{display:block;color:var(--muted);font-size:13px;margin-top:3px}.tip{margin-top:30px;background:linear-gradient(135deg,#202a19,#171b20);border:1px solid #39452c;border-radius:14px;padding:15px;color:#c8d3be;font-size:13px}.workspace{padding:26px;min-width:0}.workspace-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.workspace-head h2{font-size:16px;margin:0;letter-spacing:-.02em}.workspace-head .sub{color:var(--muted);font-size:13px}.dropzone{min-height:485px;border:1px dashed #4c555e;border-radius:18px;background:repeating-conic-gradient(#171a1f 0 25%,#13161a 0 50%) 50%/28px 28px;display:grid;place-items:center;overflow:hidden;position:relative;box-shadow:var(--shadow)}.dropzone.drag{border-color:var(--accent);box-shadow:0 0 0 4px #b4ed6633,var(--shadow)}.dropzone.has-image{display:block}.empty{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:350px;padding:30px}.upload-icon{width:58px;height:58px;background:var(--accent);border-radius:18px;display:grid;place-items:center;color:#10140c;font-size:29px;margin-bottom:17px;box-shadow:0 10px 30px #b4ed6633}.empty h3{font-size:19px;margin:0 0 7px;letter-spacing:-.03em}.empty p{color:var(--muted);margin:0 0 20px}.formats{font-size:12px;color:#6f7885;margin-top:12px}.preview-wrap{position:absolute;inset:0;display:grid;place-items:center}.preview-wrap img{max-width:100%;max-height:100%;object-fit:contain;display:block}.image-controls{position:absolute;left:16px;bottom:16px;display:flex;gap:8px}.mini{background:#101215d9;border:1px solid #3c434c;color:#dce0e5;border-radius:8px;padding:7px 10px;font-size:12px}.mini:hover{background:#252a31}.lower{display:flex;gap:10px;align-items:center;margin-top:15px}.lower .primary{flex:1}.lower .ghost{width:48px;padding:10px 0}.right{padding:28px 22px}.panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.panel-title h3{font-size:16px;margin:0}.badge{font-size:11px;padding:4px 7px;border-radius:5px;background:#26321d;color:var(--accent)}.control{padding:15px 0;border-bottom:1px solid #252a31}.control label{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px}.value{color:var(--accent);font-variant-numeric:tabular-nums}.range{width:100%;accent-color:var(--accent)}.select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px}.swatches{display:flex;gap:8px}.swatch{width:31px;height:31px;border-radius:8px;border:2px solid transparent}.swatch.active{border-color:var(--accent);box-shadow:0 0 0 2px #0e1012}.checker{background:repeating-conic-gradient(#30353d 0 25%,#171a1f 0 50%) 50%/12px 12px}.white{background:#fff}.black{background:#111}.accent{background:#b4ed66}.export-title{margin-top:27px}.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.export{background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:11px 8px;text-align:left}.export b{display:block;font-size:13px}.export small{display:block;color:var(--muted);margin-top:2px}.export:hover{border-color:var(--accent);background:#212a1a}.footer-note{color:#68717d;font-size:12px;margin-top:24px;line-height:1.5}@media(max-width:1050px){main{grid-template-columns:220px minmax(420px,1fr)}.right{grid-column:1/-1;border:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:28px}.export-title{margin-top:0}}@media(max-width:700px){.app{grid-template-rows:62px}.topbar{padding:0 16px}.status{display:none}.top-actions .ghost{display:none}main{display:block}.side{display:none}.workspace{padding:16px}.dropzone{min-height:390px}.right{display:block;padding:20px 16px}.workspace-head{margin-bottom:12px}.title{font-size:25px}}
+  [hidden]{display:none!important}button:disabled{opacity:.45;cursor:not-allowed}#message{font-size:14px;overflow-wrap:anywhere;color:#d0dae5}.brushbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}.brushbar label{font-size:14px}.brushbar button[aria-pressed="true"]{border-color:var(--accent);background:#304122}.brushhelp{font-size:14px;color:#aab4c1}.version{font-size:13px;color:var(--accent)}#stage{position:relative;align-self:center;justify-self:center;margin-bottom:50px}#stage img,#paint{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none}#paint{touch-action:none;pointer-events:none;cursor:crosshair}button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar"><div class="brand"><div class="mark">✦</div><span>Découpe <small class="version">v2.0.2</small></span></div><div class="top-actions"><span class="status" id="status">Prêt à détourer</span><button class="ghost" id="reset">Réinitialiser</button><button class="primary" id="topExport">Exporter</button></div></header>
+  <main>
+    <aside class="side"><p class="eyebrow">Atelier image</p><h1 class="title">Détourez sans détour.</h1><p class="intro">Un sujet isolé, propre et prêt à réutiliser.</p><div class="step active"><div class="num">1</div><div><strong>Importer</strong><span>Choisissez une image</span></div></div><div class="step"><div class="num">2</div><div><strong>Affiner</strong><span>Réglez le masque</span></div></div><div class="step"><div class="num">3</div><div><strong>Exporter</strong><span>PNG, SVG ou WebP</span></div></div><div class="tip">L’IA identifie le sujet automatiquement. Le modèle se télécharge au premier lancement.</div></aside>
+    <section class="workspace"><div class="workspace-head"><div><h2>Zone de travail</h2><span class="sub" id="fileName">Aucun fichier sélectionné</span></div><span class="badge">100% local</span></div><div class="brushbar" role="group" aria-label="Pinceaux">
+<button class="ghost" data-mode="view">Aperçu</button><button class="ghost" data-mode="select">Zone IA</button><button class="ghost" data-mode="restore">Restaurer</button><button class="ghost" data-mode="erase">Effacer</button>
+<label for="brushSize">Diamètre <span id="brushValue">60 px</span></label><input id="brushSize" type="range" min="5" max="180" value="60">
+<button class="ghost" id="undo">Annuler</button><button class="ghost" id="clearZone">Effacer la zone</button></div>
+<p class="brushhelp">Zone IA : peignez l’objet entier et un peu de fond autour. Tout ce qui est hors de la zone peinte restera transparent. Restaurer et Effacer retouchent le résultat mémorisé, même hors de la sélection. Vert = Restaurer, rouge = Effacer. Cliquez sur Détourer / appliquer les retouches pour valider les marques. Sans retouche en attente, Recalculer relance l’IA en conservant les corrections.</p><div class="dropzone" id="dropzone"><div class="empty" id="empty"><div class="upload-icon">↑</div><h3>Déposez votre image ici</h3><p>ou parcourez vos fichiers pour commencer</p><button class="primary" id="browse">Choisir une image</button><div class="formats">JPG · PNG · WEBP · jusqu’à 20 Mo</div></div><div class="preview-wrap" id="previewWrap" hidden><div id="stage"><img id="preview" draggable="false" alt="Image à détourer"><canvas id="paint" aria-label="Zone de peinture, souris ou tactile"></canvas></div><div class="image-controls"><button class="mini" id="compare">Avant / Après</button><button class="mini" id="clearBg">Détourer avec IA</button></div></div><input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></div><p id="message" role="status" aria-live="polite">Importez une image pour commencer.</p><button class="ghost" id="change">Changer d’image</button><div class="lower"><button class="primary" id="lowerExport" disabled>Exporter le détourage <span>↗</span></button><button class="ghost" id="downloadOriginal" disabled title="Télécharger l'image originale">↓</button></div></section>
+    <aside class="side right"><div><div class="panel-title"><h3>Réglages du masque</h3><span class="badge" id="maskState">Inactif</span></div><div class="control"><label for="tolerance">Seuil du masque <span class="value" id="toleranceValue">32</span></label><input class="range" id="tolerance" type="range" min="4" max="100" value="32"></div><div class="control"><label for="feather">Adoucissement <span class="value" id="featherValue">0 px</span></label><input class="range" id="feather" type="range" min="0" max="20" value="0"></div><div class="control"><label for="edge">Opacité du bord <span class="value" id="edgeValue">0</span></label><input class="range" id="edge" type="range" min="-10" max="10" value="0"></div><div class="control"><label for="bgMode">Aperçu du fond</label><select class="select" id="bgMode"><option value="checker">Damier transparent</option><option value="white">Blanc</option><option value="black">Noir</option><option value="accent">Vert signal</option></select></div></div><div><div class="panel-title export-title"><h3>Format de sortie</h3></div><div class="export-grid"><button class="export" data-format="png"><b>PNG</b><small>Transparent</small></button><button class="export" data-format="svg"><b>SVG</b><small>PNG incorporé</small></button><button class="export" data-format="webp"><b>WebP</b><small>Léger</small></button><button class="export" data-format="jpg"><b>JPG</b><small>Fond blanc</small></button></div><p class="footer-note">Le détourage est effectué dans votre navigateur. Vos images restent sur votre appareil.</p></div></aside>
+  </main>
+</div>
+<canvas id="canvas" hidden></canvas>
+<script>
+
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s), input=$('#fileInput'), preview=$('#preview'), overlay=$('#paint'), stage=$('#stage'), out=$('#canvas'), drop=$('#dropzone');
+const source=document.createElement('canvas'), zone=document.createElement('canvas'), edits=document.createElement('canvas'), appliedZone=document.createElement('canvas');
+let cachedSelection=null, appliedHasZone=false;
+let file=null,busy=false,base=null,strokes=[],drawing=null,mode='view',resultURL='',originalURL='',engine=null,hasZone=false,sequence=0;
+const ctx=c=>c.getContext('2d',{willReadFrequently:true});
+const pending=()=>strokes.filter(s=>s.mode!=='select'&&!s.applied);
+const say=t=>{$('#status').textContent=t;$('#message').textContent=t;};
+function flags(){
+ document.querySelectorAll('[data-format],#topExport,#lowerExport').forEach(b=>b.disabled=busy||!base||pending().length>0);
+ document.querySelectorAll('[data-mode]').forEach(b=>{b.disabled=busy||!file||(['restore','erase'].includes(b.dataset.mode)&&!base);b.setAttribute('aria-pressed',String(mode===b.dataset.mode));});
+ $('#clearBg').disabled=busy||!file;$('#change').disabled=busy;$('#browse').disabled=busy;input.disabled=busy;$('#reset').disabled=busy;
+ $('#undo').disabled=busy||!strokes.length;$('#clearZone').disabled=busy||!hasZone;$('#compare').disabled=busy||!base;
+ $('#clearBg').textContent=pending().length?'Détourer / appliquer les retouches ('+pending().length+')':base?(hasZone?'Recalculer la zone avec IA':'Recalculer avec IA'):(hasZone?'Détourer la zone avec IA':'Détourer toute l’image');
+ document.querySelectorAll('.range').forEach(e=>e.disabled=busy||!base);
+}
+function show(url){preview.src=url;}
+function setMode(m){
+ mode=m;stage.classList.toggle('painting',m!=='view');if(file)show(m==='select'?originalURL:resultURL||originalURL);
+ overlay.style.pointerEvents=m==='view'?'none':'auto';paintOverlay();flags();
+}
+function line(context,s,color){
+ context.save();context.globalCompositeOperation='source-over';context.strokeStyle=color;context.fillStyle=color;context.lineWidth=s.size;context.lineCap='round';context.lineJoin='round';
+ context.beginPath();context.arc(s.points[0].x,s.points[0].y,s.size/2,0,Math.PI*2);context.fill();
+ if(s.points.length>1){context.beginPath();context.moveTo(s.points[0].x,s.points[0].y);s.points.slice(1).forEach(p=>context.lineTo(p.x,p.y));context.stroke();}
+ context.restore();
+}
+function rebuild(){
+ ctx(zone).clearRect(0,0,zone.width,zone.height);ctx(edits).clearRect(0,0,edits.width,edits.height);hasZone=false;
+ for(const s of strokes){if(s.mode==='select'){hasZone=true;line(ctx(zone),s,'white');}else if(s.applied)line(ctx(edits),s,s.mode==='restore'?'#00ff00':'#ff0000');}
+ paintOverlay();flags();
+}
+function paintOverlay(){
+ const c=ctx(overlay);c.clearRect(0,0,overlay.width,overlay.height);
+ if(mode==='select'){c.drawImage(zone,0,0);c.globalCompositeOperation='source-in';c.fillStyle='rgba(120,220,65,.42)';c.fillRect(0,0,overlay.width,overlay.height);c.globalCompositeOperation='source-over';}
+ for(const s of pending())line(c,s,s.mode==='restore'?'rgba(40,220,120,.55)':'rgba(255,70,90,.55)');
+}
+function render(){
+ if(!base)return;
+ const c=ctx(out),d=new ImageData(new Uint8ClampedArray(base.data),base.width,base.height);
+ const z=appliedHasZone?ctx(appliedZone).getImageData(0,0,appliedZone.width,appliedZone.height).data:null;
+ const e=ctx(edits).getImageData(0,0,edits.width,edits.height).data;
+ const shift=(+$('#tolerance').value-32)*2-Number($('#edge').value)*6;
+ // Apply the adjusted alpha once; keep original image colours intact.
+ for(let i=3;i<d.data.length;i+=4){let a=d.data[i];if(a>0&&a<255)a=Math.max(0,Math.min(255,a-shift));d.data[i]=a;}
+ const mask=document.createElement('canvas');mask.width=out.width;mask.height=out.height;ctx(mask).putImageData(d,0,0);
+ const soft=document.createElement('canvas');soft.width=out.width;soft.height=out.height;
+ ctx(soft).filter='blur('+$('#feather').value+'px)';ctx(soft).drawImage(mask,0,0);
+ const alpha=ctx(soft).getImageData(0,0,out.width,out.height).data;
+ const original=ctx(source).getImageData(0,0,out.width,out.height);
+ for(let i=3;i<alpha.length;i+=4){
+ let a=alpha[i];
+ if(z)a=Math.round(a*z[i]/255);
+ const coverage=e[i]/255;if(coverage){const target=e[i-2]>e[i-3]?255:0;a=Math.round(a*(1-coverage)+target*coverage);}
+ original.data[i]=Math.min(original.data[i],a);
+ }
+ c.putImageData(original,0,0);
+ if(resultURL)URL.revokeObjectURL(resultURL);resultURL=out.toDataURL('image/png');if(mode!=='select')show(resultURL);flags();
+}
+async function load(f){
+ if(busy||!f)return;
+ if(!['image/png','image/jpeg','image/webp'].includes(f.type)){say('Choisissez un fichier PNG, JPG ou WebP.');return;}
+ if(f.size>20*1024*1024){say('Maximum 20 Mo par image.');return;}
+ const seq=++sequence,u=URL.createObjectURL(f);
+ try{const im=new Image();im.src=u;await im.decode();if(seq!==sequence){URL.revokeObjectURL(u);return;}
+ if(im.width*im.height>16000000)throw Error('Maximum 16 millions de pixels pour les retouches locales.');
+ if(originalURL)URL.revokeObjectURL(originalURL);originalURL=u;resultURL='';file=f;base=null;strokes=[];hasZone=false;cachedSelection=null;appliedHasZone=false;
+ for(const c of [source,zone,edits,overlay,out,appliedZone]){c.width=im.width;c.height=im.height;}
+ ctx(source).drawImage(im,0,0);$('#empty').hidden=true;$('#previewWrap').hidden=false;
+ stage.style.aspectRatio=im.width+'/'+im.height;fit();
+ $('#fileName').textContent=f.name+' · '+im.width+' × '+im.height;
+ $('#maskState').textContent='Prêt';setMode('view');say('Peignez largement l’objet avec « Zone IA », puis lancez le détourage.');
+ }catch(e){URL.revokeObjectURL(u);say('Import impossible : '+e.message);}
+}
+function fit(){
+ if(!source.width||!file)return;
+ const w=drop.clientWidth-24,h=drop.clientHeight-76,ratio=Math.min(w/source.width,h/source.height,1);
+ stage.style.width=Math.max(1,source.width*ratio)+'px';stage.style.height=Math.max(1,source.height*ratio)+'px';
+}
+new ResizeObserver(fit).observe(drop);
+function position(e){const r=overlay.getBoundingClientRect();return{x:Math.max(0,Math.min(overlay.width,(e.clientX-r.left)*overlay.width/r.width)),y:Math.max(0,Math.min(overlay.height,(e.clientY-r.top)*overlay.height/r.height))};}
+overlay.onpointerdown=e=>{
+ if(busy||!file||mode==='view'||e.button!==0)return;e.preventDefault();overlay.setPointerCapture(e.pointerId);
+ const r=overlay.getBoundingClientRect();drawing={mode,applied:false,size:+$('#brushSize').value*overlay.width/r.width,points:[position(e)]};strokes.push(drawing);rebuild();
+};
+overlay.onpointermove=e=>{if(!drawing)return;drawing.points.push(position(e));rebuild();};
+function end(){if(!drawing)return;drawing=null;if(mode!=='select'){say('Retouche en attente : cliquez sur Détourer / appliquer les retouches.');}if(hasZone&&mode==='select'){$('#maskState').textContent='Zone modifiée — résultat conservé';say('Zone prête : elle doit couvrir l’objet entier et un peu de fond.');}flags();}
+overlay.onpointerup=end;overlay.onpointercancel=end;
+$('#undo').onclick=()=>{const removed=strokes.pop();if(removed?.mode==='select'){setMode('select');}rebuild();render();say('Dernier coup de pinceau annulé.');};
+$('#clearZone').onclick=()=>{strokes=strokes.filter(s=>s.mode!=='select');rebuild();setMode('view');say('Sélection effacée. Le prochain détourage analysera toute l’image.');};
+function bounds(){
+ if(!hasZone)return{x:0,y:0,w:source.width,h:source.height};
+ const d=ctx(zone).getImageData(0,0,zone.width,zone.height).data;
+ let x0=zone.width,y0=zone.height,x1=-1,y1=-1;
+ for(let y=0;y<zone.height;y++)for(let x=0;x<zone.width;x++)if(d[(y*zone.width+x)*4+3]){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+ const margin=16;x0=Math.max(0,x0-margin);y0=Math.max(0,y0-margin);x1=Math.min(zone.width-1,x1+margin);y1=Math.min(zone.height-1,y1+margin);
+ return{x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};
+}
+const blob=(c,type='image/png')=>new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(Error('Encodage impossible')),type,.95));
+async function segment(){
+ if(busy||!file)return;
+ const selectionKey=hasZone?zone.toDataURL():'whole';
+ if(base&&cachedSelection===selectionKey&&pending().length){const count=pending().length;strokes.forEach(s=>{if(s.mode!=='select')s.applied=true;});rebuild();setMode('view');render();$('#maskState').textContent='Retouches appliquées';say(count+' retouche(s) appliquée(s) au masque. Vous pouvez exporter ou continuer.');return;}
+ busy=true;flags();say('Chargement du moteur IA…');$('#maskState').textContent='Analyse';
+ try{
+ if(!engine){const m=await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm');engine=m.removeBackground||m.default;}
+ const b=bounds(),crop=document.createElement('canvas');crop.width=b.w;crop.height=b.h;ctx(crop).drawImage(source,b.x,b.y,b.w,b.h,0,0,b.w,b.h);
+ const result=await engine(await blob(crop),{publicPath:'https://staticimgly.com/@imgly/background-removal-data/1.7.0/dist/',model:'isnet_fp16',device:'cpu',progress:(key,n,total)=>say(key.startsWith('compute:')?'Analyse des contours…':'Téléchargement IA : '+(total?Math.round(n/total*100)+' %':'en cours'))});
+ const u=URL.createObjectURL(result);
+ try{const im=new Image();im.src=u;await im.decode();ctx(out).clearRect(0,0,out.width,out.height);ctx(out).drawImage(im,b.x,b.y,b.w,b.h);base=ctx(out).getImageData(0,0,out.width,out.height);}finally{URL.revokeObjectURL(u);}
+ strokes.forEach(s=>{if(s.mode!=='select')s.applied=true;});
+ cachedSelection=selectionKey;appliedHasZone=hasZone;ctx(appliedZone).clearRect(0,0,appliedZone.width,appliedZone.height);if(hasZone)ctx(appliedZone).drawImage(zone,0,0);
+ rebuild();setMode('view');render();$('#maskState').textContent='Détouré';say('Détourage mémorisé et retouches appliquées. Restaurer et Effacer restent actifs.');
+ }catch(e){console.error(e);say('Échec du détourage : '+e.message);$('#maskState').textContent='Réessayer';}
+ finally{busy=false;flags();}
+}
+async function download(format){
+ if(busy||!base||pending().length)return;busy=true;flags();
+ try{render();let b;
+ if(format==='svg')b=new Blob(['<svg xmlns="http://www.w3.org/2000/svg" width="'+out.width+'" height="'+out.height+'"><image width="100%" height="100%" href="'+out.toDataURL('image/png')+'"/></svg>'],{type:'image/svg+xml'});
+ else{let target=out;if(format==='jpg'){target=document.createElement('canvas');target.width=out.width;target.height=out.height;ctx(target).fillStyle='white';ctx(target).fillRect(0,0,target.width,target.height);ctx(target).drawImage(out,0,0);}b=await blob(target,format==='jpg'?'image/jpeg':'image/'+format);}
+ const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=file.name.replace(/\.[^.]+$/,'')+'-decoupe-v2.0.2.'+format;a.click();setTimeout(()=>URL.revokeObjectURL(u),10000);say('Export '+format.toUpperCase()+' prêt.');
+ }catch(e){say(e.message);}finally{busy=false;flags();}
+}
+$('#browse').onclick=()=>input.click();$('#change').onclick=()=>input.click();input.onchange=()=>{load(input.files[0]);input.value='';};
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');load(e.dataTransfer.files[0]);};
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+$('#brushSize').oninput=e=>$('#brushValue').textContent=e.target.value+' px';
+$('#clearBg').onclick=segment;$('#reset').onclick=()=>location.reload();
+$('#compare').onclick=()=>{setMode('view');const original=preview.dataset.original!=='yes';show(original?originalURL:resultURL);preview.dataset.original=original?'yes':'no';$('#compare').textContent=original?'Voir le détourage':'Voir l’original';};
+document.querySelectorAll('[data-format],#topExport,#lowerExport').forEach(b=>b.onclick=()=>download(b.dataset.format||'png'));
+$('#downloadOriginal').hidden=true;
+['tolerance','feather','edge'].forEach(id=>{$('#'+id).oninput=e=>$('#'+id+'Value').textContent=e.target.value+(id==='feather'?' px':'');$('#'+id).onchange=()=>{if(!busy)render();};});
+$('#bgMode').onchange=e=>drop.style.background=e.target.value==='checker'?'':({white:'#fff',black:'#050607',accent:'#b4ed66'})[e.target.value];
+flags();
+})();
+
+</script>
+</body>
+</html>
