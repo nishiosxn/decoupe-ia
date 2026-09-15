@@ -4,6 +4,8 @@
 
 Découpe est une application statique contenue dans un seul fichier HTML. Elle fonctionne sans serveur applicatif et sans compte utilisateur. Un petit serveur HTTP local est toutefois nécessaire pour autoriser le chargement du modèle IA.
 
+En production, le dossier `dist` est servi comme ensemble de ressources statiques par Cloudflare Workers. La configuration versionnée se trouve dans `wrangler.jsonc` ; aucun serveur personnel n’est utilisé.
+
 ## Fichiers faisant autorité
 
 - `outputs/decoupe.html` est la source active.
@@ -52,4 +54,3 @@ Changer d’image réinitialise entièrement cet état. Recharger la page le per
 - Le pinceau doit couvrir le détail et un peu de fond pour donner du contexte à l’IA.
 - Le collage fonctionne seulement si le presse-papiers contient les pixels d’une image PNG, JPEG ou WebP. Une simple adresse web n’est pas téléchargée automatiquement.
 - La qualité finale reste limitée par la résolution de l’image originale et par la reconnaissance du modèle.
-

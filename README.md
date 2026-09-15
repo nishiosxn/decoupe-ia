@@ -19,6 +19,19 @@ python -m http.server 8765
 
 Ouvrir ensuite <http://127.0.0.1:8765/decoupe.html>.
 
+## Publication publique
+
+Le dépôt est relié à Cloudflare Workers Builds. La configuration `wrangler.jsonc` publie automatiquement le dossier `dist` comme site statique.
+
+Réglages Cloudflare :
+
+- Build command : vide.
+- Deploy command : `npx wrangler deploy`.
+- Production branch : `main`.
+- Cloudflare Access : désactivé pour permettre un accès public.
+
+Chaque modification envoyée sur `main` déclenche un nouveau déploiement.
+
 ## Organisation
 
 - `outputs/decoupe.html` : source active et page utilisée localement.
@@ -30,6 +43,7 @@ Ouvrir ensuite <http://127.0.0.1:8765/decoupe.html>.
 - `scripts/check.ps1` : contrôle automatique de la cohérence du projet.
 - `scripts/release.ps1` : création sécurisée d’une archive de version.
 - `AGENTS.md` : consignes permanentes pour les prochaines interventions de Codex.
+- `wrangler.jsonc` : configuration de l’hébergement public Cloudflare.
 
 ## Cycle d’une évolution
 

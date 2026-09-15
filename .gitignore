@@ -1,4 +1,7 @@
 work/
+.wrangler/
+.dev.vars*
+!.dev.vars.example
 *.log
 .DS_Store
 Thumbs.db
