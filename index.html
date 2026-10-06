@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Un atelier gratuit de détourage et suppression d’objets. Pinceaux précis, sélection IA et reconstruction du fond dans votre navigateur."
+    />
+    <meta name="theme-color" content="#111819" />
+    <title>Découpe Studio — votre atelier image</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#workspace">Aller à l’atelier</a>
+    <header class="topbar">
+      <a class="brand" href="./"
+        ><span class="brandmark">✦</span><span>Découpe<span class="brand-light"> Studio</span></span
+        ><span class="version">4.0 · preview</span></a
+      ><span class="private"><i></i> Local. Gratuit. Vos images restent ici.</span
+      ><button id="help-open" class="quiet">Mode d’emploi <kbd>?</kbd></button>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">VOTRE ATELIER IMAGE</p>
+          <h1>Gardez l’essentiel.<br /><span>Retouchez le reste.</span></h1>
+          <p>Détourez un sujet, effacez un détail ou reconstruisez son arrière-plan.</p>
+        </div>
+        <ol class="steps">
+          <li><b>01</b> Importer</li>
+          <li><b>02</b> Retoucher</li>
+          <li><b>03</b> Exporter</li>
+        </ol>
+      </section>
+      <div class="studio">
+        <aside class="panel tools" aria-label="Outils de retouche">
+          <div class="panel-heading"><span>Outils</span><span class="caps">ÉDITION</span></div>
+          <button id="import" class="import-button">＋ Importer une image</button
+          ><input id="file" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+          <div class="tool-section">
+            <span class="section-label">Détourage automatique</span
+            ><button id="background" class="ai-button" data-document>
+              ✦ Détourer le sujet <span>IA</span>
+            </button>
+            <p class="hint">
+              Préserve les détails avec BiRefNet. Le premier chargement peut prendre du temps.
+            </p>
+          </div>
+          <div class="tool-section">
+            <span class="section-label">Retouche précise</span>
+            <div class="tool-grid">
+              <button data-tool="erase" data-document aria-pressed="true">
+                <b>◌</b> Gomme <kbd>E</kbd>
+              </button>
+              <button data-tool="restore" data-document aria-pressed="false">
+                <b>↗</b> Restaurer <kbd>R</kbd>
+              </button>
+              <button data-tool="select" data-document aria-pressed="false">
+                <b>▧</b> Peindre la zone <kbd>B</kbd>
+              </button>
+              <button data-tool="object" data-document aria-pressed="false">
+                <b>✦</b> Objet au clic <kbd>S</kbd>
+              </button>
+            </div>
+            <p class="hint" id="tool-help">
+              La gomme supprime immédiatement les pixels sous le pinceau.
+            </p>
+            <label class="range-label" for="brush"
+              >Taille <output id="brush-value">40 px</output></label
+            ><input id="brush" type="range" min="2" max="240" value="40" data-document />
+            <label class="range-label" for="hardness"
+              >Dureté <output id="hardness-value">100 %</output></label
+            ><input id="hardness" type="range" min="0" max="100" value="100" data-document />
+          </div>
+          <div class="tool-section">
+            <span class="section-label"
+              >Zone sélectionnée <span id="selected-count">0 %</span></span
+            >
+            <div class="selection-actions">
+              <button id="erase-selection" data-selection>Effacer</button
+              ><button id="restore-selection" data-selection>Restaurer</button>
+            </div>
+            <label class="range-label" for="repair-method">Reconstruction du fond</label
+            ><select id="repair-method" data-document>
+              <option value="texture">Texture locale · sans téléchargement</option>
+              <option value="lama">IA LaMa · télécharger 200 Mo</option>
+              <option value="fast">Remplissage local · fond simple</option></select
+            ><button id="repair" class="accent-button" data-selection>
+              ✦ Supprimer et reconstruire</button
+            ><button id="clear-selection" class="quiet full" data-selection>
+              Annuler la sélection
+            </button>
+            <p class="hint">
+              Peignez tout l’élément. La texture locale utilise le fond voisin ; LaMa propose une
+              reconstruction IA.
+            </p>
+          </div>
+          <div class="tool-section last">
+            <span class="section-label">Mon projet</span
+            ><button id="save-project" data-document>Enregistrer le projet</button
+            ><button id="open-project" class="quiet">Ouvrir un projet</button
+            ><input id="project-file" type="file" accept=".decoupe,application/json" hidden />
+            <p class="hint">
+              Retrouvez l’image originale, vos retouches et votre masque plus tard.
+            </p>
+          </div>
+        </aside>
+        <section class="editor" aria-label="Atelier">
+          <div class="editor-toolbar">
+            <div class="history-controls">
+              <button id="undo" title="Annuler · Ctrl Z" aria-label="Annuler">↶</button
+              ><button id="redo" title="Rétablir · Ctrl Shift Z" aria-label="Rétablir">↷</button
+              ><span id="file-name">Aucune image</span>
+            </div>
+            <div class="view-controls">
+              <button id="compare" aria-pressed="false" data-document>Original</button
+              ><button id="fit" data-document>Ajuster</button
+              ><select id="zoom" aria-label="Zoom" data-document>
+                <option value="fit">Ajusté</option>
+                <option value="0.5">50 %</option>
+                <option value="1">100 %</option>
+                <option value="2">200 %</option>
+                <option value="4">400 %</option>
+              </select>
+            </div>
+          </div>
+          <div
+            id="workspace"
+            class="workspace"
+            tabindex="0"
+            aria-label="Zone d’image : glissez une image pour commencer"
+          >
+            <div id="empty" class="empty">
+              <span class="empty-art" aria-hidden="true">✦</span
+              ><span class="caps">UNE NOUVELLE TOILE</span>
+              <h2>Une image.<br />De nouvelles possibilités.</h2>
+              <p>Déposez un fichier ici ou collez votre image avec Ctrl + V.</p>
+              <button id="browse" class="accent-button">Choisir une image <span>↗</span></button
+              ><button id="demo" class="quiet">Essayer avec l’image de démonstration</button
+              ><small>PNG, JPG, WebP · 30 Mo maximum</small>
+            </div>
+            <div id="stage" hidden>
+              <canvas id="image" aria-label="Image retouchée"></canvas
+              ><canvas id="selection" aria-hidden="true"></canvas
+              ><canvas id="interaction" aria-label="Dessinez pour retoucher l’image"></canvas
+              ><span id="cursor" hidden></span>
+            </div>
+          </div>
+          <div class="editor-bottom">
+            <span id="dimensions">—</span>
+            <div class="swatches" role="group" aria-label="Fond d’aperçu">
+              <button
+                data-backdrop="checker"
+                aria-label="Fond transparent"
+                aria-pressed="true"
+              ></button
+              ><button data-backdrop="white" aria-label="Fond blanc" aria-pressed="false"></button
+              ><button data-backdrop="dark" aria-label="Fond sombre" aria-pressed="false"></button>
+            </div>
+            <span class="caps">APERÇU DU FOND</span>
+          </div>
+          <div class="statusbar">
+            <span id="status" role="status" aria-live="polite"
+              >Prêt. Importez une image ou essayez la démonstration.</span
+            ><button id="cancel" class="quiet" hidden>Annuler l’analyse</button>
+          </div>
+        </section>
+        <aside class="panel output-panel" aria-label="Export">
+          <div class="panel-heading"><span>Livraison</span><span class="caps">EXPORT</span></div>
+          <div class="export-preview checker">
+            <canvas
+              id="thumbnail"
+              width="240"
+              height="180"
+              aria-label="Aperçu de l’export"
+            ></canvas>
+            <p id="export-empty">Votre résultat<br />apparaîtra ici.</p>
+          </div>
+          <h2>Prêt à sortir<br />de l’atelier ?</h2>
+          <p class="hint">L’export correspond aux pixels visibles, sans la couleur de sélection.</p>
+          <label class="section-label" for="format">Format de sortie</label
+          ><select id="format" data-document>
+            <option value="png">PNG · transparence</option>
+            <option value="webp">WebP · transparence</option>
+            <option value="jpeg">JPG · fond uni</option>
+            <option value="svg">SVG · image PNG intégrée</option></select
+          ><label class="section-label" for="export-color">Fond pour le JPG</label
+          ><input id="export-color" type="color" value="#ffffff" data-document /><button
+            id="download"
+            class="accent-button full"
+            data-document
+          >
+            Télécharger <span>↓</span></button
+          ><button id="download-mask" class="quiet full" data-document>
+            Exporter le masque PNG
+          </button>
+          <div class="note">
+            <b>À vous de garder la main.</b>
+            <p>
+              Annulation et restauration disponibles à chaque étape. Le fichier original reste
+              intact.
+            </p>
+          </div>
+          <button id="reset" class="quiet full" data-document>Revenir à l’image originale</button>
+        </aside>
+      </div>
+      <footer>
+        <span>Découpe Studio <span class="muted">/ v4.0.0 candidate</span></span
+        ><span
+          >BiRefNet · SlimSAM · LaMa
+          <button id="models-open" class="quiet">Modèles et confidentialité</button></span
+        >
+      </footer>
+    </main>
+    <dialog id="help">
+      <button class="dialog-close" aria-label="Fermer">×</button>
+      <p class="eyebrow">UNE RETOUCHE, TROIS ÉTAPES</p>
+      <h2>Un atelier qui vous laisse le contrôle.</h2>
+      <ol>
+        <li><b>Importez</b> une image, par fichier, glisser-déposer ou collage.</li>
+        <li><b>Détourez</b> le sujet, ou utilisez la gomme et Restaurer immédiatement.</li>
+        <li>
+          <b>Sélectionnez</b> une zone au pinceau ou un objet au clic. Shift + clic ajoute un point
+          d’exclusion ; Alt + pinceau retire de la sélection.
+        </li>
+        <li>
+          <b>Effacez</b> vers la transparence, ou choisissez « Supprimer et reconstruire » pour
+          remplir le fond.
+        </li>
+        <li><b>Exportez</b> votre image, ou enregistrez le projet pour le reprendre.</li>
+      </ol>
+      <p>
+        Raccourcis : E gomme · R restaurer · B sélection · S objet · Ctrl Z annuler · Ctrl Shift Z
+        rétablir · Ctrl S enregistrer le projet · Échap annuler la sélection.
+      </p>
+      <p>
+        À fort zoom, faites défiler l’atelier pour déplacer l’image. Les projets et les exports ne
+        quittent jamais votre navigateur.
+      </p>
+    </dialog>
+    <dialog id="models">
+      <button class="dialog-close" aria-label="Fermer">×</button>
+      <p class="eyebrow">TRAITEMENT LOCAL</p>
+      <h2>Trois moteurs, aucune clé API.</h2>
+      <p>
+        <b>BiRefNet Lite</b> : détourage automatique (MIT). <b>SlimSAM</b> : sélection d’objets à
+        partir de points (Apache 2.0). <b>LaMa</b> : reconstruction du fond (Apache 2.0 ;
+        entraînement Places2, auteurs Places2, CC BY 4.0).
+      </p>
+      <p>
+        Le premier usage télécharge les modèles depuis Hugging Face et le moteur depuis jsDelivr.
+        Ces services voient la requête de téléchargement, mais aucune image n’est envoyée. Les
+        modèles sont conservés dans le cache du navigateur quand l’espace le permet.
+      </p>
+      <p>
+        LaMa nécessite environ 200 Mo de téléchargement et de la mémoire. La reconstruction peut
+        être lente sur mobile et ne garantit pas un fond exact. « Remplissage local » est une
+        méthode sans réseau, adaptée aux petits éléments sur fond simple.
+      </p>
+      <p>
+        Les images trop grandes sont redimensionnées à 2048 px de côté et 3 mégapixels pour garder
+        un atelier réactif. La résolution de travail est affichée après import.
+      </p>
+    </dialog>
+  </body>
+</html>
