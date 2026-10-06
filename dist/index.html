@@ -19,13 +19,13 @@ main{max-width:1280px;margin:auto;padding:22px 28px 28px}.heading{display:flex;j
 </style>
 </head>
 <body>
-<header><div class="brand"><span class="logo">✦</span>Découpe <span class="version">v3.1.0</span></div><span class="privacy">Vos images restent sur votre appareil</span></header>
+<header><div class="brand"><span class="logo">✦</span>Découpe <span class="version">v3.2.0</span></div><span class="privacy">Vos images restent sur votre appareil</span></header>
 <main>
 <div class="heading"><div><h1>Enlevez le fond de votre image.</h1><p id="fileInfo">Une image, un clic. Puis quelques retouches si nécessaire.</p></div><div class="heading-actions"><button id="pasteButton">Coller l’image</button><button id="change" hidden>Changer d’image</button></div></div>
 <input id="file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
 <section id="workspace" class="workspace" aria-label="Image et zone de retouche">
  <div id="empty" class="empty"><div class="upload">↑</div><h2>Déposez ou collez votre image</h2><p>Glissez un fichier, choisissez-le, ou appuyez sur <kbd>Ctrl</kbd> + <kbd>V</kbd>.</p><button id="browse" class="primary">Choisir une image</button><small>PNG, JPG ou WebP · jusqu’à 20 Mo</small></div>
- <div id="stage" hidden><img id="ghost" alt="" draggable="false" hidden><img id="preview" alt="Aperçu de votre image" draggable="false"><canvas id="paint" aria-label="Peignez les zones à retoucher"></canvas><span id="cursor" hidden></span></div>
+ <div id="stage" hidden><img id="ghost" alt="" draggable="false" hidden><img id="preview" alt="Aperçu de votre image" draggable="false"><canvas id="paint" aria-label="Indiquez à l’IA les zones à corriger"></canvas><span id="cursor" hidden></span></div>
 </section>
 <p id="message" class="notice" role="status" aria-live="polite">Prêt à importer une image.</p><progress id="progress" hidden></progress>
 <div id="initialAction" class="actionrow" hidden><button id="removeBackground" class="primary">✦ Enlever le fond</button></div>
@@ -37,7 +37,7 @@ main{max-width:1280px;margin:auto;padding:22px 28px 28px}.heading{display:flex;j
  <button id="undoStroke" class="subtle" disabled>Annuler le trait</button><span class="spacer"></span>
  <button id="apply" class="primary" disabled>✦ Appliquer les retouches IA</button>
  </div>
- <p id="brushHelp">Choisissez Ajouter ou Enlever, peignez largement le détail avec un peu de fond autour, puis appliquez les retouches.</p>
+ <p id="brushHelp">Choisissez Ajouter ou Enlever, puis passez le pinceau sur la zone concernée. Le trait sert d’indice : l’IA détecte la région cohérente autour au lieu d’effacer ou restaurer uniquement sous le pinceau.</p>
 </section>
 <div id="exportRow" class="exportrow" hidden>
  <button id="undoResult" class="subtle" disabled>Annuler la dernière retouche IA</button>
@@ -149,7 +149,7 @@ function drawOverlay(){
 function chooseMode(m){
  if(busy||!mask)return;mode=m;showingOriginal=false;preview.src=resultURL;
  $('#compare').textContent='Voir l’original';$('#compare').setAttribute('aria-pressed','false');
- $('#brushHelp').textContent=m==='add'?'Ajouter : peignez la partie manquante et un peu de fond autour. L’IA cherchera le sujet dans cette zone.':'Enlever : peignez le fond restant autour du sujet. L’IA affine le masque dans cette zone, sans toucher au reste.';
+ $('#brushHelp').textContent=m==='add'?'Ajouter : passez sur une partie du sujet à récupérer. L’IA cherche la région cohérente autour du trait et la restaure avec un bord progressif.':'Enlever : passez sur la zone indésirable. L’IA cherche la région cohérente autour du trait et la retire sans transformer le pinceau en gomme brute.';
  drawOverlay();controls();
 }
 function point(e){const r=overlay.getBoundingClientRect();return{x:Math.max(0,Math.min(source.width,(e.clientX-r.left)*source.width/r.width)),y:Math.max(0,Math.min(source.height,(e.clientY-r.top)*source.height/r.height))};}
@@ -162,7 +162,7 @@ overlay.onpointerdown=e=>{
  const r=overlay.getBoundingClientRect();currentStroke={mode,diameter:+$('#size').value*source.width/r.width,points:[point(e)]};strokes.push(currentStroke);drawOverlay();controls();
 };
 overlay.onpointermove=e=>{cursor(e);if(!currentStroke)return;currentStroke.points.push(point(e));drawOverlay();};
-function end(){if(!currentStroke)return;currentStroke=null;say('Zone marquée. Cliquez sur « Appliquer les retouches IA ».');controls();}
+function end(){if(!currentStroke)return;currentStroke=null;say('Indice ajouté. Cliquez sur « Appliquer les retouches IA » : la zone sera détectée autour du trait.');controls();}
 overlay.onpointerup=end;overlay.onpointercancel=end;overlay.onlostpointercapture=end;overlay.onpointerleave=()=>$('#cursor').hidden=true;
 function strokeBounds(s){
  let x=source.width,y=source.height,right=0,bottom=0,r=s.diameter/2;
@@ -179,28 +179,128 @@ function regions(){
  }
  return groups;
 }
-async function apply(){
- if(busy||!mask||!strokes.length)return;busy=true;showingOriginal=false;$('#cursor').hidden=true;controls();
- const previous=mask,candidate=new Uint8ClampedArray(mask),groups=regions();let changed=0;
- try{
-  for(let k=0;k<groups.length;k++){
-   const g=groups[k],padding=Math.max(16,Math.round(Math.max(g.right-g.x,g.bottom-g.y)*.15));
-   const x=Math.max(0,g.x-padding),y=Math.max(0,g.y-padding),right=Math.min(source.width,g.right+padding),bottom=Math.min(source.height,g.bottom+padding),rect={x,y,w:right-x,h:bottom-y};
-   progressPrefix='Zone '+(k+1)+' sur '+groups.length+' · ';say(progressPrefix+'Analyse locale…');
-   const predicted=await infer(rect),coverageCanvas=document.createElement('canvas');coverageCanvas.width=rect.w;coverageCanvas.height=rect.h;
-   for(const s of g.strokes)drawLine(context(coverageCanvas),s,1,1,x,y);
-   const coverage=context(coverageCanvas).getImageData(0,0,rect.w,rect.h).data;
-   for(let yy=0;yy<rect.h;yy++)for(let xx=0;xx<rect.w;xx++){
-    const j=yy*rect.w+xx,t=coverage[j*4+3]/255;if(!t)continue;
-    const i=(y+yy)*source.width+x+xx,old=candidate[i],target=g.mode==='add'?Math.max(old,predicted[j]):Math.min(old,predicted[j]);
-    candidate[i]=Math.min(original.data[i*4+3],Math.round(old+(target-old)*t));
+
+function dilateBinary(input,w,h,steps=1){
+ let current=new Uint8Array(input);
+ for(let step=0;step<steps;step++){
+  const next=new Uint8Array(current);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+   const i=y*w+x;if(!current[i])continue;
+   for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+    const xx=x+dx,yy=y+dy;if(xx>=0&&yy>=0&&xx<w&&yy<h)next[yy*w+xx]=1;
    }
   }
-  for(let i=0;i<candidate.length;i++)if(candidate[i]!==previous[i])changed++;
+  current=next;
+ }
+ return current;
+}
+function blurBinary(input,w,h,passes=2){
+ let current=new Uint8ClampedArray(input.length);
+ for(let i=0;i<input.length;i++)current[i]=input[i]?255:0;
+ for(let pass=0;pass<passes;pass++){
+  const next=new Uint8ClampedArray(current.length);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+   let sum=0,count=0;
+   for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+    const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=w||yy>=h)continue;
+    sum+=current[yy*w+xx];count++;
+   }
+   next[y*w+x]=Math.round(sum/count);
+  }
+  current=next;
+ }
+ return current;
+}
+function promptSelection(g,rect,predicted){
+ const maxSide=760,maxPixels=360000;
+ const scale=Math.min(1,maxSide/Math.max(rect.w,rect.h),Math.sqrt(maxPixels/(rect.w*rect.h)));
+ const w=Math.max(1,Math.round(rect.w*scale)),h=Math.max(1,Math.round(rect.h*scale)),n=w*h;
+ const r=new Uint8Array(n),gg=new Uint8Array(n),b=new Uint8Array(n),p=new Uint8Array(n);
+ for(let ay=0;ay<h;ay++)for(let ax=0;ax<w;ax++){
+  const lx=Math.min(rect.w-1,Math.floor((ax+.5)*rect.w/w)),ly=Math.min(rect.h-1,Math.floor((ay+.5)*rect.h/h));
+  const src=((rect.y+ly)*source.width+rect.x+lx)*4,q=ay*w+ax,j=ly*rect.w+lx;
+  r[q]=original.data[src];gg[q]=original.data[src+1];b[q]=original.data[src+2];p[q]=predicted[j];
+ }
+ const seedCanvas=document.createElement('canvas');seedCanvas.width=w;seedCanvas.height=h;
+ const seedContext=context(seedCanvas);
+ for(const s of g.strokes){
+  const core={mode:s.mode,diameter:Math.max(2,s.diameter*.38),points:s.points};
+  drawLine(seedContext,core,w/rect.w,h/rect.h,rect.x,rect.y);
+ }
+ const seedPixels=seedContext.getImageData(0,0,w,h).data,seed=new Uint8Array(n);
+ let seedCount=0;
+ for(let i=0;i<n;i++)if(seedPixels[i*4+3]>20){seed[i]=1;seedCount++;}
+ if(!seedCount)return null;
+ const palette=[],stride=Math.max(1,Math.floor(seedCount/18));let seen=0;
+ for(let i=0;i<n&&palette.length<18;i++)if(seed[i]){
+  if(seen%stride===0)palette.push([r[i],gg[i],b[i]]);seen++;
+ }
+ const semanticPenalty=i=>g.mode==='add'?1-p[i]/255:p[i]/255;
+ const colorDistance=i=>{
+  let best=1;
+  for(const c of palette){
+   const dr=r[i]-c[0],dg=gg[i]-c[1],db=b[i]-c[2];
+   best=Math.min(best,Math.sqrt(dr*dr+dg*dg+db*db)/441.673);
+  }
+  return best;
+ };
+ const grow=threshold=>{
+  const selected=new Uint8Array(n),queue=new Int32Array(n);let head=0,tail=0;
+  for(let i=0;i<n;i++)if(seed[i]){selected[i]=1;queue[tail++]=i;}
+  while(head<tail){
+   const i=queue[head++],x=i%w,y=(i/w)|0;
+   for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+    if(!dx&&!dy)continue;
+    const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=w||yy>=h)continue;
+    const q=yy*w+xx;if(selected[q])continue;
+    const dr=r[q]-r[i],dg=gg[q]-gg[i],db=b[q]-b[i],local=Math.sqrt(dr*dr+dg*dg+db*db)/441.673;
+    const cost=.72*colorDistance(q)+.28*semanticPenalty(q);
+    if((cost<=threshold&&local<=.29)||semanticPenalty(q)<=.08){
+     selected[q]=1;queue[tail++]=q;
+    }
+   }
+  }
+  return selected;
+ };
+ let selected=grow(.34),selectedCount=selected.reduce((a,v)=>a+v,0);
+ if(selectedCount<Math.max(seedCount*1.35,18)){selected=grow(.44);selectedCount=selected.reduce((a,v)=>a+v,0);}
+ if(selectedCount>n*.82&&seedCount<n*.12){selected=grow(.29);selectedCount=selected.reduce((a,v)=>a+v,0);}
+ if(selectedCount<Math.max(seedCount*1.18,10))return null;
+ selected=dilateBinary(selected,w,h,g.mode==='add'?2:1);
+ return{w,h,weights:blurBinary(selected,w,h,2),selectedCount};
+}
+function selectionWeight(selection,x,y,rect){
+ const fx=Math.max(0,Math.min(selection.w-1,(x+.5)*selection.w/rect.w-.5));
+ const fy=Math.max(0,Math.min(selection.h-1,(y+.5)*selection.h/rect.h-.5));
+ const x0=Math.floor(fx),y0=Math.floor(fy),x1=Math.min(selection.w-1,x0+1),y1=Math.min(selection.h-1,y0+1),tx=fx-x0,ty=fy-y0;
+ const a=selection.weights[y0*selection.w+x0],bb=selection.weights[y0*selection.w+x1],c=selection.weights[y1*selection.w+x0],d=selection.weights[y1*selection.w+x1];
+ return((a*(1-tx)+bb*tx)*(1-ty)+(c*(1-tx)+d*tx)*ty)/255;
+}
+async function apply(){
+ if(busy||!mask||!strokes.length)return;busy=true;showingOriginal=false;$('#cursor').hidden=true;controls();
+ const previous=mask,candidate=new Uint8ClampedArray(mask),groups=regions();let changed=0,detected=0;
+ try{
+  for(let k=0;k<groups.length;k++){
+   const g=groups[k],span=Math.max(g.right-g.x,g.bottom-g.y),padding=Math.min(480,Math.max(72,Math.round(span*.72)));
+   const x=Math.max(0,g.x-padding),y=Math.max(0,g.y-padding),right=Math.min(source.width,g.right+padding),bottom=Math.min(source.height,g.bottom+padding),rect={x,y,w:right-x,h:bottom-y};
+   progressPrefix='Zone '+(k+1)+' sur '+groups.length+' · ';say(progressPrefix+'Détection de la région…');
+   const predicted=await infer(rect),selection=promptSelection(g,rect,predicted);
+   if(!selection)throw Error('L’IA ne distingue pas une région assez nette autour du trait '+(k+1)+'. Essayez un trait plus court placé au cœur de la zone à '+(g.mode==='add'?'ajouter.':'enlever.'));
+   detected++;
+   for(let yy=0;yy<rect.h;yy++)for(let xx=0;xx<rect.w;xx++){
+    const t=selectionWeight(selection,xx,yy,rect);if(t<=.015)continue;
+    const i=(y+yy)*source.width+x+xx,old=candidate[i],originalAlpha=original.data[i*4+3];
+    const semantic=g.mode==='add'?predicted[yy*rect.w+xx]/255:1-predicted[yy*rect.w+xx]/255;
+    const strength=Math.min(1,t*(.72+.28*semantic));
+    const target=g.mode==='add'?originalAlpha:0,next=Math.min(originalAlpha,Math.round(old+(target-old)*strength));
+    if(next!==old){candidate[i]=next;changed++;}
+   }
+  }
   mask=candidate;
   try{await display();}catch(e){mask=previous;throw e;}
   if(changed){history.push(previous);if(history.length>5)history.shift();}
-  strokes=[];mode=null;drawOverlay();say(changed?'Retouches appliquées au dernier détourage. Le reste de l’image est conservé.':'L’IA n’a détecté aucun changement dans ces zones. Essayez une zone plus large incluant un peu de fond.');
+  strokes=[];mode=null;drawOverlay();
+  say(changed?detected+' zone'+(detected>1?'s':'')+' détectée'+(detected>1?'s':'')+' et corrigée'+(detected>1?'s':'')+'. Le pinceau a servi d’indice ; le reste de l’image est conservé.':'L’IA a reconnu la zone mais le masque était déjà cohérent.');
  }catch(e){say('Retouche interrompue : '+e.message+' Votre dernier résultat et vos traits sont conservés.',true);}
  finally{busy=false;controls();}
 }
@@ -215,7 +315,7 @@ async function download(){
  const format=$('#format').value;let b,target=output;
  if(format==='svg')b=new Blob(['<svg xmlns="http://www.w3.org/2000/svg" width="'+output.width+'" height="'+output.height+'"><image width="100%" height="100%" href="'+output.toDataURL('image/png')+'"/></svg>'],{type:'image/svg+xml'});
  else{if(format==='jpg'){target=document.createElement('canvas');target.width=output.width;target.height=output.height;context(target).fillStyle='white';context(target).fillRect(0,0,target.width,target.height);context(target).drawImage(output,0,0);}b=await toBlob(target,format==='jpg'?'image/jpeg':'image/'+format);}
- const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=file.name.replace(/\.[^.]+$/,'')+'-detoure-v3.1.0.'+format;a.click();setTimeout(()=>release(u),10000);say('Téléchargement '+format.toUpperCase()+' prêt.');
+ const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=file.name.replace(/\.[^.]+$/,'')+'-detoure-v3.2.0.'+format;a.click();setTimeout(()=>release(u),10000);say('Téléchargement '+format.toUpperCase()+' prêt.');
  }catch(e){say('Export impossible : '+e.message,true);}finally{busy=false;controls();}
 }
 $('#browse').onclick=$('#change').onclick=()=>$('#file').click();
@@ -235,7 +335,7 @@ document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>chooseMode(b.d
 $('#undoStroke').onclick=()=>{if(busy)return;strokes.pop();drawOverlay();controls();say(strokes.length?'Dernier trait annulé.':'Tous les traits sont annulés. Votre résultat est inchangé.');};
 $('#compare').onclick=()=>{showingOriginal=!showingOriginal;preview.src=showingOriginal?sourceURL:resultURL;$('#compare').textContent=showingOriginal?'Voir le résultat':'Voir l’original';$('#compare').setAttribute('aria-pressed',String(showingOriginal));$('#cursor').hidden=true;drawOverlay();controls();};
 $('#undoResult').onclick=undoResult;$('#download').onclick=download;
-window.addEventListener('beforeunload',e=>{if(mask||strokes.length||busy){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(mask||strokes.length||busy){e.preventDefault();e.returnValue='';}});window.addEventListener('pagehide',()=>{release(sourceURL);release(resultURL);});
 controls();
 })();
 </script>
