@@ -4,9 +4,9 @@ Application locale de détourage d’images par IA avec retouches au pinceau.
 
 ## Version actuelle
 
-**v3.1.0** — import par fichier, glisser-déposer ou presse-papiers, détourage automatique et corrections locales Ajouter/Enlever.
+**v3.2.0 (candidate)** — import par fichier, glisser-déposer ou presse-papiers, détourage automatique et corrections locales Ajouter/Enlever avec sélection intelligente de région.
 
-Le traitement se fait dans le navigateur. Aucun jeton ChatGPT n’est utilisé. Le modèle ISNet est téléchargé au premier lancement, puis exécuté localement.
+Le traitement se fait dans le navigateur. Aucun jeton ChatGPT n’est utilisé. Le modèle ISNet est téléchargé au premier lancement, puis exécuté localement. Les pinceaux servent désormais de prompts spatiaux : ils indiquent une zone et le moteur combine le masque local ISNet avec la continuité visuelle de l’image pour sélectionner une région cohérente, au lieu de modifier uniquement les pixels peints.
 
 ## Lancer l’application
 
