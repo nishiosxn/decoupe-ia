@@ -15,7 +15,7 @@ main{max-width:1280px;margin:auto;padding:22px 28px 28px}.heading{display:flex;j
 .notice{min-height:30px;margin:12px 0 4px;color:#cbd5e2;font-size:14px;overflow-wrap:anywhere}.notice.error{color:#ffb4b4}progress{width:100%;height:7px;accent-color:var(--accent);display:block;margin:8px 0}
 .actionrow{display:flex;justify-content:center;margin:16px 0}.actionrow .primary{padding:14px 30px;font-size:18px;min-width:240px}.tools{border:1px solid var(--line);border-radius:14px;background:#171b21;padding:16px;margin-top:14px}.toolhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.toolhead strong{font-size:16px}.tools p{color:var(--muted);font-size:14px;margin:10px 0 0}.toolrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.segmented{display:flex;gap:4px;background:#101318;border-radius:11px;padding:4px}.segmented button{border-color:transparent;background:transparent}.segmented button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:#26301e}.segmented [data-mode="remove"][aria-pressed="true"]{border-color:#ff899c;color:#ffb0bd;background:#38202a}.size{display:flex;gap:8px;align-items:center;margin-left:8px;font-size:14px}.size select{font-size:14px;padding:8px}.spacer{flex:1}.subtle{background:transparent;font-size:14px}
 .exportrow{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);margin-top:20px;padding-top:16px}.exportactions{display:flex;gap:8px;align-items:center}.exportrow label{font-size:14px;color:var(--muted)}.exportnote{font-size:13px;color:var(--muted);margin:6px 0 0}footer{color:#8e9aab;font-size:13px;margin-top:18px}
-@media(max-width:640px){header{padding:0 16px}.privacy{display:none}main{padding:18px 14px}.heading h1{font-size:21px}.heading{align-items:flex-start;flex-direction:column}.heading-actions{width:100%;justify-content:flex-start}.heading button{font-size:14px}.workspace{height:min(48vh,420px);min-height:280px}.toolhead{align-items:flex-start}.toolrow .primary{width:100%;margin-top:6px}.spacer{display:none}.size{margin:0}.exportrow{align-items:flex-start;flex-direction:column}.exportactions{width:100%}.exportactions .primary{flex:1}.version{font-size:12px}}
+@media(max-width:640px){button,select{min-height:44px}header{padding:0 16px}.privacy{display:none}main{padding:18px 14px}.heading h1{font-size:21px}.heading{align-items:flex-start;flex-direction:column}.heading-actions{width:100%;justify-content:flex-start}.heading button{font-size:14px}.workspace{height:min(48vh,420px);min-height:280px}.toolhead{align-items:flex-start}.toolrow .primary{width:100%;margin-top:6px}.spacer{display:none}.size{margin:0}.exportrow{align-items:flex-start;flex-direction:column}.exportactions{width:100%}.exportactions .primary{flex:1}.version{font-size:12px}}
 </style>
 </head>
 <body>
@@ -54,7 +54,7 @@ const context=c=>c.getContext('2d',{willReadFrequently:true});
 let original=null,mask=null,file=null,sourceURL='',resultURL='',engine=null,busy=false,loading=false,loadId=0,strokes=[],currentStroke=null,mode=null,history=[],showingOriginal=false,progressPrefix='';
 function say(text,error=false){$('#message').textContent=text;$('#message').classList.toggle('error',error);}
 function controls(){
- const locked=busy||loading;
+ const locked=busy||loading;area.setAttribute('aria-busy',String(locked));
  $('#file').disabled=locked;$('#browse').disabled=locked;$('#pasteButton').disabled=locked;$('#change').disabled=locked;
  $('#change').hidden=!file;$('#initialAction').hidden=!file||!!mask;$('#removeBackground').disabled=locked;
  $('#tools').hidden=!mask;$('#exportRow').hidden=!mask;
@@ -236,14 +236,15 @@ function promptSelection(g,rect,predicted){
   if(seen%stride===0)palette.push([r[i],gg[i],b[i]]);seen++;
  }
  const semanticPenalty=i=>g.mode==='add'?1-p[i]/255:p[i]/255;
- const colorDistance=i=>{
+ const costs=new Float32Array(n);
+ for(let i=0;i<n;i++){
   let best=1;
   for(const c of palette){
    const dr=r[i]-c[0],dg=gg[i]-c[1],db=b[i]-c[2];
    best=Math.min(best,Math.sqrt(dr*dr+dg*dg+db*db)/441.673);
   }
-  return best;
- };
+  costs[i]=.72*best+.28*semanticPenalty(i);
+ }
  const grow=threshold=>{
   const selected=new Uint8Array(n),queue=new Int32Array(n);let head=0,tail=0;
   for(let i=0;i<n;i++)if(seed[i]){selected[i]=1;queue[tail++]=i;}
@@ -254,8 +255,7 @@ function promptSelection(g,rect,predicted){
     const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=w||yy>=h)continue;
     const q=yy*w+xx;if(selected[q])continue;
     const dr=r[q]-r[i],dg=gg[q]-gg[i],db=b[q]-b[i],local=Math.sqrt(dr*dr+dg*dg+db*db)/441.673;
-    const cost=.72*colorDistance(q)+.28*semanticPenalty(q);
-    if((cost<=threshold&&local<=.29)||semanticPenalty(q)<=.08){
+    if((costs[q]<=threshold&&local<=.29)||semanticPenalty(q)<=.08){
      selected[q]=1;queue[tail++]=q;
     }
    }
