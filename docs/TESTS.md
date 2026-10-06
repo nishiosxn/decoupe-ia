@@ -1,30 +1,38 @@
-# Vérifications avant livraison
+# Validation v4
 
-## Contrôles automatiques
+## Régressions automatisées
 
-Exécuter depuis la racine du projet :
+`npm test` vérifie : suppression alpha exacte sans assombrissement RGB, restauration, segments continus, sélection appliquée en une fois, historique RGB/alpha, reconstruction sans modification extérieure, refus d’un masque intégral et respect de la transparence originale.
 
-```powershell
-./scripts/check.ps1
-```
+`npm run test:browser` vérifie dans Chrome/Chromium :
 
-Ce contrôle vérifie la syntaxe JavaScript, l’identité entre la source et la distribution, la présence du favicon et l’intégrité de la structure des archives.
+- gomme réelle puis décodage du PNG téléchargé : pixel effacé alpha = 0 ; pixel hors trait alpha = 255 ;
+- restauration, annulation et rétablissement ;
+- sélection, remplissage local et annulation ;
+- sauvegarde et ouverture d’un projet avec son masque et l’original ;
+- affichage à 390 px sans débordement horizontal, export accessible ;
+- reconstruction de texture sans réseau et sans modèle ;
+- erreur de chargement et annulation conservant l’image et réactivant les outils manuels.
 
-## Parcours navigateur minimal
+## Smoke IA
 
-1. Ouvrir la page depuis `http://127.0.0.1:8765/decoupe.html`.
-2. Importer un PNG ou JPG par le bouton.
-3. Importer une image différente par glisser-déposer.
-4. Coller une image avec `Ctrl + V` et avec « Coller l’image ».
-5. Lancer « Enlever le fond » et attendre la fin du calcul.
-6. Tester une retouche Ajouter avec un trait plus petit que la zone à récupérer et vérifier que la région cohérente autour du trait est sélectionnée, pas seulement les pixels peints.
-7. Tester une retouche Enlever avec un trait plus petit que la zone indésirable et vérifier que la région cohérente est retirée avec un bord progressif.
-8. Tester une zone ambiguë : si aucune région nette n’est détectée, vérifier que le masque précédent et les traits sont conservés.
-9. Vérifier que les zones éloignées du prompt restent inchangées.
-10. Vérifier l’annulation du trait et du dernier résultat IA.
-11. Vérifier les quatre exports et la conservation des dimensions.
-12. Vérifier l’affichage sur une largeur mobile.
-13. Vérifier l’absence d’erreur dans la console.
+`AI_SMOKE=1` active un parcours réel avec chargement des modèles et inférences dans le worker : objet au clic, effacement du masque SAM, BiRefNet, reconstruction LaMa. Les requêtes vers les hébergeurs des modèles doivent être GET/HEAD, sans envoi des pixels. Ce test est exclu de la CI rapide à cause du téléchargement et du coût CPU.
 
-Documenter dans `outputs/VERSIONS.md` uniquement les tests réellement effectués.
+## Validation manuelle avant production
 
+Sur des images de travail réelles, vérifier : détourage de cheveux/feuilles, bords fins, ombres, objet adjacent de couleur proche, suppression sur fond texturé, reconstruction de perspective architecturale, imports avec transparence, haute résolution réduite, annulation pendant un modèle et récupération après erreur réseau. Comparer l’export téléchargé à l’atelier.
+
+La réussite d’un smoke test confirme l’intégration technique, pas la qualité de toutes les reconstructions. La v4 reste une candidate jusqu’à validation sur les images de travail.
+
+Un miroir local optionnel (`AI_MODEL_MIRROR`) peut servir les poids ONNX identiques pour accélérer les tests sur une connexion lente. Il ne remplace pas le modèle ni le moteur et ne fait pas partie du frontend publié.
+
+## Résultats du 2026-10-06
+
+- 8 tests du cœur réussis.
+- 7 tests navigateur Chrome réussis, dont export PNG décodé avec transparence réelle, projet, mobile, synthèse de texture sans réseau, erreur et annulation.
+- Smoke IA réel réussi : SlimSAM sélectionne puis efface, BiRefNet 512 détoure le fond vers la transparence, LaMa reconstruit la zone et conserve strictement les pixels extérieurs. Poids ONNX épinglés préchargés sur un miroir local pour éviter les lenteurs réseau ; moteurs et inférences réels, sans mock de résultat.
+- LaMa : SHA-256 du poids vérifié, `1faef5301d78db7dda502fe59966957ec4b79dd64e16f03ed96913c7a4eb68d6`.
+- Une photographie publique de référence de SlimSAM (corgi, 614 × 410 px) a aussi été détourée avec BiRefNet et inspectée visuellement.
+- La variante BiRefNet Lite 1024 px a été rejetée après échec mémoire dans Chrome ; la variante 512 px est celle publiée et vérifiée.
+
+Ces résultats valident le fonctionnement observé et ne garantissent pas la qualité sur toutes les images de travail.

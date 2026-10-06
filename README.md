@@ -1,57 +1,75 @@
-# Découpe IA
+# Découpe Studio
 
-Application locale de détourage d’images par IA avec retouches au pinceau.
+Atelier gratuit de détourage, suppression d’objets et reconstruction de fond, exécuté dans le navigateur. **v4.0.0 candidate** : reconstruction complète de l’application v3.
 
-## Version actuelle
+## Travailler avec l’application
 
-**v3.2.0 (candidate)** — import par fichier, glisser-déposer ou presse-papiers, détourage automatique et corrections locales Ajouter/Enlever avec sélection intelligente de région.
+1. Importer une image PNG, JPG ou WebP, la déposer ou la coller.
+2. Détourer automatiquement avec **BiRefNet Lite**, ou retoucher directement.
+3. **Gomme** retire les pixels vers la transparence ; **Restaurer** récupère les pixels originaux.
+4. **Peindre la zone** sélectionne l’élément à supprimer ; **Objet au clic** utilise **SlimSAM**. Ajouter des clics pour préciser, Shift + clic pour exclure, Alt + pinceau pour retirer de la sélection.
+5. Appliquer **Effacer** pour un trou transparent, ou **Supprimer et reconstruire** pour remplir le fond avec **LaMa**. Le remplissage local rapide et la synthèse de texture sans téléchargement sont disponibles pour les fonds simples.
+6. Annuler/rétablir, comparer avec l’original, puis exporter PNG, WebP, JPG, SVG avec PNG intégré ou masque PNG.
+7. Enregistrer un fichier `.decoupe` pour reprendre plus tard : il conserve l’original, l’image retouchée et le masque. La sélection temporaire et l’historique ne sont pas enregistrés.
 
-Le traitement se fait dans le navigateur. Aucun jeton ChatGPT n’est utilisé. Le modèle ISNet est téléchargé au premier lancement, puis exécuté localement. Les pinceaux servent désormais de prompts spatiaux : ils indiquent une zone et le moteur combine le masque local ISNet avec la continuité visuelle de l’image pour sélectionner une région cohérente, au lieu de modifier uniquement les pixels peints.
+Le damier montre la transparence. L’overlay vert montre uniquement une sélection en attente : il ne fait jamais partie de l’export. Le pinceau n’assombrit pas les couleurs pour simuler une suppression.
 
-## Lancer l’application
+## Développement
 
-Depuis le dossier du projet :
+Prérequis : Node.js 22 ou 24 et npm. Aucune clé API ni serveur IA.
 
-```powershell
-cd outputs
-python -m http.server 8765
+```sh
+npm ci
+npm run check
+npm run dev
 ```
 
-Ouvrir ensuite <http://127.0.0.1:8765/decoupe.html>.
+Ouvrir http://127.0.0.1:4173/decoupe-ia/ . Le serveur ne publie rien sur Internet.
 
-## Publication publique
+```sh
+npm run test:browser
+```
 
-Le dépôt est relié à Cloudflare Workers Builds. La configuration `wrangler.jsonc` publie automatiquement le dossier `dist` comme site statique.
+Localement les tests utilisent Chrome installé. En CI, Playwright utilise Chromium installé par le workflow. Le smoke test IA est volontairement séparé : il télécharge plusieurs centaines de Mo de modèles.
 
-Réglages Cloudflare :
+```powershell
+$env:AI_SMOKE = '1'
+npm run test:browser -- --grep 'AI models'
+```
 
-- Build command : vide.
-- Deploy command : `npx wrangler deploy`.
-- Production branch : `main`.
-- Cloudflare Access : désactivé pour permettre un accès public.
+## Hiérarchie du dépôt
 
-Chaque modification envoyée sur `main` déclenche un nouveau déploiement.
+| Dossier                            | Responsabilité                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| `src/index.html`, `src/styles.css` | Interface et présentation                                                 |
+| `src/app.js`                       | Import, interaction, aperçu, sauvegarde et export                         |
+| `src/core/`                        | Traitement des pixels et document avec historique, sans dépendance au DOM |
+| `src/ai/`                          | Modèles, worker dédié, communication et annulation                        |
+| `tests/`                           | Régressions des pixels et parcours réels dans le navigateur               |
+| `scripts/`                         | Build statique, serveur local, vérification et archivage                  |
+| `dist/`                            | Distribution générée, compatible GitHub Pages et Cloudflare               |
+| `docs/`                            | Architecture, workflow, modèles et validation                             |
+| `outputs/versions/`                | Anciennes archives, conservées sans modification                          |
+| `.github/workflows/ci.yml`         | Tests, build et artefact statique à chaque proposition                    |
 
-## Organisation
+`src/` est la source de vérité. Ne pas éditer `dist/` à la main. `npm run build` régénère la distribution ; `outputs/decoupe.html` redirige vers celle-ci pour préserver l’entrée locale historique.
 
-- `outputs/decoupe.html` : source active et page utilisée localement.
-- `dist/index.html` : copie publiable, toujours identique à la source active.
-- `outputs/versions/` : archives immuables de chaque livraison.
-- `outputs/VERSIONS.md` : historique fonctionnel, limites et tests réalisés.
-- `docs/ARCHITECTURE.md` : fonctionnement interne et règles à préserver.
-- `docs/TESTS.md` : vérifications avant livraison.
-- `scripts/check.ps1` : contrôle automatique de la cohérence du projet.
-- `scripts/release.ps1` : création sécurisée d’une archive de version.
-- `AGENTS.md` : consignes permanentes pour les prochaines interventions de Codex.
-- `wrangler.jsonc` : configuration de l’hébergement public Cloudflare.
+## Publication
 
-## Cycle d’une évolution
+Le développement v4 est isolé sur `codex/rebuild-studio-v4`. La preview doit utiliser `preview/github-pages-v4.0.0`, avec les fichiers de `dist/` copiés à sa racine et GitHub Pages configuré sur `/(root)`.
 
-1. Créer une branche `codex/nom-de-la-fonction`.
-2. Modifier `outputs/decoupe.html` et son numéro visible.
-3. Copier la page dans `dist/index.html` et tester.
-4. Documenter les changements dans `outputs/VERSIONS.md`.
-5. Exécuter `./scripts/release.ps1 X.Y.Z` pour archiver la livraison.
-6. Créer un commit et une étiquette Git `vX.Y.Z`.
+URL de preview : https://nishiosxn.github.io/decoupe-ia/ . GitHub Pages ne sert qu’une branche à la fois sur cette URL ; les branches de preview précédentes restent conservées dans Git.
 
-Les anciennes archives ne doivent jamais être modifiées.
+La configuration Cloudflare `wrangler.jsonc` garde `assets.directory: ./dist`. La production peut être déclenchée par un push sur `main` : aucun merge dans `main` et aucun déploiement Cloudflare ne font partie de cette reconstruction. La CI ne déploie pas.
+
+## Limites pratiques
+
+- Les images restent sur l’appareil. jsDelivr fournit les moteurs ; Hugging Face fournit les modèles ; les requêtes de téléchargement sont visibles par ces services, sans pixels de vos images.
+- Résolution de travail limitée à 2048 px de côté et 3 mégapixels ; le redimensionnement est annoncé. Les exports utilisent cette résolution.
+- Le premier téléchargement est important et les moteurs peuvent être lents, surtout sur mobile. Une analyse peut être annulée ; après cinq minutes sans progression elle est interrompue.
+- LaMa reconstruit un fond plausible, pas un fond historiquement exact. L’inférence est effectuée sur une zone avec contexte, ramenée à 512 × 512 ; les pixels hors sélection sont conservés.
+- La sélection d’objet demande une vérification avant application ; la confiance du modèle n’est pas une garantie de justesse.
+- Le SVG contient une image PNG : il ne s’agit pas d’une vectorisation.
+- Le navigateur doit prendre en charge les modules JS, WebAssembly, les workers et Canvas. Aucun mode hors ligne complet n’est promis.
+
+Voir [le workflow](docs/WORKFLOW.md), [les modèles](docs/MODELS.md) et [les tests](docs/TESTS.md).

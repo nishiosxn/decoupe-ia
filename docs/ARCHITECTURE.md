@@ -1,58 +1,35 @@
-# Architecture de Découpe
+# Architecture v4
 
-## Résumé
+## Flux
 
-Découpe est une application statique contenue dans un seul fichier HTML. Elle fonctionne sans serveur applicatif et sans compte utilisateur. Un petit serveur HTTP local est toutefois nécessaire pour autoriser le chargement du modèle IA.
+Fichier → décodage/redimensionnement → `ImageDocument` → masque alpha + RGB retouchés → canvas d’aperçu → export.
 
-En production, le dossier `dist` est servi comme ensemble de ressources statiques par Cloudflare Workers. La configuration versionnée se trouve dans `wrangler.jsonc` ; aucun serveur personnel n’est utilisé.
+L’original est une copie immuable. Le masque contient l’alpha effectif. La sélection est un tableau séparé, représenté par un overlay vert uniquement dans l’atelier. `composite()` copie les RGB et ne modifie que l’alpha : aucune multiplication des couleurs par le masque.
 
-## Fichiers faisant autorité
+## Retouches
 
-- `outputs/decoupe.html` est la source active.
-- `dist/index.html` est la copie destinée à la publication et doit être strictement identique.
-- `outputs/versions/vX.Y.Z/` contient les livraisons figées. Une archive existante n’est jamais modifiée.
-- `outputs/VERSIONS.md` explique ce qui a réellement changé, les tests réalisés et les limites connues.
+`brushSegment()` rasterise la distance à un segment continu, avec cœur opaque et bord de dureté réglable. Gomme et Restaurer s’appliquent immédiatement, y compris sans détourage préalable. Les points intermédiaires manquants ne créent pas de trous dans le trait. Restaurer récupère aussi les RGB originaux après une reconstruction.
 
-## Moteur de détourage
+`applySelection()` supprime une zone sélectionnée en mettant son alpha à zéro dans le cœur. Il ne pondère pas l’effacement par une deuxième prédiction de premier plan. L’image originale n’est plus superposée aux trous transparents.
 
-- Bibliothèque : `@imgly/background-removal` 1.7.0.
-- Modèle : ISNet FP16, exécuté côté navigateur sur le processeur.
-- Le premier lancement télécharge les fichiers du modèle depuis Static IMG.LY.
-- Les images de l’utilisateur ne sont pas envoyées à ChatGPT et aucun jeton ChatGPT n’est consommé.
+## IA
 
-## État conservé pendant la session
+`AIClient` parle à un module worker. Un seul travail est lancé à la fois ; annuler termine le worker et rejette la requête sans mutation du document. La limite est de cinq minutes sans progression. Les résultats sont validés avant création d’un checkpoint et application.
 
-- Pixels RGBA de l’image originale.
-- Masque alpha du dernier résultat validé.
-- Traits de pinceau en attente, utilisés comme prompts spatiaux et non comme gomme brute.
-- Historique permettant d’annuler la dernière retouche IA.
-- URL temporaires des aperçus et du résultat.
+- BiRefNet Lite : traitement d’image entier, alpha rééchantillonné à la résolution de travail.
+- SlimSAM : points positifs/négatifs ; embeddings réutilisés tant que les RGB ne changent pas. Le masque de plus haute confiance est présenté, jamais automatiquement appliqué.
+- LaMa : zone sélectionnée avec 96 px de contexte, carré de 512 px sans déformation, masque binaire légèrement étendu. Les couleurs produites sont réinjectées uniquement dans la sélection ; le fond extérieur est intact.
+- Texture locale : recherche de patchs connus, propagation et recherche aléatoire sur cinq passes ; zone de travail plafonnée à 384 px, pixels extérieurs conservés. Cette synthèse sans modèle est la reconstruction par défaut, immédiatement disponible.
+- Remplissage local : propagation des couleurs connues du bord vers le centre, sans modèle ; adapté aux fonds simples, distinct de LaMa.
 
-Changer d’image réinitialise entièrement cet état. Recharger la page le perd également.
+Les dépendances sont chargées à la demande depuis des URLs versionnées. Les révisions de modèles sont fixées dans `src/ai/models.js`. Les téléchargements bénéficient du cache du navigateur ; LaMa utilise Cache Storage lorsque disponible.
 
-## Parcours principal
+## Historique et projets
 
-1. Import par fichier, glisser-déposer, `Ctrl + V` ou bouton « Coller l’image ».
-2. Détourage global par ISNet.
-3. Correction facultative avec Ajouter ou Enlever.
-4. Chaque trait sert d’indice spatial : une fenêtre locale plus large est analysée par ISNet sur les pixels originaux.
-5. Une sélection guidée combine la confiance locale ISNet, les couleurs du cœur du trait et la continuité entre pixels voisins pour étendre le prompt à une région cohérente.
-6. Ajouter restaure la région détectée ; Enlever retire la région détectée. Les transitions sont adoucies et les zones hors de la fenêtre locale restent inchangées.
-7. Si aucune région suffisamment cohérente n’est trouvée, la retouche est refusée et le dernier masque valide ainsi que les traits sont conservés.
-8. Export PNG, WebP, JPG ou SVG contenant un PNG intégré.
+Les checkpoints sauvegardent RGB, alpha et sélection. Annuler/rétablir couvre également les reconstructions. La profondeur vise une enveloppe de 96 Mo, avec deux checkpoints minimum. Limites d’image : 2048 px et 3 MP.
 
-## Invariants à préserver
+Le format `.decoupe` v1 est JSON avec trois PNG en data URLs : original, pixels retouchés, masque grayscale opaque. À l’ouverture, type, taille, dimensions et cohérence sont vérifiés. Aucun historique ou point SAM ne survit au rechargement d’un projet.
 
-- L’image originale ne doit jamais être remplacée par l’aperçu détouré.
-- Une retouche locale peut étendre un trait à la région détectée autour de lui, mais ne doit jamais recalculer arbitrairement le reste de l’image.
-- Un échec d’inférence ne doit pas détruire le dernier masque valide.
-- L’export est bloqué lorsque des traits n’ont pas encore été appliqués.
-- `outputs/decoupe.html` et `dist/index.html` doivent rester identiques.
-- Le SVG n’est pas vectorisé : il incorpore une image PNG.
+## Distribution
 
-## Limites connues
-
-- ISNet n’est pas un modèle interactif natif comme SAM : la sélection intelligente est une couche de guidage locale construite autour de son masque et des pixels originaux.
-- Un trait court placé au cœur de la zone est préférable. Une zone visuellement ambiguë peut être refusée plutôt que d’appliquer une gomme/restauration brute.
-- Le collage fonctionne seulement si le presse-papiers contient les pixels d’une image PNG, JPEG ou WebP. Une simple adresse web n’est pas téléchargée automatiquement.
-- La qualité finale reste limitée par la résolution de l’image originale et par la reconnaissance du modèle.
+`src/` contient la source ; `scripts/build.mjs` copie le code statique dans `dist/`. Pas de bundler ni dépendance applicative npm. Playwright et Prettier sont les dépendances de développement. Les anciennes archives sont conservées. GitHub Pages sert une copie de `dist/` à la racine de sa branche dédiée ; Cloudflare garde `dist/`.

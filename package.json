@@ -1,0 +1,22 @@
+{
+  "name": "decoupe-studio",
+  "version": "4.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "check": "npm test && npm run build",
+    "format": "prettier --write src scripts/*.mjs tests docs README.md WORK_STATE.md .github package*.json playwright.config.mjs .prettierrc.json",
+    "format:check": "prettier --check src scripts/*.mjs tests docs README.md WORK_STATE.md .github package*.json playwright.config.mjs .prettierrc.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "prettier": "3.6.2"
+  }
+}

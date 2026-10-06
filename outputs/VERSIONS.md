@@ -1,5 +1,16 @@
 # Découpe — versions
 
+## 4.0.0 — Découpe Studio (candidate)
+
+- Reconstruction en modules : interface, document/pixels, moteurs worker, tests et build statique.
+- Gomme déterministe vers transparence complète et restauration immédiate ; disparition de l’image fantôme superposée et de la suppression partielle pondérée par ISNet.
+- Sélection au pinceau ou avec SlimSAM, application explicite par effacement/restauration/reconstruction.
+- Détourage BiRefNet Lite, reconstruction du fond LaMa locale, remplissage local sans réseau pour petits défauts.
+- Historique complet, zoom, comparaison, projets `.decoupe`, export transparent et masque.
+- CI GitHub avec tests de pixels, parcours navigateur et artefact statique ; documentation du workflow opérationnel.
+- Source de vérité : `src/` ; distribution générée : `dist/`. Anciennes archives conservées.
+
+
 ## 3.2.0 — Pinceau intelligent par région (candidate)
 
 - Ajouter/Enlever n’utilisent plus la surface peinte comme masque final. Le trait devient un prompt spatial servant à détecter une région cohérente autour du geste.
