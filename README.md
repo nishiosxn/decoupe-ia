@@ -1,5 +1,17 @@
 # Découpe IA
 
+## Preview GitHub Pages — v3.2.0 candidate
+
+Cette branche `preview/github-pages-v3.2.0` publie uniquement la version de test du pinceau intelligent, issue de `codex/intelligent-zone-brush-v3.2.0` (commit `3b110282d3765290d32a51bc9ce1ad802417d7bb`).
+
+- URL : https://nishiosxn.github.io/decoupe-ia/
+- GitHub Pages : **Deploy from a branch**, branche `preview/github-pages-v3.2.0`, dossier **/(root)**.
+- `index.html` et `favicon.svg` à la racine sont des copies exactes de `dist/`. `.nojekyll` désactive le traitement Jekyll ; aucune compilation n'est nécessaire.
+- Pour actualiser cette preview, recopier les fichiers de `dist/` à la racine avant de committer et pousser cette branche.
+- La configuration Cloudflare et la structure du projet sont conservées. Aucun merge dans `main`, tag ou déploiement Cloudflare n'est effectué par cette publication.
+- Il s'agit d'une candidate à tester : la qualité du pinceau intelligent sur des images réelles reste à valider.
+
+
 Application locale de détourage d’images par IA avec retouches au pinceau.
 
 ## Version actuelle

@@ -64,3 +64,11 @@ Transformer Ajouter/Enlever en prompts spatiaux intelligents. Le pinceau ne doit
 - Les anciennes archives sous `outputs/versions/` sont immuables.
 - Aucun secret ne doit être ajouté au frontend.
 - Pas de merge/tag/deploy sans demande explicite.
+
+## Publication de preview GitHub Pages — 2026-10-06
+
+- Branche de publication : `preview/github-pages-v3.2.0`, créée depuis `codex/intelligent-zone-brush-v3.2.0` au commit `3b110282d3765290d32a51bc9ce1ad802417d7bb`.
+- Entrée statique : `index.html` et `favicon.svg` à la racine, copies exactes de `dist/`, avec `.nojekyll`.
+- Source Pages prévue : cette branche, dossier `/(root)` ; URL https://nishiosxn.github.io/decoupe-ia/.
+- Structure existante, archives et configuration Cloudflare préservées ; `main` non modifiée, aucun tag ni déploiement Cloudflare.
+- La publication de cette preview est explicitement autorisée. Les tests fonctionnels du pinceau sur images réelles restent à faire avant toute release.
