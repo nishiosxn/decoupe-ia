@@ -24,7 +24,7 @@ En production, le dossier `dist` est servi comme ensemble de ressources statique
 
 - Pixels RGBA de l’image originale.
 - Masque alpha du dernier résultat validé.
-- Traits de pinceau en attente.
+- Traits de pinceau en attente, utilisés comme prompts spatiaux et non comme gomme brute.
 - Historique permettant d’annuler la dernière retouche IA.
 - URL temporaires des aperçus et du résultat.
 
@@ -35,14 +35,16 @@ Changer d’image réinitialise entièrement cet état. Recharger la page le per
 1. Import par fichier, glisser-déposer, `Ctrl + V` ou bouton « Coller l’image ».
 2. Détourage global par ISNet.
 3. Correction facultative avec Ajouter ou Enlever.
-4. Chaque zone peinte est analysée sur les pixels originaux, avec du contexte autour.
-5. Seule la zone couverte est fusionnée dans le masque existant.
-6. Export PNG, WebP, JPG ou SVG contenant un PNG intégré.
+4. Chaque trait sert d’indice spatial : une fenêtre locale plus large est analysée par ISNet sur les pixels originaux.
+5. Une sélection guidée combine la confiance locale ISNet, les couleurs du cœur du trait et la continuité entre pixels voisins pour étendre le prompt à une région cohérente.
+6. Ajouter restaure la région détectée ; Enlever retire la région détectée. Les transitions sont adoucies et les zones hors de la fenêtre locale restent inchangées.
+7. Si aucune région suffisamment cohérente n’est trouvée, la retouche est refusée et le dernier masque valide ainsi que les traits sont conservés.
+8. Export PNG, WebP, JPG ou SVG contenant un PNG intégré.
 
 ## Invariants à préserver
 
 - L’image originale ne doit jamais être remplacée par l’aperçu détouré.
-- Une retouche locale ne doit pas recalculer les zones non peintes.
+- Une retouche locale peut étendre un trait à la région détectée autour de lui, mais ne doit jamais recalculer arbitrairement le reste de l’image.
 - Un échec d’inférence ne doit pas détruire le dernier masque valide.
 - L’export est bloqué lorsque des traits n’ont pas encore été appliqués.
 - `outputs/decoupe.html` et `dist/index.html` doivent rester identiques.
@@ -50,7 +52,7 @@ Changer d’image réinitialise entièrement cet état. Recharger la page le per
 
 ## Limites connues
 
-- ISNet n’est pas un modèle de sélection d’objet par simple clic comme SAM.
-- Le pinceau doit couvrir le détail et un peu de fond pour donner du contexte à l’IA.
+- ISNet n’est pas un modèle interactif natif comme SAM : la sélection intelligente est une couche de guidage locale construite autour de son masque et des pixels originaux.
+- Un trait court placé au cœur de la zone est préférable. Une zone visuellement ambiguë peut être refusée plutôt que d’appliquer une gomme/restauration brute.
 - Le collage fonctionne seulement si le presse-papiers contient les pixels d’une image PNG, JPEG ou WebP. Une simple adresse web n’est pas téléchargée automatiquement.
 - La qualité finale reste limitée par la résolution de l’image originale et par la reconnaissance du modèle.
