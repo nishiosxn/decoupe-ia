@@ -1,5 +1,15 @@
 # Découpe — versions
 
+## 3.2.0 — Pinceau intelligent par région (candidate)
+
+- Ajouter/Enlever n’utilisent plus la surface peinte comme masque final. Le trait devient un prompt spatial servant à détecter une région cohérente autour du geste.
+- Chaque prompt ouvre une fenêtre locale avec davantage de contexte, relance ISNet sur les pixels originaux puis combine la confiance du modèle avec la continuité visuelle et les couleurs échantillonnées au cœur du trait.
+- La correction est étendue à la région détectée et son contour est adouci. Les zones éloignées du prompt ne sont pas modifiées.
+- Une zone trop ambiguë est refusée : le dernier masque valide et les traits restent disponibles pour réessayer, au lieu d’appliquer une gomme/restauration brute.
+- La sélection intermédiaire est calculée sur une grille plafonnée pour limiter le coût mémoire et CPU sur les grandes images.
+- UX : textes d’aide adaptés au nouveau comportement, libellé accessible du canvas amélioré et libération des URL temporaires lors de la fermeture de page.
+- Validation effectuée : syntaxe JavaScript parsée avant écriture et source/distribution générées à partir du même contenu. Validation visuelle navigateur encore requise avant merge/release.
+
 ## 3.1.0 — Collage depuis le presse-papiers
 
 - Nouveau bouton visible « Coller l’image » et prise en charge directe de `Ctrl + V` partout dans la page.
