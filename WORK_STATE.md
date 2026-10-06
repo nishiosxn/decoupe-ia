@@ -25,8 +25,8 @@ Transformer Ajouter/Enlever en prompts spatiaux intelligents. Le pinceau ne doit
 - La région détectée est étendue et adoucie avant fusion.
 - Ajouter restaure la région détectée vers l’alpha original ; Enlever la retire vers la transparence.
 - Une région ambiguë provoque un refus sans détruire le masque précédent ni les traits.
-- La grille de sélection est plafonnée (760 px de côté / 360 000 cellules) pour limiter mémoire et CPU.
-- Aide UI et accessibilité du canvas mises à jour.
+- La grille de sélection est plafonnée (760 px de côté / 360 000 cellules) et les coûts visuels sont mis en cache pour limiter mémoire et CPU.
+- Aide UI et accessibilité mises à jour : canvas décrit comme prompt IA, état `aria-busy`, cibles tactiles mobiles d’au moins 44 px.
 - URLs Blob source/résultat libérées sur `pagehide`.
 - Documentation architecture/tests/versions mise à jour.
 
@@ -43,8 +43,11 @@ Transformer Ajouter/Enlever en prompts spatiaux intelligents. Le pinceau ne doit
 
 ### Validation effectuée
 
-- Le JavaScript modifié a été parsé avec `new Function(...)` avant écriture GitHub : **OK**.
-- Source et distribution ont été écrites à partir de la même chaîne de contenu : même blob Git après mise à jour initiale.
+- Le JavaScript modifié a été parsé avec `new Function(...)` après la dernière modification : **OK**.
+- `outputs/decoupe.html` et `dist/index.html` sont strictement identiques et partagent le même blob Git : **OK**.
+- Favicons source/distribution présents : **OK**.
+- Archives v1.0.0 à v3.1.0 contrôlées structurellement (`decoupe.html` + `favicon.svg`) : **OK**.
+- Branche comparée à `main` : en avance, sans retard au moment du contrôle.
 - Validation navigateur interactive : **à faire** sur image réelle avant merge.
 
 ### Reste à faire
