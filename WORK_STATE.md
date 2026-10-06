@@ -2,181 +2,62 @@
 
 Ce fichier est la source de vérité **opérationnelle du travail en cours** pour les agents Codex.
 
-Il doit rester court, factuel et fondé sur l’état réel du dépôt. Ne pas y stocker de longs raisonnements, de logs bruts ou d’hypothèses non vérifiées.
-
-> Important : les informations spécifiques au projet doivent être découvertes dans le dépôt ou confirmées par l’utilisateur. Ne rien inventer à partir du seul nom « Découpe AI ».
-
 ## Base stable
 
-À renseigner après inspection du dépôt.
+- Version stable actuelle : **v3.1.0**
+- Branche stable principale : **main**
+- Dernier commit main observé avant ce lot : **a00a3169ad66c6c38af5f38884d8c664b7a35735**
+- Déploiement : Cloudflare Workers sert le dossier `dist`; un push sur `main` peut déclencher la publication.
 
-- Version stable actuelle : **à déterminer**
-- Branche stable principale : **à déterminer**
-- Dernier commit stable pertinent : **à déterminer**
-- Dernière validation connue : **à déterminer**
+## Lot courant — v3.2.0 candidate : pinceau intelligent par région
 
-Si aucune version/tag stable n’existe, l’indiquer explicitement au lieu d’en inventer une.
-
-## Lot / tâche courante
-
-**Statut : aucun lot fonctionnel spécifique n’est encore documenté dans ce fichier.**
-
-Lorsqu’une tâche de développement est lancée, remplacer cette section par :
-
-- objectif exact;
-- périmètre;
-- état actuel;
-- travail déjà terminé;
-- travail restant;
-- branche/commit de travail si utile;
-- validations déjà effectuées;
-- blockers réels.
-
-Ne pas recopier tout le prompt utilisateur si un résumé opérationnel suffit.
-
-## Architecture et stack confirmées
-
-À compléter uniquement après inspection du dépôt.
-
-- Frontend : **à déterminer**
-- Backend : **à déterminer**
-- Base de données / stockage : **à déterminer**
-- Authentification / permissions : **à déterminer**
-- Tests : **à déterminer**
-- Build / packaging : **à déterminer**
-- Déploiement / hébergement : **à déterminer**
-
-Supprimer les lignes non pertinentes une fois le projet compris.
-
-## Commandes projet confirmées
-
-À compléter avec les commandes réellement vérifiées dans le dépôt.
-
-Exemples de catégories possibles :
-
-- installation : **à déterminer**
-- développement local : **à déterminer**
-- tests ciblés : **à déterminer**
-- tests complets : **à déterminer**
-- lint : **à déterminer**
-- typecheck : **à déterminer**
-- build : **à déterminer**
-
-Ne jamais inventer une commande. Préférer les scripts présents dans le projet (`package.json`, `pyproject.toml`, `Makefile`, scripts, documentation, etc.).
-
-## Décisions et contraintes confirmées
-
-Pour l’instant :
-
-- Préserver le travail existant.
-- Éviter les refactors sans rapport direct avec la demande.
-- Réutiliser l’architecture et les conventions existantes.
-- Ne pas créer de système parallèle lorsqu’un mécanisme existe déjà.
-- Le backend doit rester l’autorité finale pour les règles de sécurité lorsque le projet possède un backend.
-- Ne pas introduire de changement destructif de données sans demande explicite.
-- Ne pas commit/push/merge/tag/deploy sans autorisation explicite.
-- Ne pas exposer ou committer de secrets.
-
-Ajouter ici uniquement les décisions fonctionnelles ou techniques réellement confirmées pour Découpe AI.
-
-## Checkpoints de travail
-
-Utiliser cette section pour les tâches longues.
-
-### Checkpoint 1 — Investigation ciblée
-
-- Identifier les fichiers/modules concernés.
-- Vérifier l’implémentation actuelle.
-- Vérifier les tests et conventions existants.
-- Confirmer le périmètre minimal de modification.
-
-Statut : **à lancer uniquement lorsqu’une tâche concrète le nécessite**.
-
-### Checkpoint 2 — Implémentation
-
-- Modifier uniquement les composants nécessaires.
-- Réutiliser les abstractions existantes.
-- Préserver la compatibilité attendue.
-- Éviter les changements hors périmètre.
-
-Statut : **en attente d’une tâche concrète**.
-
-### Checkpoint 3 — Validation ciblée
-
-- Exécuter le test/check le plus proche de la modification.
-- Corriger les régressions introduites.
-- Ne pas relancer inutilement toute la suite après chaque petite modification.
-
-Statut : **en attente**.
-
-### Checkpoint 4 — Validation finale
-
-Selon l’ampleur de la tâche :
-
-- tests ciblés;
-- tests du sous-système;
-- build/lint/typecheck si pertinents;
-- suite complète lorsque justifiée;
-- validation UI/intégration seulement si nécessaire;
-- vérification du diff et de `git status`.
-
-Statut : **en attente**.
-
-### Checkpoint 5 — État et livraison
-
-- Mettre ce fichier à jour avec les faits utiles.
-- Documenter les éventuels blockers ou limitations.
-- Commit/push uniquement si demandé.
-- Aucun merge/tag/deploy sans demande explicite.
-
-Statut : **en attente**.
-
-## Hors périmètre permanent par défaut
-
-Sauf demande explicite :
-
-- pas de refonte globale;
-- pas de migration destructive;
-- pas de changement d’architecture gratuit;
-- pas de renommage massif;
-- pas de mise à jour générale des dépendances;
-- pas de suppression de compatibilité existante;
-- pas de release;
-- pas de déploiement;
-- pas de modification de production.
-
-## Modèle de mise à jour après une tâche
-
-Lorsqu’un lot réel est en cours, remplacer les sections génériques ci-dessus par des faits précis, par exemple :
-
-```md
-## Lot courant — <nom>
-
-**Statut : en cours / prêt pour validation / terminé**
+**Statut : implémenté sur `codex/intelligent-zone-brush-v3.2.0`, validation navigateur réelle encore requise avant merge/release.**
 
 ### Objectif
 
-<résumé court>
+Transformer Ajouter/Enlever en prompts spatiaux intelligents. Le pinceau ne doit plus être une gomme/restauration brute limitée aux pixels peints : il indique une région que le moteur doit détecter et corriger de façon cohérente.
 
 ### Réalisé
 
-- ...
-- ...
+- `outputs/decoupe.html` et `dist/index.html` passent en v3.2.0 candidate et restent strictement identiques.
+- Chaque groupe de traits lance une inférence ISNet locale avec davantage de contexte.
+- Le cœur du trait fournit des exemples de couleur ; la sélection combine ces exemples, la continuité locale entre pixels et la confiance ISNet.
+- La région détectée est étendue et adoucie avant fusion.
+- Ajouter restaure la région détectée vers l’alpha original ; Enlever la retire vers la transparence.
+- Une région ambiguë provoque un refus sans détruire le masque précédent ni les traits.
+- La grille de sélection est plafonnée (760 px de côté / 360 000 cellules) pour limiter mémoire et CPU.
+- Aide UI et accessibilité du canvas mises à jour.
+- URLs Blob source/résultat libérées sur `pagehide`.
+- Documentation architecture/tests/versions mise à jour.
 
-### Validation
+### Architecture confirmée
 
-- `<commande ciblée>` → OK
-- `<commande build/test>` → OK
+- Frontend : application statique monofichier HTML/CSS/JavaScript.
+- Moteur IA : `@imgly/background-removal@1.7.0`, ISNet FP16, exécuté localement dans le navigateur sur CPU.
+- Backend applicatif : aucun.
+- Clé/API IA : aucune ; aucun jeton ChatGPT n’est utilisé.
+- Source active : `outputs/decoupe.html`.
+- Distribution : `dist/index.html`, identique à la source.
+- Hébergement : Cloudflare Workers Assets via `wrangler.jsonc`.
+- Tests automatisés disponibles : `scripts/check.ps1` (syntaxe JS, identité source/dist, archives).
+
+### Validation effectuée
+
+- Le JavaScript modifié a été parsé avec `new Function(...)` avant écriture GitHub : **OK**.
+- Source et distribution ont été écrites à partir de la même chaîne de contenu : même blob Git après mise à jour initiale.
+- Validation navigateur interactive : **à faire** sur image réelle avant merge.
 
 ### Reste à faire
 
-- ...
-- ...
+- Tester dans un vrai navigateur : détourage initial, Ajouter, Enlever, zone ambiguë, annulation, exports, mobile.
+- Ajuster les seuils de sélection si les tests réels montrent une extension trop large ou trop courte.
+- Exécuter `./scripts/check.ps1` dans un environnement Windows/PowerShell si disponible.
+- Ne merger dans `main`, ne taguer et ne publier qu’après validation explicite.
 
-### Git
+## Contraintes confirmées
 
-- Branche : `<branche>`
-- Commit : `<hash>` si pertinent
-```
-
-Ne conserver que les informations utiles à une reprise de travail par un autre agent.
+- Préserver l’image originale et le dernier masque valide.
+- Les retouches doivent rester locales autour du prompt.
+- Les anciennes archives sous `outputs/versions/` sont immuables.
+- Aucun secret ne doit être ajouté au frontend.
+- Pas de merge/tag/deploy sans demande explicite.
