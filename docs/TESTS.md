@@ -24,4 +24,22 @@ Un miroir de poids préchargés peut être fourni via `AI_MODEL_MIRROR` pour con
 
 Ces images ne sont pas un benchmark annoté : pas de score IoU ni de garantie de conservation de chaque cheveu. L’émulation mobile vérifie le parcours et la mise en page, pas la mémoire ni les performances d’un téléphone physique. Aucun test ne justifie l’expression « détourage parfait ». Les contours binaires ne peuvent pas rendre les transparences physiques.
 
-Résultats photographiques : en cours de validation, à compléter avant livraison.
+## Résultats observés le 2026-10-09
+
+Chrome installé sous Windows, CPU/WASM, vrai ISNet FP16 1.7.0. Les ressources Static IMG.LY ont été préchargées sur un miroir local et vérifiées contre les SHA-256 du manifeste officiel. Aucune simulation du masque dans ces cinq essais. Le temps inclut le démarrage du moteur, l’inférence et le téléchargement du PNG, mais pas le téléchargement Internet initial des poids.
+
+| Image                       | Dimensions du PNG | Durée  | Observation visuelle                                                                                                                                                                                  |
+| --------------------------- | ----------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Portrait                    | 600 × 900         | 20,1 s | Visage, vêtement sombre et masse des cheveux conservés ; fond noir supprimé. Pas de validation cheveu par cheveu.                                                                                     |
+| Montres sur fond clair      | 600 × 436         | 15,9 s | Les deux montres blanches conservées, fond clair supprimé ; les très petites ouvertures restent imparfaites.                                                                                          |
+| Voiture, scène complexe     | 480 × 360         | 15,3 s | Voiture conservée et décor supprimé ; la personne adjacente est aussi conservée. Le modèle ne choisit pas systématiquement un sujet unique.                                                           |
+| Plantes et étagère          | 987 × 1481        | 27,6 s | Nombreux contours de feuilles conservés, mais étagère et plantes périphériques partiellement supprimées ; fragments résiduels. Cas visuellement insatisfaisant pour conserver l’ensemble du mobilier. |
+| Chaussure rouge, fond rouge | 600 × 400         | 16,4 s | Chaussure et lacets conservés, fond rouge supprimé malgré les couleurs proches.                                                                                                                       |
+
+Pour **les cinq PNG téléchargés et redécodés** : dimensions égales aux originales, pixels opaques et transparents présents, **0 pixel d’alpha intermédiaire**, **0 différence de RGB sur les pixels opaques**. Mesures brutes et empreintes des fichiers d’entrée dans [validation-simple.json](validation-simple.json).
+
+Décision : conserver ISNet pour cette base simple, sans prétendre améliorer sa reconnaissance par un nettoyage arbitraire des couleurs ou des trous. Le cas des plantes démontre une limite réelle de segmentation, que le seuillage ne résout pas. Un essai exploratoire de BiRefNet Lite 512 n’a pas fourni de comparaison exploitable dans cet environnement (échecs de chargement du modèle dans le navigateur) ; aucune supériorité n’est revendiquée et cette dépendance n’est pas intégrée.
+
+La suite rapide compte 3 tests pixels/cohérence et 5 parcours navigateur réussis. Le test photographique réel distinct réussit les invariants sur les cinq images ; sa réussite ne signifie pas que tous les masques sont satisfaisants visuellement. La CI vérifie la suite rapide, le build et publie un artefact statique sans déployer Pages ou Cloudflare.
+
+Essai IA complémentaire : chaussure exécutée avec viewport mobile 390 × 844, traitement et téléchargement réels réussis en 12,0 s sur le même ordinateur ; dimensions 600 × 400, alpha intermédiaire=0 et différence RGB opaque=0. Cela ne mesure pas la vitesse d’un téléphone physique.

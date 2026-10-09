@@ -13,31 +13,32 @@ test("real ISNet representative images", async ({ page }) => {
     "Opt-in: downloads actual model, requires work/fixtures",
   );
   if (process.env.AI_MODEL_MIRROR)
-    await page
-      .context()
-      .route("https://staticimgly.com/**", (route) =>
-        route.fulfill({
-          status: 302,
-          headers: {
-            location:
-              process.env.AI_MODEL_MIRROR +
-              "/" +
-              new URL(route.request().url()).pathname.split("/").pop(),
-            "Access-Control-Allow-Origin": "*",
-          },
-          body: "",
-        }),
-      );
+    await page.context().route("https://staticimgly.com/**", (route) =>
+      route.fulfill({
+        status: 302,
+        headers: {
+          location:
+            process.env.AI_MODEL_MIRROR +
+            "/" +
+            new URL(route.request().url()).pathname.split("/").pop(),
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: "",
+      }),
+    );
   await mkdir("work/results", { recursive: true });
   const report = [];
-  for (const name of cases) {
+  for (const name of cases.filter(
+    (name) => !process.env.AI_CASE || name === process.env.AI_CASE,
+  )) {
+    if (name === "shoe.jpg")
+      await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("");
     await page.locator("#file").setInputFiles("work/fixtures/" + name);
     await expect(page.locator("#remove")).toBeVisible();
     const before = await page.evaluate(() => ({
       width: source.width,
       height: source.height,
-      rgb: [...source.data],
     }));
     const start = Date.now();
     await page.locator("#remove").click();
@@ -68,7 +69,7 @@ test("real ISNet representative images", async ({ page }) => {
         if (d[i + 3] === 255) {
           kept++;
           for (let k = 0; k < 3; k++)
-            if (d[i + k] !== original.rgb[i + k]) colorErrors++;
+            if (d[i + k] !== source.data[i + k]) colorErrors++;
         } else if (d[i + 3] === 0) removed++;
         else partial++;
       }
