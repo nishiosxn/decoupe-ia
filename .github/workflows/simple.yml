@@ -1,7 +1,7 @@
 name: Validate simple background removal
 on:
   push:
-    branches: [codex/simple-background-removal]
+    branches: [codex/simple-background-removal, codex/v5.1-compare-backgrounds]
   pull_request:
     branches: [main]
 permissions:

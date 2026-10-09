@@ -155,47 +155,150 @@
         color: var(--muted);
         margin-top: 16px;
       }
+
       .previews {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
         width: 100%;
         min-width: 0;
       }
-      figure {
-        margin: 0;
-        min-width: 0;
-      }
-      figcaption {
-        margin-bottom: 10px;
-        font-size: 14px;
-        color: var(--muted);
-      }
       .imagebox {
-        height: 330px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid var(--line);
-        border-radius: 12px;
+        position: relative;
+        margin: auto;
+        width: min(100%, calc(58vh * var(--ratio, 1)));
+        aspect-ratio: var(--ratio, 1);
         overflow: hidden;
         background: #12161c;
+        border-radius: 12px;
+        --position: 50%;
+      }
+      .imagebox img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+        pointer-events: none;
+        user-select: none;
+      }
+      .reveal {
+        position: absolute;
+        inset: 0;
+        clip-path: inset(0 calc(100% - var(--position)) 0 0);
       }
       .checker {
         background: repeating-conic-gradient(#333a44 0 25%, #232931 0 50%)
           50%/20px 20px;
       }
-      .imagebox img {
-        display: block;
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
+      .reveal[data-background="white"] {
+        background: #fff;
       }
-      .placeholder {
-        padding: 20px;
+      .reveal[data-background="black"] {
+        background: #000;
+      }
+      #compare {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        opacity: 0;
+        cursor: ew-resize;
+        touch-action: none;
+        z-index: 3;
+      }
+      #compare {
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+      }
+      #compare::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 0;
+        height: 100%;
+        border: 0;
+      }
+      #compare::-moz-range-thumb {
+        width: 0;
+        height: 100%;
+        border: 0;
+      }
+      .imagebox:has(#compare:focus-visible) {
+        outline: 3px solid var(--accent);
+        outline-offset: 4px;
+      }
+      .divider {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: var(--position);
+        width: 2px;
+        background: #fff;
+        box-shadow: 0 0 3px #000;
+        pointer-events: none;
+        transform: translateX(-50%);
+      }
+      .handle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        background: #17200d;
+        color: var(--accent);
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        box-shadow: 0 2px 12px #0008;
+      }
+      .compare-hint {
         text-align: center;
+        margin: 12px 0 0;
+        font-size: 13px;
         color: var(--muted);
+      }
+      .backgrounds {
+        border: 0;
+        padding: 0;
+        margin: 20px 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .backgrounds legend {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+      .backgrounds label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 14px;
+        cursor: pointer;
+        min-height: 44px;
         font-size: 14px;
+      }
+      .backgrounds input {
+        accent-color: var(--accent);
+        margin: 0;
+      }
+      .backgrounds label:has(input:checked) {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: #26301e;
+      }
+      .backgrounds label:has(input:focus-visible) {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+      .backgrounds:disabled {
+        opacity: 0.45;
       }
       .actions {
         display: flex;
@@ -254,12 +357,8 @@
           padding: 16px;
           min-height: 310px;
         }
-        .previews {
-          grid-template-columns: 1fr;
-          gap: 18px;
-        }
         .imagebox {
-          height: 260px;
+          width: min(100%, calc(52vh * var(--ratio, 1)));
         }
         .actions button {
           width: 100%;
@@ -277,7 +376,7 @@
     <header>
       <div class="brand">
         <span class="logo" aria-hidden="true">✦</span>Découpe AI
-        <span class="version">v5.0.0</span>
+        <span class="version">v5.1.0</span>
       </div>
       <span class="privacy">Vos images restent sur votre appareil</span>
     </header>
@@ -308,26 +407,59 @@
           ><small>JPG, PNG ou WebP · résolution originale conservée</small>
         </div>
         <div id="previews" class="previews" hidden>
-          <figure>
-            <figcaption>Image originale</figcaption>
-            <div class="imagebox">
-              <img id="original" alt="Image originale importée" />
+          <div id="comparison" class="imagebox">
+            <img
+              id="original"
+              alt="Image originale importée"
+              draggable="false"
+            />
+            <div
+              id="reveal"
+              class="reveal checker"
+              data-background="transparent"
+              hidden
+            >
+              <img id="result" alt="Image détourée" draggable="false" hidden />
             </div>
-          </figure>
-          <figure>
-            <figcaption>Sans arrière-plan</figcaption>
-            <div class="imagebox checker">
-              <span id="placeholder" class="placeholder"
-                >Votre résultat apparaîtra ici</span
-              ><img
-                id="result"
-                alt="Image détourée sur un fond transparent"
-                hidden
-              />
+            <div id="divider" class="divider" aria-hidden="true" hidden>
+              <span class="handle">↔</span>
             </div>
-          </figure>
+            <input
+              id="compare"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value="50"
+              aria-label="Comparer l’original et le résultat"
+              aria-describedby="compareHint"
+              aria-valuetext="50 % détourée, 50 % originale"
+              hidden
+            />
+          </div>
+          <p id="compareHint" class="compare-hint" hidden>
+            Détourée à gauche · Originale à droite<br />Glissez pour comparer ou
+            utilisez les flèches du clavier.
+          </p>
         </div>
       </section>
+      <fieldset id="backgrounds" class="backgrounds" hidden>
+        <legend>Fond du résultat et du PNG</legend>
+        <label
+          ><input
+            type="radio"
+            name="background"
+            value="transparent"
+            checked
+          />Transparent</label
+        >
+        <label
+          ><input type="radio" name="background" value="white" />Blanc</label
+        >
+        <label
+          ><input type="radio" name="background" value="black" />Noir</label
+        >
+      </fieldset>
       <p id="info" class="meta" hidden></p>
       <div id="actions" class="actions" hidden>
         <button id="remove" class="primary">Supprimer le fond</button
@@ -346,7 +478,7 @@
       <div class="notes">
         <span>✦ Traitement local, sans compte</span
         ><span>↗ PNG à la taille originale</span
-        ><span>▧ Fond entièrement transparent</span>
+        ><span>▧ Fond transparent, blanc ou noir</span>
       </div>
       <footer>
         Le premier traitement télécharge le modèle IA (environ 90 Mo) et son
@@ -363,7 +495,11 @@
         resultURL = null,
         worker = null,
         timer = null,
-        busy = false;
+        busy = false,
+        background = "transparent",
+        downloadURL = null,
+        downloadTimer = null,
+        dragPointer = null;
       function say(message, error = false) {
         $("status").textContent = message;
         $("status").classList.toggle("error", error);
@@ -372,6 +508,8 @@
         busy = value;
         for (const id of ["choose", "file", "change", "remove", "download"])
           $(id).disabled = value;
+        $("backgrounds").disabled = value;
+        $("compare").disabled = value;
         $("cancel").hidden = !value;
         $("progress").hidden = !value;
         $("drop").setAttribute("aria-busy", String(value));
@@ -382,13 +520,47 @@
         worker?.terminate();
         worker = null;
       }
+      function setComparison(value) {
+        const position = Math.max(0, Math.min(100, Math.round(Number(value))));
+        $("compare").value = String(position);
+        $("compare").setAttribute("aria-valuenow", String(position));
+        $("compare").setAttribute(
+          "aria-valuetext",
+          position + " % détourée, " + (100 - position) + " % originale",
+        );
+        $("comparison").style.setProperty("--position", position + "%");
+      }
+      function setBackground(value) {
+        if (!["transparent", "white", "black"].includes(value)) return;
+        background = value;
+        $("reveal").dataset.background = value;
+        document.querySelector(
+          'input[name="background"][value="' + value + '"]',
+        ).checked = true;
+      }
+      function releaseDownload() {
+        clearTimeout(downloadTimer);
+        downloadTimer = null;
+        if (downloadURL) URL.revokeObjectURL(downloadURL);
+        downloadURL = null;
+      }
       function releaseResult() {
+        releaseDownload();
         if (resultURL) URL.revokeObjectURL(resultURL);
         resultURL = null;
         $("result").removeAttribute("src");
         $("result").hidden = true;
         $("download").hidden = true;
-        $("placeholder").hidden = false;
+        for (const id of [
+          "reveal",
+          "compare",
+          "divider",
+          "compareHint",
+          "backgrounds",
+        ])
+          $(id).hidden = true;
+        setComparison(50);
+        setBackground("transparent");
       }
       function releaseSource() {
         source = null;
@@ -439,6 +611,7 @@
           source = decoded;
           fileName = file.name.replace(/\.[^.]+$/, "") || "image";
           sourceURL = URL.createObjectURL(file);
+          $("comparison").style.setProperty("--ratio", width / height);
           $("original").src = sourceURL;
           $("empty").hidden = true;
           $("previews").hidden = false;
@@ -525,11 +698,20 @@
               resultURL = URL.createObjectURL(blob);
               $("result").src = resultURL;
               $("result").hidden = false;
-              $("placeholder").hidden = true;
+              await $("result").decode();
+              setComparison(50);
+              for (const id of [
+                "reveal",
+                "compare",
+                "divider",
+                "compareHint",
+                "backgrounds",
+              ])
+                $(id).hidden = false;
               $("download").hidden = false;
               $("remove").hidden = true;
               say(
-                "Fond supprimé. Votre PNG transparent est prêt à télécharger.",
+                "Fond supprimé. Comparez, choisissez votre fond et téléchargez le PNG.",
               );
             } catch {
               say(
@@ -565,11 +747,74 @@
         lock(false);
         say("Traitement annulé. Vous pouvez réessayer ou changer d’image.");
       };
-      $("download").onclick = () => {
+      $("compare").addEventListener("input", (event) =>
+        setComparison(event.target.value),
+      );
+      function moveComparison(event) {
+        const rect = $("comparison").getBoundingClientRect();
+        setComparison(((event.clientX - rect.left) / rect.width) * 100);
+      }
+      $("compare").addEventListener("pointerdown", (event) => {
+        if (busy || event.button !== 0 || dragPointer !== null) return;
+        event.preventDefault();
+        dragPointer = event.pointerId;
+        $("compare").focus({ preventScroll: true });
+        $("compare").setPointerCapture(event.pointerId);
+        moveComparison(event);
+      });
+      $("compare").addEventListener("pointermove", (event) => {
+        if (event.pointerId === dragPointer) moveComparison(event);
+      });
+      for (const name of ["pointerup", "pointercancel", "lostpointercapture"])
+        $("compare").addEventListener(name, (event) => {
+          if (event.pointerId === dragPointer) dragPointer = null;
+        });
+      $("backgrounds").addEventListener("change", (event) => {
+        if (!busy && event.target.name === "background")
+          setBackground(event.target.value);
+      });
+      $("download").onclick = async () => {
         if (!resultURL || busy) return;
+        let url = resultURL,
+          canvas = null;
+        const selected = background;
+        if (selected !== "transparent") {
+          lock(true);
+          $("cancel").hidden = true;
+          try {
+            canvas = document.createElement("canvas");
+            canvas.width = source.width;
+            canvas.height = source.height;
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = selected === "white" ? "#ffffff" : "#000000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage($("result"), 0, 0);
+            const blob = await new Promise((resolve) =>
+              canvas.toBlob(resolve, "image/png"),
+            );
+            if (!blob) throw new Error("PNG non créé");
+            releaseDownload();
+            url = downloadURL = URL.createObjectURL(blob);
+            downloadTimer = setTimeout(releaseDownload, 60000);
+          } catch {
+            say(
+              "Impossible d’exporter le PNG. Réessayez ou choisissez le fond transparent.",
+              true,
+            );
+            return;
+          } finally {
+            if (canvas) canvas.width = canvas.height = 1;
+            lock(false);
+          }
+        }
         const a = document.createElement("a");
-        a.href = resultURL;
-        a.download = fileName + "-sans-fond.png";
+        a.href = url;
+        a.download =
+          fileName +
+          (selected === "transparent"
+            ? "-sans-fond"
+            : "-fond-" + (selected === "white" ? "blanc" : "noir")) +
+          ".png";
         document.body.append(a);
         a.click();
         a.remove();

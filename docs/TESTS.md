@@ -43,3 +43,16 @@ Décision : conserver ISNet pour cette base simple, sans prétendre améliorer s
 La suite rapide compte 3 tests pixels/cohérence et 5 parcours navigateur réussis. Le test photographique réel distinct réussit les invariants sur les cinq images ; sa réussite ne signifie pas que tous les masques sont satisfaisants visuellement. La CI vérifie la suite rapide, le build et publie un artefact statique sans déployer Pages ou Cloudflare.
 
 Essai IA complémentaire : chaussure exécutée avec viewport mobile 390 × 844, traitement et téléchargement réels réussis en 12,0 s sur le même ordinateur ; dimensions 600 × 400, alpha intermédiaire=0 et différence RGB opaque=0. Cela ne mesure pas la vitesse d’un téléphone physique.
+
+## V5.1.0 — comparateur et fonds
+
+8 nouveaux tests navigateur, en complément des 5 parcours V5 :
+
+- Curseur initial à 50 %, navigation Home/End/flèches et déplacement souris ; rendu effectivement contrôlé à 0/50/100 % à partir des pixels d’une capture du cadre.
+- Vrai geste tactile émulé par Chrome (touchStart/touchMove/touchEnd), capture et bornes en dehors du cadre.
+- Rectangles de l’original et du résultat strictement égaux, ratios paysage et portrait conservés, desktop/mobile et changement de viewport, sans débordement horizontal.
+- PNG téléchargés puis redécodés : fond transparent alpha 0/255 ; blanc #FFFFFF et noir #000000 avec alpha 255 partout ; dimensions et couleurs opaques conservées.
+- Plusieurs changements de fond, puis nouvel import et téléchargement ; retour au fond transparent et au curseur 50 %.
+- Un seul Worker créé pour chaque détourage, URL du résultat inchangée malgré le déplacement et les fonds : aucune nouvelle inférence.
+
+Validation : `npm run check`, `npm run test:browser` et `./scripts/check.ps1`. Les tests de ce lot simulent uniquement la réponse IA pour isoler la comparaison et les exports ; les essais photographiques réels V5 ci-dessus restent historiques. Aucun modèle, seuil ou code worker n’est modifié. Vérification visuelle de la nouvelle interface en 1440 px et 390 px, avec le portrait et son masque réel déjà calculé lors de V5. L’émulation tactile ne remplace pas un essai sur téléphone physique.
