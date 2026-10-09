@@ -1,27 +1,27 @@
-# Vérifications avant livraison
+# Validation de la candidate simple
 
-## Contrôles automatiques
+## Vérifications automatiques
 
-Exécuter depuis la racine du projet :
+- `npm run check` : seuillage alpha 0/255, immutabilité et RGB, masque incohérent refusé, source/distribution identiques ; build statique.
+- `./scripts/check.ps1` : syntaxe de la page, numéro visible, copie de distribution, intégrité des archives historiques.
+- `npm run test:browser` : import, aperçu, PNG réellement téléchargé et redécodé, dimensions, alpha binaire et couleurs opaques, changement d’image, annulation, erreur, import invalide, dépôt et verrouillage. Ordinateur et mobile 390 × 844 sous Chrome. Le moteur est simulé dans cette suite rapide : elle ne prouve pas la qualité de segmentation.
+
+## Essais IA réels reproductibles
 
 ```powershell
-./scripts/check.ps1
+node scripts/test-images.mjs
+$env:REAL_AI = '1'
+npm run test:browser -- --grep 'real ISNet'
 ```
 
-Ce contrôle vérifie la syntaxe JavaScript, l’identité entre la source et la distribution, la présence du favicon et l’intégrité de la structure des archives.
+Images publiques téléchargées dans `work/fixtures`, ignorées par Git. URLs exactes dans `scripts/test-images.mjs` : portrait Unsplash, montre sur fond uni Unsplash, voiture rembg, plantes rembg, chaussure rouge sur fond rouge Unsplash. Les images peuvent changer chez leurs fournisseurs ; conserver les entrées locales pour comparer une régression.
 
-## Parcours navigateur minimal
+Le test réel télécharge ISNet et exécute réellement l’inférence. Il contrôle le PNG téléchargé pour chaque photo : dimensions originales, pixels conservés et supprimés, aucune transparence partielle, RGB des pixels opaques identiques aux pixels originaux décodés. Résultats locaux et mesures dans `work/results/`.
 
-1. Ouvrir la page depuis `http://127.0.0.1:8765/decoupe.html`.
-2. Importer un PNG ou JPG par le bouton.
-3. Importer une image différente par glisser-déposer.
-4. Coller une image avec `Ctrl + V` et avec « Coller l’image ».
-5. Lancer « Enlever le fond » et attendre la fin du calcul.
-6. Tester une retouche Ajouter puis une retouche Enlever.
-7. Vérifier l’annulation du trait et du dernier résultat IA.
-8. Vérifier les quatre exports et la conservation des dimensions.
-9. Vérifier l’affichage sur une largeur mobile.
-10. Vérifier l’absence d’erreur dans la console.
+Un miroir de poids préchargés peut être fourni via `AI_MODEL_MIRROR` pour contourner la lenteur réseau de l’environnement de test. Il ne remplace ni le modèle ni l’inférence. Les essais visuels sont nécessaires en plus des invariants : un masque incorrect peut néanmoins être binaire et à la bonne taille.
 
-Documenter dans `outputs/VERSIONS.md` uniquement les tests réellement effectués.
+## Limites de la preuve
 
+Ces images ne sont pas un benchmark annoté : pas de score IoU ni de garantie de conservation de chaque cheveu. L’émulation mobile vérifie le parcours et la mise en page, pas la mémoire ni les performances d’un téléphone physique. Aucun test ne justifie l’expression « détourage parfait ». Les contours binaires ne peuvent pas rendre les transparences physiques.
+
+Résultats photographiques : en cours de validation, à compléter avant livraison.

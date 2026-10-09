@@ -1,56 +1,28 @@
-# Architecture de Découpe
+# Architecture — détourage simple
 
-## Résumé
+## Source et distribution
 
-Découpe est une application statique contenue dans un seul fichier HTML. Elle fonctionne sans serveur applicatif et sans compte utilisateur. Un petit serveur HTTP local est toutefois nécessaire pour autoriser le chargement du modèle IA.
+`outputs/decoupe.html` est la source active ; `dist/index.html` en est la copie identique. `outputs/background-worker.js` est copié dans `dist/`. Favicon inchangé. `npm run build` synchronise ces trois ressources. Archives, configuration Cloudflare et branches historiques conservées.
 
-En production, le dossier `dist` est servi comme ensemble de ressources statiques par Cloudflare Workers. La configuration versionnée se trouve dans `wrangler.jsonc` ; aucun serveur personnel n’est utilisé.
+## Flux et invariants
 
-## Fichiers faisant autorité
+Fichier → décodage à la taille originale → pixels RGBA immuables → worker ISNet → alpha prédit → seuillage → RGB originaux + alpha binaire → PNG.
 
-- `outputs/decoupe.html` est la source active.
-- `dist/index.html` est la copie destinée à la publication et doit être strictement identique.
-- `outputs/versions/vX.Y.Z/` contient les livraisons figées. Une archive existante n’est jamais modifiée.
-- `outputs/VERSIONS.md` explique ce qui a réellement changé, les tests réalisés et les limites connues.
+- L’import ne redimensionne jamais les pixels. Une image excédant la limite mémoire préventive est refusée avec une explication.
+- ISNet analyse une représentation 1024 × 1024 ; seul le masque est rééchantillonné, pas l’image exportée.
+- `segmentForeground` retourne un masque RGBA brut, pour éviter la perte de couleurs due au prémultiplié d’un PNG intermédiaire.
+- `binaryComposite` copie les RGB originaux décodés, affecte alpha=255 si prédiction>=128 et alpha original>0, sinon alpha=0. Une entrée partiellement transparente devient donc opaque ou transparente dans le résultat.
+- Aucun seuil de couleur, aucune suppression par similarité au fond, aucune retouche ni historique.
+- Le damier CSS ne fait pas partie du PNG.
 
-## Moteur de détourage
+## Cycle de vie
 
-- Bibliothèque : `@imgly/background-removal` 1.7.0.
-- Modèle : ISNet FP16, exécuté côté navigateur sur le processeur.
-- Le premier lancement télécharge les fichiers du modèle depuis Static IMG.LY.
-- Les images de l’utilisateur ne sont pas envoyées à ChatGPT et aucun jeton ChatGPT n’est consommé.
+Un seul import ou traitement à la fois. Actions incompatibles et drop bloqués. Le worker est terminé après résultat, annulation, erreur ou délai de huit minutes. Les modèles ne restent pas alloués entre deux traitements ; le navigateur peut conserver les téléchargements dans son cache HTTP. L’original reste disponible après une erreur et permet de réessayer.
 
-## État conservé pendant la session
+Le changement d’image n’efface l’ancien document qu’après décodage réussi. Les URL d’objets précédentes sont révoquées, les bitmaps sont fermés, les canvases temporaires réduits après usage. La sortie du worker est vérifiée contre les dimensions attendues. L’export conserve la taille originale. À la fermeture de la page, les références et le worker sont libérés.
 
-- Pixels RGBA de l’image originale.
-- Masque alpha du dernier résultat validé.
-- Traits de pinceau en attente.
-- Historique permettant d’annuler la dernière retouche IA.
-- URL temporaires des aperçus et du résultat.
+## Dépendances et sécurité
 
-Changer d’image réinitialise entièrement cet état. Recharger la page le perd également.
+Moteur chargé à la demande, version figée `@imgly/background-removal@1.7.0`, modèle `isnet_fp16`, CPU/WASM. Aucun backend, stockage permanent des images ou clé. Les fournisseurs de fichiers statiques voient les requêtes de téléchargement du moteur, sans recevoir les images.
 
-## Parcours principal
-
-1. Import par fichier, glisser-déposer, `Ctrl + V` ou bouton « Coller l’image ».
-2. Détourage global par ISNet.
-3. Correction facultative avec Ajouter ou Enlever.
-4. Chaque zone peinte est analysée sur les pixels originaux, avec du contexte autour.
-5. Seule la zone couverte est fusionnée dans le masque existant.
-6. Export PNG, WebP, JPG ou SVG contenant un PNG intégré.
-
-## Invariants à préserver
-
-- L’image originale ne doit jamais être remplacée par l’aperçu détouré.
-- Une retouche locale ne doit pas recalculer les zones non peintes.
-- Un échec d’inférence ne doit pas détruire le dernier masque valide.
-- L’export est bloqué lorsque des traits n’ont pas encore été appliqués.
-- `outputs/decoupe.html` et `dist/index.html` doivent rester identiques.
-- Le SVG n’est pas vectorisé : il incorpore une image PNG.
-
-## Limites connues
-
-- ISNet n’est pas un modèle de sélection d’objet par simple clic comme SAM.
-- Le pinceau doit couvrir le détail et un peu de fond pour donner du contexte à l’IA.
-- Le collage fonctionne seulement si le presse-papiers contient les pixels d’une image PNG, JPEG ou WebP. Une simple adresse web n’est pas téléchargée automatiquement.
-- La qualité finale reste limitée par la résolution de l’image originale et par la reconnaissance du modèle.
+Le navigateur doit supporter WebAssembly, Worker, createImageBitmap et OffscreenCanvas (utilisé par IMG.LY). La qualité est celle d’une segmentation automatique, avec limites sur sujets ambigus et détails plus petits que la résolution du masque.

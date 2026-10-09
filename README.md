@@ -1,57 +1,47 @@
-# Découpe IA
+# Découpe AI — détourage simple
 
-Application locale de détourage d’images par IA avec retouches au pinceau.
+Candidate v5.0.0, construite depuis `main` a00a316 sur `codex/simple-background-removal`.
 
-## Version actuelle
+1. Déposer une image ou cliquer sur **Choisir une image** (JPG, PNG, WebP).
+2. Cliquer sur **Supprimer le fond**.
+3. Télécharger le **PNG transparent**, à la résolution originale.
 
-**v3.1.0** — import par fichier, glisser-déposer ou presse-papiers, détourage automatique et corrections locales Ajouter/Enlever.
+Une seule fonction : aucun pinceau, sélection, retouche ou paramètre technique. L’original reste visible à côté du résultat sur damier. Traitement local, sans compte ni clé API. Le modèle et le moteur sont téléchargés depuis jsDelivr et Static IMG.LY ; les pixels ne sont pas envoyés à un serveur IA.
 
-Le traitement se fait dans le navigateur. Aucun jeton ChatGPT n’est utilisé. Le modèle ISNet est téléchargé au premier lancement, puis exécuté localement.
+## Moteur et export
 
-## Lancer l’application
+ISNet FP16, via `@imgly/background-removal` **1.7.0**, reconnaît le premier plan. Il ne compare pas simplement les couleurs au fond. Inférence à 1024 × 1024 puis masque rééchantillonné à la taille originale. Le seuil interne de 128/255 produit exclusivement des alpha **0 ou 255**. Les RGB proviennent des pixels originaux décodés par le navigateur, jamais de la sortie colorée du modèle. Aucun lissage d’alpha après seuillage.
 
-Depuis le dossier du projet :
+Ce choix impose des contours plus nets : cheveux, transparences physiques et très petits éléments restent difficiles. Le modèle peut se tromper sur le sujet. Les couleurs similaires au fond ne sont pas une règle de suppression. Aucun remplissage automatique des trous n’est appliqué : cela boucherait aussi de vraies ouvertures.
 
-```powershell
-cd outputs
-python -m http.server 8765
+Images acceptées jusqu’à 32 MP et 16384 px par côté : au-delà, l’import est refusé explicitement, jamais réduit silencieusement. Sur appareil peu doté, une image sous cette limite peut encore dépasser la mémoire disponible. L’annulation interrompt le worker et libère le modèle. Le premier lancement télécharge environ 88 Mo de poids et 12 Mo de runtime ; les suivants dépendent du cache HTTP.
+
+## Développement
+
+Node.js 22 ou plus, puis :
+
+```sh
+npm ci
+npm run check
+npm run dev
+npm run test:browser
 ```
 
-Ouvrir ensuite <http://127.0.0.1:8765/decoupe.html>.
+Ouvrir http://127.0.0.1:4173/decoupe-ia/ . Tests locaux avec Chrome installé ; en CI, Chromium Playwright.
 
-## Publication publique
+- `outputs/decoupe.html` : source active, interface et orchestration.
+- `outputs/background-worker.js` : segmentation isolée et annulable.
+- `dist/` : copie générée par `npm run build`, sans bundler.
+- `tests/` : pixels et parcours navigateur.
+- `scripts/check.ps1` : contrôle historique source/distribution et archives.
+- `outputs/versions/` : archives immuables conservées.
 
-Le dépôt est relié à Cloudflare Workers Builds. La configuration `wrangler.jsonc` publie automatiquement le dossier `dist` comme site statique.
+Une séparation supplémentaire du code n’est nécessaire que lorsque de nouvelles fonctions la justifieront. Ne pas éditer `dist/` à la main. Voir [architecture](docs/ARCHITECTURE.md) et [tests](docs/TESTS.md).
 
-Réglages Cloudflare :
+## Publication
 
-- Build command : vide.
-- Deploy command : `npx wrangler deploy`.
-- Production branch : `main`.
-- Cloudflare Access : désactivé pour permettre un accès public.
+Cloudflare conserve sa configuration `wrangler.jsonc` et sa branche de production `main`. Ce travail ne fusionne rien, ne crée aucun tag et ne déploie pas Cloudflare.
 
-Chaque modification envoyée sur `main` déclenche un nouveau déploiement.
+GitHub Pages sert déjà une autre preview depuis une branche dédiée. Un dépôt ne possède qu’un site Pages ; remplacer sa source affecterait la preview existante. Cette candidate fournit `dist/` et un artefact CI statique prêts à publier, sans changer cette configuration. Une publication simultanée demanderait soit un autre dépôt Pages, soit l’ajout d’un sous-dossier dans la branche de publication existante. Ces actions ne font pas partie de cette livraison.
 
-## Organisation
-
-- `outputs/decoupe.html` : source active et page utilisée localement.
-- `dist/index.html` : copie publiable, toujours identique à la source active.
-- `outputs/versions/` : archives immuables de chaque livraison.
-- `outputs/VERSIONS.md` : historique fonctionnel, limites et tests réalisés.
-- `docs/ARCHITECTURE.md` : fonctionnement interne et règles à préserver.
-- `docs/TESTS.md` : vérifications avant livraison.
-- `scripts/check.ps1` : contrôle automatique de la cohérence du projet.
-- `scripts/release.ps1` : création sécurisée d’une archive de version.
-- `AGENTS.md` : consignes permanentes pour les prochaines interventions de Codex.
-- `wrangler.jsonc` : configuration de l’hébergement public Cloudflare.
-
-## Cycle d’une évolution
-
-1. Créer une branche `codex/nom-de-la-fonction`.
-2. Modifier `outputs/decoupe.html` et son numéro visible.
-3. Copier la page dans `dist/index.html` et tester.
-4. Documenter les changements dans `outputs/VERSIONS.md`.
-5. Exécuter `./scripts/release.ps1 X.Y.Z` pour archiver la livraison.
-6. Créer un commit et une étiquette Git `vX.Y.Z`.
-
-Les anciennes archives ne doivent jamais être modifiées.
+Bibliothèque IMG.LY sous AGPL-3.0 : [source et licence](https://github.com/imgly/background-removal-js). Les conditions de cette dépendance restent applicables.
