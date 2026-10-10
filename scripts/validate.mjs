@@ -19,6 +19,12 @@ assert.ok(html.includes('<span class="version">v'+version+'</span>'), 'Visible v
 const stable=read('WORK_STATE.md').match(/Stable : \*\*v([\d.]+)\*\*/)?.[1];
 assert.ok(stable, 'Stable declaration missing');
 assert.ok(read('README.md').includes('Version stable actuelle : **v'+stable+'**'), 'Stable documentation mismatch');
-assert.ok(read('README.md').includes('Candidate : **v'+version+'**'), 'Candidate documentation mismatch');
-if(process.argv.includes('--release')) assert.equal(version,stable,'Release requires explicit stable documentation promotion');
+const readme = read('README.md');
+assert.ok(readme.includes('Candidate : **v'+version+'**') || version === stable, 'Candidate documentation mismatch');
+if(process.argv.includes('--release')) {
+  assert.equal(version,stable,'Release requires explicit stable documentation promotion');
+  assert.ok(!readme.includes('Candidate : **v'+version+'**') && !readme.includes('Cette candidate n’est pas une release production validée'), 'Release README still presents an unapproved candidate');
+  const changelog = read('docs/CHANGELOG.md');
+  assert.ok(changelog.includes('## Stable V'+version) && !changelog.includes('## Candidate V'+version), 'Release changelog not promoted');
+}
 console.log('Syntax, resources, versions and generated distribution: PASS');

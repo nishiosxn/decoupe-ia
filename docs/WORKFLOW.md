@@ -20,7 +20,7 @@ Push develop → validations → staging Pages depuis dist/ + archives → dépl
 
 ## Release : autorisation utilisateur obligatoire
 
-Après validation utilisateur explicite : audit final de develop et main, synchronisation de la version stable avec la candidate dans README/WORK_STATE/changelog/validation/métadonnées, npm run check et npm run check:release, tests pertinents. Préparer l’intégration contrôlée dans main ; ne pas la réaliser sans demande explicite. Vérifier ensuite le commit main, lancer le déploiement Cloudflare seulement si autorisé et vérifier l’URL/version servie. Un tag vX.Y.Z nécessite son autorisation et doit pointer exactement sur la release validée. Aucun tag stable n’est déplacé ; correction documentaire ultérieure = commit normal.
+Après validation utilisateur explicite : audit final de develop et main, synchronisation de la version stable avec la candidate dans README/WORK_STATE/changelog/validation/métadonnées, retirer la présentation de candidate pour la version approuvée, puis npm run check et npm run check:release, tests pertinents. Préparer l’intégration contrôlée dans main ; ne pas la réaliser sans demande explicite. Vérifier ensuite le commit main, lancer le déploiement Cloudflare seulement si autorisé et vérifier l’URL/version servie. Un tag vX.Y.Z nécessite son autorisation et doit pointer exactement sur la release validée. Aucun tag stable n’est déplacé ; correction documentaire ultérieure = commit normal.
 
 La CI main n’est active qu’une fois le workflow autorisé intégré à main. Ce lot conserve main et son déploiement existant intacts ; aucun workflow Cloudflare n’est inventé.
 
