@@ -1,7 +1,11 @@
-import { cpSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { cpSync, mkdirSync, writeFileSync, existsSync, lstatSync, rmSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
 import { execFileSync } from 'node:child_process';
 // Isolated CI staging directory, never the production dist/.
-if(existsSync('.pages')) throw Error('Use a fresh .pages staging directory');
+const root = resolve(import.meta.dirname, '..');
+const staging = resolve(root, '.pages');
+if(dirname(staging) !== root || (existsSync(staging) && lstatSync(staging).isSymbolicLink())) throw Error('Unsafe staging path');
+rmSync(staging, {recursive:true, force:true});
 cpSync('dist','.pages',{recursive:true});
 writeFileSync('.pages/.nojekyll','');
 for(const version of ['v3.2.0','v4.0.0']) {

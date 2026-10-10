@@ -33,3 +33,11 @@ Migration prévue : Actions sur develop, même URL de site, candidate V5 à la r
 Étudiés via GitHub API authentifiée : AGENTS.md, WORK_STATE.md, ASSISTANT_STATE.md, docs/ASSISTANT_WORKFLOW.md, README, branches, tags, PR et releases. Dépôt privé, page web non accessible anonymement. Main b770037, stable documentée v0.3.1 / PR19 / tag4738d1a ; une branche et PR22 pour0.3.2. La liste de workflows contient une ancienne entrée review-026 dont le fichier actuel renvoie404 ; aucune automatisation de release actuelle n’est donc présumée.
 
 Principes adaptés : état factuel compact, checkpoints récupérables, validations PASS/FAIL/non exécutées, documentation synchronisée avant release, tags stables immuables, audit avant nettoyage. Les règles Python, versions et rôles Assistant/Work ne sont pas importés. Ici develop est permanent par demande utilisateur ; WORK_STATE suffit, aucun ASSISTANT_STATE dupliqué. Source : https://github.com/MrMekouil/GamePanel .
+
+## Résultat vérifié
+
+CI et publication Actions réussies sur dab55f2 : run38046087117, déploiement Pages6979677854 depuis develop. Configuration Pages build_type=workflow, source metadata develop ; environnement limité à develop après retrait des anciennes règles de preview. Contrôle navigateur public : racineV5.2.0, /previews/v4.0.0/ et /previews/v3.2.0/ répondent200, zéro erreur JavaScript et zéro ressource HTTP en erreur.
+
+Les8 branches du tableau sauf codex/cloudflare-static-hosting ont été supprimées à distance et, lorsqu’elles existaient, localement. Contrôle juste avant retrait : aucune nouvelle PR ouverte, SHA distant égal au tag et au fetch indépendant. Suppression distante atomique avec leases sur les pointes auditées. Main a00a316 et le tag stable (objetce42f12, cible9105f4b) sont inchangés.
+
+Branches conservées : main et develop permanentes ; codex/cloudflare-static-hosting temporairement conservée par demande utilisateur, jusqu’à vérification de la liaison dans le dashboard Cloudflare. Objectif deux branches suspendu uniquement pour cette sécurité de publication. Les9 tags d’archive sont récupérables depuis un fetch bare indépendant, vérifié par git fsck ; les14 snapshots historiques sont présents.
