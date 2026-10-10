@@ -1,6 +1,6 @@
 # Découpe AI
 
-Version stable actuelle : **v5.2.0**, validée par l’utilisateur. Clôture de release et publication en cours ; voir WORK_STATE.md pour l’état vérifié.
+Version stable actuelle : **v5.2.0**, validée par l’utilisateur, intégrée dans main par la PR #1 et publiée sur Cloudflare. Le tag v5.2.0 désigne le commit de release 4f01851. Voir WORK_STATE.md pour la continuité.
 
 V5.2.0 apporte le comparateur, les fonds transparent/blanc/noir, les corrections locales et le filigrane. La release conserve ISNet et le masque strictement binaire.
 

@@ -1,5 +1,7 @@
 # Audit et consolidation — 2026-10-10
 
+Historique du lot précédant la release : la méthode main/develop décrite ci-dessous a ensuite été remplacée par main + work temporaires. État courant : WORK_STATE.md et docs/WORKFLOW.md.
+
 Audit réalisé avant modification : arbre propre, diff vide, branches locales/distantes concordantes, aucune PR ni GitHub Release dans Découpe AI. Main a00a316 affiche V3.1.0 ; le tag annoté v3.1.0 pointe sur 9105f4b (il ne sera pas déplacé). Cloudflare public affiche V3.1.0 ; wrangler.jsonc sert dist/. Aucun workflow Cloudflare dans la base V5. La liaison Git/configuration du dashboard Cloudflare n’est pas accessible via les fichiers Git ; aucune modification de cette intégration.
 
 Base complète la plus récente : 8ffac19, V5.2.0 + filigrane, descendante de V5/V5.1/V5.2 ; 9 tests unitaires et 19 navigateur acquis au checkpoint précédent. Les expérimentations V3.2/V4 divergent à partir de main : elles ne sont pas prétendues intégrées ni supprimées pour leur nom. Elles sont remplacées dans le parcours actif par V5 mais leur code reste récupérable sous les tags suivants.

@@ -1,0 +1,31 @@
+{
+  "url": "https://decoupe-ia.nishiosamauwu.workers.dev/",
+  "model": "ISNet FP16 1.7.0",
+  "modelMirror": false,
+  "globalMs": 15752,
+  "localMs": 14266,
+  "local": {
+    "outside": 0,
+    "recovered": 100,
+    "removed": 100,
+    "partial": 0
+  },
+  "png": {
+    "width": 600,
+    "height": 900,
+    "partial": 0,
+    "kept": 359918,
+    "removed": 180082,
+    "colorErrors": 0
+  },
+  "requests": [
+    "image/x-rgba8;width=600;height=900",
+    "image/x-rgba8;width=372;height=342"
+  ],
+  "undo": true,
+  "releaseCommit": "4f01851b3be6f2bb0d2795e769d779e1f2080225",
+  "tag": "v5.2.0",
+  "verifiedDate": "2026-10-10",
+  "cloudflareBuild": "216baa53-1b73-4e00-9350-0fd9f0815eb5",
+  "cloudflareVersion": "042449b4-1b17-4ccd-bc47-b9509aadeecf"
+}
