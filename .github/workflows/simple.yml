@@ -6,6 +6,7 @@ on:
         codex/simple-background-removal,
         codex/v5.1-compare-backgrounds,
         codex/v5.2-smart-local-brush,
+        codex/correction-original-watermark,
       ]
   pull_request:
     branches: [main]

@@ -66,3 +66,7 @@ Validation : `npm run check`, `npm run test:browser` et `./scripts/check.ps1`. L
 Mesures brutes : [validation-local.json](validation-local.json). Reproduction du test réel : préparer le portrait via scripts/test-images.mjs, puis définir LOCAL_AI=1 et lancer npm run test:browser -- --grep 'real ISNet local'. AI_MODEL_MIRROR reste optionnel. Les autres tests simulent la sortie IA pour isoler la géométrie, la fusion et l’UX.
 
 La suppression d’un objet toujours prédit comme sujet est intentionnellement sans effet : ce cas est vérifié par un test unitaire. ISNet n’est pas une segmentation interactive conditionnée par les traits. Les anciennes observations de qualité V5 restent applicables. Aucun test sur téléphone physique n’a été réalisé.
+
+## Filigrane en correction
+
+Deux parcours desktop/mobile vérifient les couches alignées, l’opacité 20 %, les événements traversants, la différence visuelle dans le fond supprimé et l’opacité intacte du sujet. Ils contrôlent le masque et l’URL résultat inchangés, aucune nouvelle inférence au basculement, la préférence entre ouvertures et sa remise à zéro au nouvel import, les PNG strictement identiques (octet par octet) pour les trois fonds, et un ajout dans une zone visible uniquement en filigrane. Les tests V5.2 de suppression et d’annulation restent applicables. Réponses IA simulées : le moteur est inchangé.

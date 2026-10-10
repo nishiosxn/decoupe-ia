@@ -180,6 +180,9 @@
         pointer-events: none;
         user-select: none;
       }
+      #originalGuide {
+        opacity: 0.2;
+      }
       .reveal {
         position: absolute;
         inset: 0;
@@ -422,6 +425,17 @@
         width: 110px;
         accent-color: var(--accent);
       }
+      .guide-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .guide-toggle input {
+        accent-color: var(--accent);
+      }
       .retouch-help {
         color: var(--muted);
         font-size: 13px;
@@ -476,6 +490,13 @@
               data-background="transparent"
               hidden
             >
+              <img
+                id="originalGuide"
+                alt=""
+                aria-hidden="true"
+                draggable="false"
+                hidden
+              />
               <img id="result" alt="Image détourée" draggable="false" hidden />
             </div>
             <canvas
@@ -545,6 +566,10 @@
               >Taille
               <input id="brushSize" type="range" min="12" max="100" value="36"
             /></label>
+            <label class="guide-toggle"
+              ><input id="showOriginalGuide" type="checkbox" checked /> Afficher
+              l’original en filigrane</label
+            >
             <button id="clearStrokes">Effacer les traits</button>
             <button id="applyLocal" class="primary">
               Appliquer la correction locale
@@ -680,6 +705,8 @@
         if (sourceURL) URL.revokeObjectURL(sourceURL);
         sourceURL = null;
         $("original").removeAttribute("src");
+        $("originalGuide").removeAttribute("src");
+        $("showOriginalGuide").checked = true;
         releaseResult();
       }
       function binaryComposite(original, alpha) {
@@ -726,6 +753,7 @@
           sourceURL = URL.createObjectURL(file);
           $("comparison").style.setProperty("--ratio", width / height);
           $("original").src = sourceURL;
+          $("originalGuide").src = sourceURL;
           $("empty").hidden = true;
           $("previews").hidden = false;
           $("actions").hidden = false;
@@ -862,6 +890,7 @@
         strokes = [];
         undoPatch = null;
         editing = false;
+        updateOriginalGuide();
         activeStroke = null;
         brushPointer = null;
         $("retouch").hidden = true;
@@ -945,9 +974,14 @@
         cursor.style.top = event.clientY - rect.top + "px";
         cursor.style.width = cursor.style.height = $("brushSize").value + "px";
       }
+      function updateOriginalGuide() {
+        $("originalGuide").hidden = !editing || !$("showOriginalGuide").checked;
+      }
+      $("showOriginalGuide").onchange = updateOriginalGuide;
       function toggleEditing() {
         if (busy || !mask) return;
         editing = !editing;
+        updateOriginalGuide();
         $("correct").textContent = editing
           ? "Quitter la correction"
           : "Corriger";

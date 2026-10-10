@@ -62,3 +62,7 @@ Cloudflare conserve sa configuration `wrangler.jsonc` et sa branche de productio
 GitHub Pages sert déjà une autre preview depuis une branche dédiée. Un dépôt ne possède qu’un site Pages ; remplacer sa source affecterait la preview existante. Cette candidate fournit `dist/` et un artefact CI statique prêts à publier, sans changer cette configuration. Une publication simultanée demanderait soit un autre dépôt Pages, soit l’ajout d’un sous-dossier dans la branche de publication existante. Ces actions ne font pas partie de cette livraison.
 
 Bibliothèque IMG.LY sous AGPL-3.0 : [source et licence](https://github.com/imgly/background-removal-js). Les conditions de cette dépendance restent applicables.
+
+### Guide visuel en correction
+
+En mode Corriger, l’original apparaît à 20 % derrière le résultat opaque et les traits. Le contrôle « Afficher l’original en filigrane » est activé par défaut pour chaque nouvelle image ; son choix reste mémorisé tant que cette image est ouverte. Il agit uniquement sur la prévisualisation, sans inférence, modification du masque ou inclusion dans les PNG. Hors correction, le comparateur habituel est restauré.

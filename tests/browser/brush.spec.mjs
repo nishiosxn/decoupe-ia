@@ -214,3 +214,115 @@ test("brush has real touch strokes, does not edit before apply, and clear keeps 
   expect(await snapshot(page)).toEqual(before);
   await ctx.close();
 });
+for (const mobile of [false, true])
+  test(`original guide is visual only and aligned ${mobile ? "mobile" : "desktop"}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(
+      mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 },
+    );
+    await setup(page);
+    const guide = page.locator("#originalGuide"),
+      toggle = page.locator("#showOriginalGuide");
+    await expect(toggle).toBeChecked();
+    await expect(guide).toBeVisible();
+    expect(
+      await guide.evaluate((e) => ({
+        opacity: getComputedStyle(e).opacity,
+        pointer: getComputedStyle(e).pointerEvents,
+      })),
+    ).toEqual({ opacity: "0.2", pointer: "none" });
+    const bounds = await page
+      .locator("#original, #originalGuide, #result, #brushOverlay")
+      .evaluateAll((es) =>
+        es.map((e) => {
+          const r = e.getBoundingClientRect();
+          return [r.x, r.y, r.width, r.height];
+        }),
+      );
+    for (const b of bounds) expect(b).toEqual(bounds[0]);
+    const before = await snapshot(page),
+      url = await page.locator("#result").getAttribute("src");
+    async function samples() {
+      const bytes = await page.locator("#comparison").screenshot();
+      return page.evaluate(
+        async (bytes) => {
+          const bitmap = await createImageBitmap(
+            new Blob([new Uint8Array(bytes)], { type: "image/png" }),
+          );
+          const c = document.createElement("canvas");
+          c.width = bitmap.width;
+          c.height = bitmap.height;
+          const ctx = c.getContext("2d");
+          ctx.drawImage(bitmap, 0, 0);
+          return [0.25, 0.75].map((x) => [
+            ...ctx.getImageData(
+              Math.floor(c.width * x),
+              Math.floor(c.height * 0.5),
+              1,
+              1,
+            ).data,
+          ]);
+        },
+        [...bytes],
+      );
+    }
+    const visible = await samples();
+    await toggle.uncheck();
+    await expect(guide).toBeHidden();
+    const invisible = await samples();
+    expect(visible[0]).not.toEqual(invisible[0]);
+    expect(visible[1]).toEqual(invisible[1]);
+    expect(visible[1]).toEqual([63, 114, 171, 255]);
+    expect(await snapshot(page)).toEqual(before);
+    expect(await page.locator("#result").getAttribute("src")).toBe(url);
+    expect(await page.evaluate(() => requests.length)).toBe(1);
+    await page.locator("#correct").click();
+    await expect(page.locator("#compare")).toBeVisible();
+    await page.locator("#correct").click();
+    await expect(toggle).not.toBeChecked();
+    await expect(guide).toBeHidden();
+    async function png() {
+      const event = page.waitForEvent("download");
+      await page.locator("#download").click();
+      return readFile(await (await event).path());
+    }
+    for (const bg of ["transparent", "white", "black"]) {
+      await page.locator(`input[value=${bg}]`).check();
+      const off = await png();
+      await toggle.check();
+      const on = await png();
+      expect(on.equals(off)).toBe(true);
+      await toggle.uncheck();
+    }
+    await toggle.check();
+    await paint(page); // Original-only area is visible through the guide.
+    await page.locator("#applyLocal").click();
+    await expect(page.locator("#status")).toContainText(
+      "Correction locale appliquée",
+    );
+    expect(await page.evaluate(() => mask[300 * 800 + 200])).toBe(255);
+    await expect(guide).toBeVisible();
+    await toggle.uncheck();
+    await page.locator("#correct").click();
+    await expect(guide).toBeHidden();
+    // Use the app's accepted PNG input to verify a new image resets the preference.
+    const pngBytes = await page.evaluate(async () => {
+      const c = document.createElement("canvas");
+      c.width = c.height = 100;
+      return [
+        ...new Uint8Array(
+          await (await new Promise((r) => c.toBlob(r))).arrayBuffer(),
+        ),
+      ];
+    });
+    await page
+      .locator("#file")
+      .setInputFiles({
+        name: "new.png",
+        mimeType: "image/png",
+        buffer: Buffer.from(pngBytes),
+      });
+    await expect(toggle).toBeChecked();
+    await expect(guide).toBeHidden();
+  });
