@@ -1,0 +1,57 @@
+name: Validate and preview
+on:
+  push:
+    branches: [main, 'work/**']
+  pull_request:
+    branches: [main, 'work/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: git diff --exit-code -- dist
+      - run: npm run check:release
+        if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - run: npm run build:pages
+        if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/work/')) && github.event_name != 'pull_request'
+      - uses: actions/upload-pages-artifact@v3
+        if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/work/')) && github.event_name != 'pull_request'
+        with:
+          path: .pages/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: static-site
+          path: dist/
+  pages:
+    needs: validate
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/work/')) && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - uses: actions/deploy-pages@v4
+        id: deployment

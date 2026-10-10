@@ -1,0 +1,57 @@
+[
+  {
+    "name": "person.jpg",
+    "width": 600,
+    "height": 900,
+    "kept": 359918,
+    "removed": 180082,
+    "partial": 0,
+    "colorErrors": 0,
+    "ms": 20138,
+    "inputSHA256": "fa8890c96be180dc3e1b51a7130b299640f8894e5e3030545dcc23ef9f457221"
+  },
+  {
+    "name": "watch.jpg",
+    "width": 600,
+    "height": 436,
+    "kept": 46694,
+    "removed": 214906,
+    "partial": 0,
+    "colorErrors": 0,
+    "ms": 15897,
+    "inputSHA256": "7e83bdf6050c50754fa34ab694acd843cefea54ed080e2f4bfd7cffc8802c82e"
+  },
+  {
+    "name": "car-1.jpg",
+    "width": 480,
+    "height": 360,
+    "kept": 36867,
+    "removed": 135933,
+    "partial": 0,
+    "colorErrors": 0,
+    "ms": 15295,
+    "inputSHA256": "03c2f548c84a81e72af667f622329a2b009e8abff44904b38bc86d639b089d16"
+  },
+  {
+    "name": "plants-1.jpg",
+    "width": 987,
+    "height": 1481,
+    "kept": 232146,
+    "removed": 1229601,
+    "partial": 0,
+    "colorErrors": 0,
+    "ms": 27592,
+    "inputSHA256": "720b9683fddf29da97e65d404a2dcb8f4333e79cf56616fa7deaf863172113ce"
+  },
+  {
+    "name": "shoe.jpg",
+    "width": 600,
+    "height": 400,
+    "kept": 60460,
+    "removed": 179540,
+    "partial": 0,
+    "colorErrors": 0,
+    "ms": 16408,
+    "inputSHA256": "ed5a3c6f301e9ccc26125fffaccaa888418b454c194f0f3d12e07e832c4a827a"
+  }
+]

@@ -1,56 +1,23 @@
-# Architecture de Découpe
+# Architecture
 
-## Résumé
+## Sources et distribution
 
-Découpe est une application statique contenue dans un seul fichier HTML. Elle fonctionne sans serveur applicatif et sans compte utilisateur. Un petit serveur HTTP local est toutefois nécessaire pour autoriser le chargement du modèle IA.
+src/index.html contient le DOM ; styles.css le design responsive ; app.js orchestre import, état, preview, worker, correction et téléchargement. Les scripts restent classiques pour préserver le comportement du checkpoint8ffac19 et les tests existants. Aucune dépendance ou bundler supplémentaire.
 
-En production, le dossier `dist` est servi comme ensemble de ressources statiques par Cloudflare Workers. La configuration versionnée se trouve dans `wrangler.jsonc` ; aucun serveur personnel n’est utilisé.
+src/ai/background-worker.js : segmentation ISNet FP161.7.0, CPU/WASM, segmentForeground et sortie RGBA brute. Son contenu est conservé intégralement. src/core/pixels.js expose binaryComposite ; src/core/local-brush.js expose la géométrie, la couverture des traits et les patchs binaires. Ces modules purs ne connaissent ni le DOM ni les publications.
 
-## Fichiers faisant autorité
+scripts/site-files.mjs est la table source → dist. Les scripts sont copiés à la racine publique pour conserver background-worker.js et les autres URLs relatives, y compris sous /decoupe-ia/. scripts/build.mjs génère dist/ ; scripts/validate.mjs vérifie toutes les copies et ressources locales, la syntaxe et les versions. dist/ reste versionné pour le déploiement Cloudflare existant ; CI refuse une distribution désynchronisée.
 
-- `outputs/decoupe.html` est la source active.
-- `dist/index.html` est la copie destinée à la publication et doit être strictement identique.
-- `outputs/versions/vX.Y.Z/` contient les livraisons figées. Une archive existante n’est jamais modifiée.
-- `outputs/VERSIONS.md` explique ce qui a réellement changé, les tests réalisés et les limites connues.
+## Flux et garanties
 
-## Moteur de détourage
+Import → décodage RGBA original immuable → worker ISNet → alpha → binaryComposite → PNG. Seul le masque est rééchantillonné depuis la résolution d’inférence1024×1024. L’export conserve dimensions et RGB décodés ; alpha=255 si prédiction>=128 et alpha original>0, sinon0. Aucun filtre de couleur ni alpha partiel.
 
-- Bibliothèque : `@imgly/background-removal` 1.7.0.
-- Modèle : ISNet FP16, exécuté côté navigateur sur le processeur.
-- Le premier lancement télécharge les fichiers du modèle depuis Static IMG.LY.
-- Les images de l’utilisateur ne sont pas envoyées à ChatGPT et aucun jeton ChatGPT n’est consommé.
+Les traits ne mutent pas le masque. Bounding boxes + contexte max(64px,3 rayons), regroupement si recouvrement, crop de l’original → segmentation locale → patch uniquement sous les indications. Ajouter suit les prédictions sujet, Supprimer les prédictions fond. Les patches de toutes les régions sont validés avant remplacement atomique du résultat ; une annulation conserve les seules différences de la dernière correction. Échec/annulation du worker conserve résultat et traits. ISNet ne comprend pas de prompts de pinceau : absence de changement possible.
 
-## État conservé pendant la session
+Preview : même cadre et ratio pour original, résultat et overlay. Comparateur clip-path hors correction ; en correction, fond sélectionné → original20 % optionnel → résultat100 % → traits/curseur. Le guide n’intercepte pas les événements et n’est jamais encodé. Blanc/noir sont composés uniquement au téléchargement ; transparent réutilise le PNG binaire. Le téléchargement est bloqué si des traits restent en attente.
 
-- Pixels RGBA de l’image originale.
-- Masque alpha du dernier résultat validé.
-- Traits de pinceau en attente.
-- Historique permettant d’annuler la dernière retouche IA.
-- URL temporaires des aperçus et du résultat.
+URL d’objets révoquées à remplacement, canvases temporaires libérés, bitmaps fermés. Le worker est terminé après succès, erreur, annulation ou8minutes ; les crops successifs réutilisent sa session pendant un lot. Aucun backend, secret ou envoi des pixels aux fournisseurs de modèles.
 
-Changer d’image réinitialise entièrement cet état. Recharger la page le perd également.
+## Publications
 
-## Parcours principal
-
-1. Import par fichier, glisser-déposer, `Ctrl + V` ou bouton « Coller l’image ».
-2. Détourage global par ISNet.
-3. Correction facultative avec Ajouter ou Enlever.
-4. Chaque zone peinte est analysée sur les pixels originaux, avec du contexte autour.
-5. Seule la zone couverte est fusionnée dans le masque existant.
-6. Export PNG, WebP, JPG ou SVG contenant un PNG intégré.
-
-## Invariants à préserver
-
-- L’image originale ne doit jamais être remplacée par l’aperçu détouré.
-- Une retouche locale ne doit pas recalculer les zones non peintes.
-- Un échec d’inférence ne doit pas détruire le dernier masque valide.
-- L’export est bloqué lorsque des traits n’ont pas encore été appliqués.
-- `outputs/decoupe.html` et `dist/index.html` doivent rester identiques.
-- Le SVG n’est pas vectorisé : il incorpore une image PNG.
-
-## Limites connues
-
-- ISNet n’est pas un modèle de sélection d’objet par simple clic comme SAM.
-- Le pinceau doit couvrir le détail et un peu de fond pour donner du contexte à l’IA.
-- Le collage fonctionne seulement si le presse-papiers contient les pixels d’une image PNG, JPEG ou WebP. Une simple adresse web n’est pas téléchargée automatiquement.
-- La qualité finale reste limitée par la résolution de l’image originale et par la reconnaissance du modèle.
+wrangler.jsonc reste inchangé et sert dist/ ; main contient la stable et déclenche le déploiement Cloudflare existant. GitHub Pages reçoit .pages/ via Actions après les validations des branches work/** ou main. Le staging ajoute les previews historiques en lisant leurs tags Git, sans créer une seconde source active ou une branche de publication. Les tags sont nécessaires au build Pages ; leur absence est bloquante, jamais ignorée.

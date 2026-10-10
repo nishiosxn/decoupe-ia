@@ -1,0 +1,96 @@
+# Validation et limites
+
+Les sections V5 à filigrane ci-dessous sont des preuves historiques acquises avant réorganisation. Les anciens chemins outputs/ y désignent les sources archivées ; le code courant est dans src/.
+
+# Validation de la candidate simple
+
+## Vérifications automatiques
+
+- `npm run check` : seuillage alpha 0/255, immutabilité et RGB, masque incohérent refusé, source/distribution identiques ; build statique.
+- `./scripts/check.ps1` : syntaxe de la page, numéro visible, copie de distribution, intégrité des archives historiques.
+- `npm run test:browser` : import, aperçu, PNG réellement téléchargé et redécodé, dimensions, alpha binaire et couleurs opaques, changement d’image, annulation, erreur, import invalide, dépôt et verrouillage. Ordinateur et mobile 390 × 844 sous Chrome. Le moteur est simulé dans cette suite rapide : elle ne prouve pas la qualité de segmentation.
+
+## Essais IA réels reproductibles
+
+```powershell
+node scripts/test-images.mjs
+$env:REAL_AI = '1'
+npm run test:browser -- --grep 'real ISNet'
+```
+
+Images publiques téléchargées dans `work/fixtures`, ignorées par Git. URLs exactes dans `scripts/test-images.mjs` : portrait Unsplash, montre sur fond uni Unsplash, voiture rembg, plantes rembg, chaussure rouge sur fond rouge Unsplash. Les images peuvent changer chez leurs fournisseurs ; conserver les entrées locales pour comparer une régression.
+
+Le test réel télécharge ISNet et exécute réellement l’inférence. Il contrôle le PNG téléchargé pour chaque photo : dimensions originales, pixels conservés et supprimés, aucune transparence partielle, RGB des pixels opaques identiques aux pixels originaux décodés. Résultats locaux et mesures dans `work/results/`.
+
+Un miroir de poids préchargés peut être fourni via `AI_MODEL_MIRROR` pour contourner la lenteur réseau de l’environnement de test. Il ne remplace ni le modèle ni l’inférence. Les essais visuels sont nécessaires en plus des invariants : un masque incorrect peut néanmoins être binaire et à la bonne taille.
+
+## Limites de la preuve
+
+Ces images ne sont pas un benchmark annoté : pas de score IoU ni de garantie de conservation de chaque cheveu. L’émulation mobile vérifie le parcours et la mise en page, pas la mémoire ni les performances d’un téléphone physique. Aucun test ne justifie l’expression « détourage parfait ». Les contours binaires ne peuvent pas rendre les transparences physiques.
+
+## Résultats observés le 2026-10-09
+
+Chrome installé sous Windows, CPU/WASM, vrai ISNet FP16 1.7.0. Les ressources Static IMG.LY ont été préchargées sur un miroir local et vérifiées contre les SHA-256 du manifeste officiel. Aucune simulation du masque dans ces cinq essais. Le temps inclut le démarrage du moteur, l’inférence et le téléchargement du PNG, mais pas le téléchargement Internet initial des poids.
+
+| Image                       | Dimensions du PNG | Durée  | Observation visuelle                                                                                                                                                                                  |
+| --------------------------- | ----------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Portrait                    | 600 × 900         | 20,1 s | Visage, vêtement sombre et masse des cheveux conservés ; fond noir supprimé. Pas de validation cheveu par cheveu.                                                                                     |
+| Montres sur fond clair      | 600 × 436         | 15,9 s | Les deux montres blanches conservées, fond clair supprimé ; les très petites ouvertures restent imparfaites.                                                                                          |
+| Voiture, scène complexe     | 480 × 360         | 15,3 s | Voiture conservée et décor supprimé ; la personne adjacente est aussi conservée. Le modèle ne choisit pas systématiquement un sujet unique.                                                           |
+| Plantes et étagère          | 987 × 1481        | 27,6 s | Nombreux contours de feuilles conservés, mais étagère et plantes périphériques partiellement supprimées ; fragments résiduels. Cas visuellement insatisfaisant pour conserver l’ensemble du mobilier. |
+| Chaussure rouge, fond rouge | 600 × 400         | 16,4 s | Chaussure et lacets conservés, fond rouge supprimé malgré les couleurs proches.                                                                                                                       |
+
+Pour **les cinq PNG téléchargés et redécodés** : dimensions égales aux originales, pixels opaques et transparents présents, **0 pixel d’alpha intermédiaire**, **0 différence de RGB sur les pixels opaques**. Mesures brutes et empreintes des fichiers d’entrée dans [validation-simple.json](validation-simple.json).
+
+Décision : conserver ISNet pour cette base simple, sans prétendre améliorer sa reconnaissance par un nettoyage arbitraire des couleurs ou des trous. Le cas des plantes démontre une limite réelle de segmentation, que le seuillage ne résout pas. Un essai exploratoire de BiRefNet Lite 512 n’a pas fourni de comparaison exploitable dans cet environnement (échecs de chargement du modèle dans le navigateur) ; aucune supériorité n’est revendiquée et cette dépendance n’est pas intégrée.
+
+La suite rapide compte 3 tests pixels/cohérence et 5 parcours navigateur réussis. Le test photographique réel distinct réussit les invariants sur les cinq images ; sa réussite ne signifie pas que tous les masques sont satisfaisants visuellement. La CI vérifie la suite rapide, le build et publie un artefact statique sans déployer Pages ou Cloudflare.
+
+Essai IA complémentaire : chaussure exécutée avec viewport mobile 390 × 844, traitement et téléchargement réels réussis en 12,0 s sur le même ordinateur ; dimensions 600 × 400, alpha intermédiaire=0 et différence RGB opaque=0. Cela ne mesure pas la vitesse d’un téléphone physique.
+
+## V5.1.0 — comparateur et fonds
+
+8 nouveaux tests navigateur, en complément des 5 parcours V5 :
+
+- Curseur initial à 50 %, navigation Home/End/flèches et déplacement souris ; rendu effectivement contrôlé à 0/50/100 % à partir des pixels d’une capture du cadre.
+- Vrai geste tactile émulé par Chrome (touchStart/touchMove/touchEnd), capture et bornes en dehors du cadre.
+- Rectangles de l’original et du résultat strictement égaux, ratios paysage et portrait conservés, desktop/mobile et changement de viewport, sans débordement horizontal.
+- PNG téléchargés puis redécodés : fond transparent alpha 0/255 ; blanc #FFFFFF et noir #000000 avec alpha 255 partout ; dimensions et couleurs opaques conservées.
+- Plusieurs changements de fond, puis nouvel import et téléchargement ; retour au fond transparent et au curseur 50 %.
+- Un seul Worker créé pour chaque détourage, URL du résultat inchangée malgré le déplacement et les fonds : aucune nouvelle inférence.
+
+Validation : `npm run check`, `npm run test:browser` et `./scripts/check.ps1`. Les tests de ce lot simulent uniquement la réponse IA pour isoler la comparaison et les exports ; les essais photographiques réels V5 ci-dessus restent historiques. Aucun modèle, seuil ou code worker n’est modifié. Vérification visuelle de la nouvelle interface en 1440 px et 390 px, avec le portrait et son masque réel déjà calculé lors de V5. L’émulation tactile ne remplace pas un essai sur téléphone physique.
+
+## V5.2.0 — corrections locales
+
+- 6 nouveaux tests unitaires : régions séparées/contextes regroupés, extraction RGBA depuis l’original, continuité des traits et priorité du dernier mode, fusion binaire monotone, protection hors indications, seuil 127/128, alpha original transparent, annulation et cohérence de distribution.
+- 4 nouveaux parcours navigateur : apparition des outils après détourage, dessin différé, crop local issu de l’original, ajout et suppression localisés, panne sans mutation partielle, conservation des traits, effacement, annulation, exports trois fonds et comparateur après correction ; desktop/mobile et vrai geste tactile émulé Chrome.
+- Essai réel ISNet sur le portrait V5 : deux erreurs de masque délibérément introduites pour isoler la capacité de correction (100 pixels de sujet manquants, 100 pixels de fond conservés). Le recalcul reçoit un crop **372 × 342** sur une image **600 × 900**, depuis l’original. **100 pixels récupérés, 100 supprimés, 0 modification hors indications, 0 alpha intermédiaire**. Annulation vérifiée. Recalcul/encodage local observé : **11,5 s** sur l’ordinateur de test, avec poids préchargés sur le miroir local vérifié de V5. Ce test contrôlé ne prouve pas que toutes les erreurs naturelles d’ISNet sont corrigibles.
+
+Mesures brutes : [validation-local.json](validation-local.json). Reproduction du test réel : préparer le portrait via scripts/test-images.mjs, puis définir LOCAL_AI=1 et lancer npm run test:browser -- --grep 'real ISNet local'. AI_MODEL_MIRROR reste optionnel. Les autres tests simulent la sortie IA pour isoler la géométrie, la fusion et l’UX.
+
+La suppression d’un objet toujours prédit comme sujet est intentionnellement sans effet : ce cas est vérifié par un test unitaire. ISNet n’est pas une segmentation interactive conditionnée par les traits. Les anciennes observations de qualité V5 restent applicables. Aucun test sur téléphone physique n’a été réalisé.
+
+## Filigrane en correction
+
+Deux parcours desktop/mobile vérifient les couches alignées, l’opacité 20 %, les événements traversants, la différence visuelle dans le fond supprimé et l’opacité intacte du sujet. Ils contrôlent le masque et l’URL résultat inchangés, aucune nouvelle inférence au basculement, la préférence entre ouvertures et sa remise à zéro au nouvel import, les PNG strictement identiques (octet par octet) pour les trois fonds, et un ajout dans une zone visible uniquement en filigrane. Les tests V5.2 de suppression et d’annulation restent applicables. Réponses IA simulées : le moteur est inchangé.
+
+## Réorganisation main/develop — 2026-10-10
+
+PASS : npm ci (3 packages, audit sans vulnérabilité), build déterministe, validation syntaxe/ressources/versions, 9 tests unitaires et 19 parcours Playwright (desktop/mobile/tactile émulé). Deux tests IA opt-in exclus de la suite standard ; l’essai local réel a ensuite été exécuté séparément avec ISNet et les poids du miroir local : global600×900 puis crop372×342, 100 pixels récupérés,100 retirés, aucun changement hors indications, alpha binaire et undo vérifié. Cas contrôlé, pas une nouvelle qualification de qualité sur cinq images. Le worker déplacé conserve exactement le blob Git bc6908d0c5d41ee2c58d41cd474f6b6b4e37a13a.
+
+PASS : récupération indépendante des9 archives distantes, git fsck, égalité des pointes et présence des14 fichiers snapshots. Build Pages avec anciennes previews généré localement. Dry-run wrangler4.132.0 :7 assets reconnus, aucun déploiement. URL locale /decoupe-ia/ et toutes les fonctionnalités couvertes par les tests navigateur.
+
+Non exécuté : téléphone physique, nouvelle campagne IA sur cinq photographies, release/merge/tag stable, déploiement Cloudflare. Production observée en lecture seule : V3.1.0. Liaison Git Cloudflare dans le dashboard non accessible ; branche technique conservée sur décision utilisateur. La publication Pages et CI distante seront consignées après vérification.
+
+Publication distante : CI complète et Pages PASS sur dab55f2 (GitHub Actions38046087117). Smoke navigateur public : racineV5.2.0, previews V4 et V3.2 HTTP200, aucune exception JS ni ressource manquante. Le garde-fou release a été testé : il refuse correctement stableV3.1.0/candidateV5.2.0 sans promotion autorisée. Build Pages relancé après génération initiale pour vérifier la reconstruction du staging. Main reste inchangée : son futur workflow CI n’est donc pas exécuté sur main dans ce lot.
+
+Contrôle du cycle de release dans une copie jetable : stableV3.1/candidateV5 refusé ; version promue avec README encore candidate refusée ; README et changelog cohérents après promotion fictive acceptés. Aucune version réelle ni main modifiée. Le contrôle normal accepte ainsi une documentation stable après release, sans imposer éternellement une déclaration de candidate.
+
+## Release V5.2.0 — 2026-10-10
+
+Fonctionnement validé et publication autorisée explicitement par l’utilisateur. Base exacte develop870fe95 ; aucun changement applicatif prévu pour la clôture. Documentation promue à V5.2.0 et workflow main/work temporaires. Les preuves historiques ci-dessus restent datées de leur lot. Validations de release et de production à consigner après exécution ; aucune publication encore déclarée.
+
+Les tests Playwright peuvent cibler une publication en définissant TEST_BASE_URL (le serveur local est alors désactivé). Les tests de parcours simulent la réponse IA ; REAL_AI=1 avec AI_CASE=person.jpg exécute réellement le modèle et vérifie le PNG. Cette distinction reste explicite dans le rapport de publication.
+
+Pré-merge PASS : npm ci, npm run check (9 tests unitaires), npm run check:release, 19 tests navigateur desktop/mobile et tactile émulé, git diff --check. Deux opt-in IA non exécutés à ce stade. src/, dist/, package/lock et wrangler.jsonc sont strictement identiques à la base approuvée870fe95 ; aucune modification de chargement IA ou de qualité. Le serveur local demandé répond HTTP200 et affiche V5.2.0.

@@ -1,57 +1,55 @@
-# Découpe IA
+# Découpe AI
 
-Application locale de détourage d’images par IA avec retouches au pinceau.
+Version stable actuelle : **v5.2.0**, validée par l’utilisateur. Clôture de release et publication en cours ; voir WORK_STATE.md pour l’état vérifié.
 
-## Version actuelle
+V5.2.0 apporte le comparateur, les fonds transparent/blanc/noir, les corrections locales et le filigrane. La release conserve ISNet et le masque strictement binaire.
 
-**v3.1.0** — import par fichier, glisser-déposer ou presse-papiers, détourage automatique et corrections locales Ajouter/Enlever.
+Production : https://decoupe-ia.nishiosamauwu.workers.dev/ . Preview : https://nishiosxn.github.io/decoupe-ia/ .
 
-Le traitement se fait dans le navigateur. Aucun jeton ChatGPT n’est utilisé. Le modèle ISNet est téléchargé au premier lancement, puis exécuté localement.
+## Utilisation
 
-## Lancer l’application
+Importer une image JPG/PNG/WebP, supprimer le fond, comparer puis télécharger un PNG à la résolution originale. Choisir un fond transparent, blanc ou noir. Après traitement, Corriger propose Ajouter/Supprimer : peindre les indications puis appliquer le recalcul local ; la dernière correction peut être annulée. L’original à20 % derrière le résultat aide à retrouver les éléments supprimés ; ce guide est désactivable et reste absent des exports.
 
-Depuis le dossier du projet :
+Tout le traitement est local au navigateur. ISNet FP16 via @imgly/background-removal1.7.0 télécharge son runtime/modèle au premier traitement (~100 Mo). Aucune clé ni backend. Alpha transparent strictement0/255, RGB originaux conservés. Limites : sujets ambigus et détails fins ; ISNet n’est pas conditionné par les traits, donc une correction peut ne rien changer. Images limitées à32 MP et16384 pixels par côté ; mémoire dépendante de l’appareil. Voir docs/VALIDATION.md.
 
-```powershell
-cd outputs
-python -m http.server 8765
-```
+## Installation et commandes
 
-Ouvrir ensuite <http://127.0.0.1:8765/decoupe.html>.
+Node.js22 ou plus, Chrome installé pour les tests locaux (Chromium en CI).
 
-## Publication publique
+    npm ci
+    npm run check
+    npm run dev
+    npm run test:browser
 
-Le dépôt est relié à Cloudflare Workers Builds. La configuration `wrangler.jsonc` publie automatiquement le dossier `dist` comme site statique.
+Test local : http://127.0.0.1:4173/decoupe-ia/ .
 
-Réglages Cloudflare :
+- npm run build : générer dist/ depuis src/.
+- npm run validate : syntaxe JS, ressources, versions et distribution identique.
+- npm run check : build, validation, tests unitaires.
+- npm run test:browser : import/export, comparaison, corrections, filigrane, desktop/mobile/tactile émulé.
+- npm run build:pages : staging .pages/ depuis dist/ et archives Git vérifiées ; checkout avec tags requis.
+- npm run check:release : contrôle de cohérence stable/code/README/changelog, après validation utilisateur.
 
-- Build command : vide.
-- Deploy command : `npx wrangler deploy`.
-- Production branch : `main`.
-- Cloudflare Access : désactivé pour permettre un accès public.
+## Arborescence
 
-Chaque modification envoyée sur `main` déclenche un nouveau déploiement.
+    src/index.html, styles.css, app.js, favicon.svg
+    src/ai/background-worker.js
+    src/core/pixels.js, local-brush.js
+    dist/                 distribution générée, versionnée et contrôlée
+    scripts/              build, validation, serveur et fixtures
+    tests/                unitaires et Playwright
+    docs/                 architecture, workflow, historique, validation, audit
 
-## Organisation
+src/ est l’unique source officielle. Ne pas modifier dist/ directement. Les anciennes sources outputs/ et snapshots sont récupérables dans les tags archive/* ; voir docs/REPOSITORY_AUDIT.md.
 
-- `outputs/decoupe.html` : source active et page utilisée localement.
-- `dist/index.html` : copie publiable, toujours identique à la source active.
-- `outputs/versions/` : archives immuables de chaque livraison.
-- `outputs/VERSIONS.md` : historique fonctionnel, limites et tests réalisés.
-- `docs/ARCHITECTURE.md` : fonctionnement interne et règles à préserver.
-- `docs/TESTS.md` : vérifications avant livraison.
-- `scripts/check.ps1` : contrôle automatique de la cohérence du projet.
-- `scripts/release.ps1` : création sécurisée d’une archive de version.
-- `AGENTS.md` : consignes permanentes pour les prochaines interventions de Codex.
-- `wrangler.jsonc` : configuration de l’hébergement public Cloudflare.
+## Git et publications
 
-## Cycle d’une évolution
+main contient la dernière stable et sert à la production Cloudflare. Chaque version demandée utilise une branche temporaire work/vX.Y.Z-nom, créée depuis main ; les reprises et corrections restent sur cette branche. Après validation : documentation synchronisée, PR et contrôles, merge autorisé, tag stable puis nettoyage vérifié. Aucun develop permanent ni branche créée simplement pour une nouvelle conversation.
 
-1. Créer une branche `codex/nom-de-la-fonction`.
-2. Modifier `outputs/decoupe.html` et son numéro visible.
-3. Copier la page dans `dist/index.html` et tester.
-4. Documenter les changements dans `outputs/VERSIONS.md`.
-5. Exécuter `./scripts/release.ps1 X.Y.Z` pour archiver la livraison.
-6. Créer un commit et une étiquette Git `vX.Y.Z`.
+GitHub Actions teste main et work/**. Pages publie la branche de travail après CI ; entre deux lots, main republie la stable. Les previews historiques restent sous previews/v4.0.0/ et previews/v3.2.0/. Le déploiement Cloudflare existant utilise Workers Builds depuis main ; aucune clé de déploiement n’est ajoutée au dépôt.
 
-Les anciennes archives ne doivent jamais être modifiées.
+Lire [WORK_STATE.md](WORK_STATE.md) pour reprendre. [Architecture](docs/ARCHITECTURE.md), [workflow](docs/WORKFLOW.md), [changelog](docs/CHANGELOG.md), [validation](docs/VALIDATION.md), [audit et archives](docs/REPOSITORY_AUDIT.md).
+
+Méthode inspirée de [GamePanel](https://github.com/MrMekouil/GamePanel) : checkpoints récupérables, état compact, preuves et validation avant release, sans importer son architecture Python.
+
+Bibliothèque IMG.LY sous AGPL-3.0 : [source et licence](https://github.com/imgly/background-removal-js).

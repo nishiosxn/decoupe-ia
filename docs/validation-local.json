@@ -1,0 +1,15 @@
+{
+  "outside": 0,
+  "partial": 0,
+  "recovered": 100,
+  "removed": 100,
+  "width": 600,
+  "height": 900,
+  "requests": [
+    "image/x-rgba8;width=600;height=900",
+    "image/x-rgba8;width=372;height=342"
+  ],
+  "fg": 255,
+  "bg": 0,
+  "localMs": 11521
+}
