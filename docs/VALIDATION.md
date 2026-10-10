@@ -86,3 +86,11 @@ Non exécuté : téléphone physique, nouvelle campagne IA sur cinq photographie
 Publication distante : CI complète et Pages PASS sur dab55f2 (GitHub Actions38046087117). Smoke navigateur public : racineV5.2.0, previews V4 et V3.2 HTTP200, aucune exception JS ni ressource manquante. Le garde-fou release a été testé : il refuse correctement stableV3.1.0/candidateV5.2.0 sans promotion autorisée. Build Pages relancé après génération initiale pour vérifier la reconstruction du staging. Main reste inchangée : son futur workflow CI n’est donc pas exécuté sur main dans ce lot.
 
 Contrôle du cycle de release dans une copie jetable : stableV3.1/candidateV5 refusé ; version promue avec README encore candidate refusée ; README et changelog cohérents après promotion fictive acceptés. Aucune version réelle ni main modifiée. Le contrôle normal accepte ainsi une documentation stable après release, sans imposer éternellement une déclaration de candidate.
+
+## Release V5.2.0 — 2026-10-10
+
+Fonctionnement validé et publication autorisée explicitement par l’utilisateur. Base exacte develop870fe95 ; aucun changement applicatif prévu pour la clôture. Documentation promue à V5.2.0 et workflow main/work temporaires. Les preuves historiques ci-dessus restent datées de leur lot. Validations de release et de production à consigner après exécution ; aucune publication encore déclarée.
+
+Les tests Playwright peuvent cibler une publication en définissant TEST_BASE_URL (le serveur local est alors désactivé). Les tests de parcours simulent la réponse IA ; REAL_AI=1 avec AI_CASE=person.jpg exécute réellement le modèle et vérifie le PNG. Cette distinction reste explicite dans le rapport de publication.
+
+Pré-merge PASS : npm ci, npm run check (9 tests unitaires), npm run check:release, 19 tests navigateur desktop/mobile et tactile émulé, git diff --check. Deux opt-in IA non exécutés à ce stade. src/, dist/, package/lock et wrangler.jsonc sont strictement identiques à la base approuvée870fe95 ; aucune modification de chargement IA ou de qualité. Le serveur local demandé répond HTTP200 et affiche V5.2.0.

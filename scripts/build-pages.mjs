@@ -18,4 +18,4 @@ for(const version of ['v3.2.0','v4.0.0']) {
     writeFileSync(target,execFileSync('git',['show',ref+':'+file],{maxBuffer:20*1024*1024}));
   }
 }
-console.log('Pages: develop at root, historical previews at previews/v3.2.0/ and previews/v4.0.0/');
+console.log('Pages: current work/main version at root, historical previews at previews/v3.2.0/ and previews/v4.0.0/');

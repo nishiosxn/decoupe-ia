@@ -20,4 +20,4 @@ URL d’objets révoquées à remplacement, canvases temporaires libérés, bitm
 
 ## Publications
 
-wrangler.jsonc reste inchangé et sert dist/ ; main n’est pas modifiée par ce lot. GitHub Pages reçoit .pages/ via Actions après les validations develop. Le staging ajoute les previews historiques en lisant leurs tags Git, sans créer une seconde source active ou une branche de publication. Les tags sont nécessaires au build Pages ; leur absence est bloquante, jamais ignorée.
+wrangler.jsonc reste inchangé et sert dist/ ; main contient la stable et déclenche le déploiement Cloudflare existant. GitHub Pages reçoit .pages/ via Actions après les validations des branches work/** ou main. Le staging ajoute les previews historiques en lisant leurs tags Git, sans créer une seconde source active ou une branche de publication. Les tags sont nécessaires au build Pages ; leur absence est bloquante, jamais ignorée.

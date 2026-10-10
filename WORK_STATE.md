@@ -1,11 +1,10 @@
 # Découpe AI — état opérationnel
 
-- Stable : **v3.1.0**, main a00a316 ; tag v3.1.0 sur9105f4b, inchangé. Cloudflare public V3.1.0.
-- Développement : develop, candidate V5.2.0 avec corrections, comparateur et filigrane. Checkpoints : audit bb46276 ; architecture/CI dab55f2 ; clôture/Pages/nettoyage655b5dd.
-- Lot : réorganisation et workflow terminés, sans changement fonctionnel ni modèle IA. Source unique src/ ; dist/ généré ; état unique ici.
-- Terminé : 9 archives Git distantes vérifiées par fetch indépendant/fsck ; 14 snapshots récupérables ; 8 branches retirées après vérification des pointes, PR et remplacement Pages.
-- Preview : https://nishiosxn.github.io/decoupe-ia/ ; Actions develop après CI ; anciennes previews sous previews/v4.0.0/ et previews/v3.2.0/. Publication et ressources publiques vérifiées.
-- Validations PASS : npm ci, build/validate, 9 unitaires, 19 Playwright, 1 essai ISNet réel global+local, dry-run Cloudflare7 assets, CI/Pages run38046087117, smoke navigateur public3 versions, garde-fou release (3 cas sur copie jetable) et diff.
-- Non exécuté : téléphone physique, nouvelle campagne5 images, CI sur main (workflow non intégré), merge/tag stable/déploiement Cloudflare.
-- Reste : vérification du dashboard Cloudflare avant retrait de codex/cloudflare-static-hosting, conservée sur décision utilisateur. Deux branches permanentes + cette exception temporaire. Aucun autre blocage.
-- Prochaine action exacte : poursuivre les futures demandes sur develop ; pour finir le nettoyage, vérifier la branche liée au dashboard Cloudflare avant suppression. Promotion V5 en main uniquement après autorisation utilisateur explicite et contrôle release.
+- Stable : **v5.2.0**, fonctionnement validé par l’utilisateur ; intégration et publication explicitement autorisées le2026-10-10. Main/Cloudflare encore V3.1.0 avant cette release.
+- Lot actif : work/v5.2.0-release depuis develop870fe95. Code src/ et dist/ identiques à la version approuvée ; aucun changement du moteur.
+- Méthode : main + une branche work temporaire par version ; aucune develop permanente après publication vérifiée.
+- Terminé : audit propre, références distantes vérifiées, documentation de release et CI main/work adaptées. Serveur localV5.2.0 HTTP200.
+- Validations PASS : npm ci, check (9 unitaires), check:release, 19 parcours Playwright desktop/mobile/tactile émulé, diff et source/distribution identiques à develop870fe95. Deux tests IA opt-in exclus de la suite standard.
+- Cloudflare : check Workers Builds sur main confirme Worker decoupe-ia, compte955bb4f9225dcdf53f583c87f4a62edd ; Wrangler local non authentifié. Attendre le déploiement automatique après merge, puis vérifier la production.
+- Restant : validations, push/PR/merge, tagv5.2.0, publication et parcours public, nettoyage develop/work et examen branche Cloudflare.
+- Prochaine action exacte : pousser la clôture et ouvrir la PR ; attendre les contrôles avant merge autorisé, puis publication et vérification publiques.
