@@ -370,13 +370,70 @@
           padding: 12px;
         }
       }
+      .brush-overlay {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 4;
+        touch-action: none;
+        cursor: none;
+      }
+      .brush-cursor {
+        position: absolute;
+        border: 2px solid #b4ed66;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 5;
+        box-shadow: 0 0 2px #000;
+      }
+      .brush-cursor.remove {
+        border-color: #ff899c;
+      }
+      .retouch {
+        margin: 16px 0;
+      }
+      .retouch-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px;
+        margin-top: 10px;
+      }
+      .retouch-tools button[aria-pressed="true"] {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .retouch-tools button[data-mode="remove"][aria-pressed="true"] {
+        border-color: #ff899c;
+        color: #ffb0bd;
+      }
+      .brush-size {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .brush-size input {
+        width: 110px;
+        accent-color: var(--accent);
+      }
+      .retouch-help {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 8px 0;
+      }
     </style>
   </head>
   <body>
     <header>
       <div class="brand">
         <span class="logo" aria-hidden="true">✦</span>Découpe AI
-        <span class="version">v5.1.0</span>
+        <span class="version">v5.2.0</span>
       </div>
       <span class="privacy">Vos images restent sur votre appareil</span>
     </header>
@@ -421,6 +478,13 @@
             >
               <img id="result" alt="Image détourée" draggable="false" hidden />
             </div>
+            <canvas
+              id="brushOverlay"
+              class="brush-overlay"
+              aria-label="Peindre les zones à réanalyser"
+              hidden
+            ></canvas>
+            <div id="brushCursor" class="brush-cursor" hidden></div>
             <div id="divider" class="divider" aria-hidden="true" hidden>
               <span class="handle">↔</span>
             </div>
@@ -460,6 +524,40 @@
           ><input type="radio" name="background" value="black" />Noir</label
         >
       </fieldset>
+      <section
+        id="retouch"
+        class="retouch"
+        aria-label="Corrections locales"
+        hidden
+      >
+        <button id="correct" aria-expanded="false" aria-controls="retouchTools">
+          Corriger
+        </button>
+        <div id="retouchTools" hidden>
+          <div class="retouch-tools">
+            <button id="addBrush" data-mode="add" aria-pressed="true">
+              Ajouter
+            </button>
+            <button id="removeBrush" data-mode="remove" aria-pressed="false">
+              Supprimer
+            </button>
+            <label class="brush-size" for="brushSize"
+              >Taille
+              <input id="brushSize" type="range" min="12" max="100" value="36"
+            /></label>
+            <button id="clearStrokes">Effacer les traits</button>
+            <button id="applyLocal" class="primary">
+              Appliquer la correction locale
+            </button>
+            <button id="undoLocal">Annuler la dernière correction</button>
+          </div>
+          <p class="retouch-help">
+            Peignez le détail et un peu de son contour, puis appliquez. Vert :
+            récupérer le sujet. Rose : retirer un résidu. Les traits sont des
+            indications, jamais une gomme directe.
+          </p>
+        </div>
+      </section>
       <p id="info" class="meta" hidden></p>
       <div id="actions" class="actions" hidden>
         <button id="remove" class="primary">Supprimer le fond</button
@@ -486,6 +584,7 @@
         scènes ambiguës peuvent demander un meilleur cliché.
       </footer>
     </main>
+    <script src="local-brush.js"></script>
     <script>
       "use strict";
       const $ = (id) => document.getElementById(id);
@@ -500,6 +599,14 @@
         downloadURL = null,
         downloadTimer = null,
         dragPointer = null;
+      let mask = null,
+        strokes = [],
+        editing = false,
+        brushMode = "add",
+        activeStroke = null,
+        brushPointer = null,
+        undoPatch = null,
+        pendingInference = null;
       function say(message, error = false) {
         $("status").textContent = message;
         $("status").classList.toggle("error", error);
@@ -513,12 +620,17 @@
         $("cancel").hidden = !value;
         $("progress").hidden = !value;
         $("drop").setAttribute("aria-busy", String(value));
+        updateRetouch();
       }
       function stopWorker() {
         clearTimeout(timer);
         timer = null;
         worker?.terminate();
         worker = null;
+        if (pendingInference) {
+          pendingInference.reject(new Error("Traitement interrompu"));
+          pendingInference = null;
+        }
       }
       function setComparison(value) {
         const position = Math.max(0, Math.min(100, Math.round(Number(value))));
@@ -545,6 +657,7 @@
         downloadURL = null;
       }
       function releaseResult() {
+        resetRetouch();
         releaseDownload();
         if (resultURL) URL.revokeObjectURL(resultURL);
         resultURL = null;
@@ -675,6 +788,10 @@
             $("cancel").hidden = true;
             say("Préparation du PNG transparent…");
             try {
+              const nextMask = Uint8Array.from(
+                new Uint8Array(data.alpha),
+                (a, i) => (a >= 128 && source.data[i * 4 + 3] > 0 ? 255 : 0),
+              );
               const pixels = binaryComposite(
                 source.data,
                 new Uint8Array(data.alpha),
@@ -695,6 +812,7 @@
               canvas.width = canvas.height = 1;
               if (!blob) throw new Error("PNG non créé");
               releaseResult();
+              mask = nextMask;
               resultURL = URL.createObjectURL(blob);
               $("result").src = resultURL;
               $("result").hidden = false;
@@ -710,6 +828,7 @@
                 $(id).hidden = false;
               $("download").hidden = false;
               $("remove").hidden = true;
+              $("retouch").hidden = false;
               say(
                 "Fond supprimé. Comparez, choisissez votre fond et téléchargez le PNG.",
               );
@@ -737,6 +856,311 @@
           );
         }
       }
+
+      function resetRetouch() {
+        mask = null;
+        strokes = [];
+        undoPatch = null;
+        editing = false;
+        activeStroke = null;
+        brushPointer = null;
+        $("retouch").hidden = true;
+        $("retouchTools").hidden = true;
+        $("correct").textContent = "Corriger";
+        $("correct").setAttribute("aria-expanded", "false");
+        $("brushOverlay").hidden = true;
+        $("brushCursor").hidden = true;
+        $("brushOverlay").width = $("brushOverlay").height = 1;
+        setBrushMode("add");
+      }
+      function updateRetouch() {
+        for (const id of ["correct", "addBrush", "removeBrush", "brushSize"])
+          $(id).disabled = busy;
+        $("clearStrokes").disabled = busy || !strokes.length;
+        $("applyLocal").disabled = busy || !strokes.length || !!activeStroke;
+        $("undoLocal").disabled = busy || !undoPatch || !!strokes.length;
+        $("download").disabled = busy || !!strokes.length;
+        $("brushOverlay").style.pointerEvents = busy ? "none" : "auto";
+      }
+      function setBrushMode(mode) {
+        brushMode = mode;
+        $("addBrush").setAttribute("aria-pressed", String(mode === "add"));
+        $("removeBrush").setAttribute(
+          "aria-pressed",
+          String(mode === "remove"),
+        );
+        $("brushCursor").classList.toggle("remove", mode === "remove");
+      }
+      function drawStrokes() {
+        if (!source || !editing) return;
+        const overlay = $("brushOverlay"),
+          rect = $("comparison").getBoundingClientRect(),
+          scale = Math.min(2, devicePixelRatio || 1);
+        overlay.width = Math.max(1, Math.round(rect.width * scale));
+        overlay.height = Math.max(1, Math.round(rect.height * scale));
+        const ctx = overlay.getContext("2d");
+        ctx.scale(overlay.width / source.width, overlay.height / source.height);
+        ctx.lineCap = ctx.lineJoin = "round";
+        for (const stroke of strokes) {
+          ctx.strokeStyle = ctx.fillStyle =
+            stroke.mode === "add" ? "#b4ed6655" : "#ff899c66";
+          ctx.lineWidth = stroke.radius * 2;
+          ctx.beginPath();
+          if (stroke.points.length === 1) {
+            const p = stroke.points[0];
+            ctx.arc(p.x, p.y, stroke.radius, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            stroke.points.forEach((p, i) =>
+              i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y),
+            );
+            ctx.stroke();
+          }
+        }
+      }
+      function brushPoint(event) {
+        const rect = $("comparison").getBoundingClientRect();
+        return {
+          x: Math.max(
+            0,
+            Math.min(
+              source.width,
+              ((event.clientX - rect.left) * source.width) / rect.width,
+            ),
+          ),
+          y: Math.max(
+            0,
+            Math.min(
+              source.height,
+              ((event.clientY - rect.top) * source.height) / rect.height,
+            ),
+          ),
+        };
+      }
+      function showCursor(event) {
+        const rect = $("comparison").getBoundingClientRect(),
+          cursor = $("brushCursor");
+        cursor.hidden = false;
+        cursor.style.left = event.clientX - rect.left + "px";
+        cursor.style.top = event.clientY - rect.top + "px";
+        cursor.style.width = cursor.style.height = $("brushSize").value + "px";
+      }
+      function toggleEditing() {
+        if (busy || !mask) return;
+        editing = !editing;
+        $("correct").textContent = editing
+          ? "Quitter la correction"
+          : "Corriger";
+        $("correct").setAttribute("aria-expanded", String(editing));
+        $("retouchTools").hidden = !editing;
+        $("brushOverlay").hidden = !editing;
+        $("compare").hidden = editing;
+        $("divider").hidden = editing;
+        $("compareHint").hidden = editing;
+        $("brushCursor").hidden = true;
+        if (editing) setComparison(100);
+        else setComparison(50);
+        drawStrokes();
+        updateRetouch();
+        if (!editing && strokes.length)
+          say(
+            "Traits en attente : rouvrez Corriger pour les appliquer ou les effacer avant téléchargement.",
+          );
+      }
+      async function showMask(nextMask) {
+        const canvas = document.createElement("canvas");
+        canvas.width = source.width;
+        canvas.height = source.height;
+        let url;
+        try {
+          canvas
+            .getContext("2d")
+            .putImageData(
+              new ImageData(
+                binaryComposite(source.data, nextMask),
+                source.width,
+                source.height,
+              ),
+              0,
+              0,
+            );
+          const blob = await new Promise((resolve) =>
+            canvas.toBlob(resolve, "image/png"),
+          );
+          if (!blob) throw Error("PNG non créé");
+          url = URL.createObjectURL(blob);
+          const probe = new Image();
+          probe.src = url;
+          await probe.decode();
+          const old = resultURL;
+          $("result").src = url;
+          resultURL = url;
+          url = null;
+          mask = nextMask;
+          if (old) URL.revokeObjectURL(old);
+          releaseDownload();
+        } finally {
+          canvas.width = canvas.height = 1;
+          if (url) URL.revokeObjectURL(url);
+        }
+      }
+      async function applyLocal() {
+        if (busy || !mask || !strokes.length || activeStroke) return;
+        lock(true);
+        say("Recalcul de la segmentation locale…");
+        let next = null;
+        try {
+          const boxes = LocalBrush.regions(
+              strokes,
+              source.width,
+              source.height,
+            ),
+            patches = [];
+          worker = new Worker(new URL("background-worker.js", location.href));
+          worker.onmessage = ({ data }) => {
+            if (data.type === "progress")
+              return say("Correction locale · " + data.message);
+            if (data.type === "result" && pendingInference) {
+              const p = pendingInference;
+              pendingInference = null;
+              p.resolve(new Uint8Array(data.alpha));
+            } else if (data.type === "error" && pendingInference) {
+              const p = pendingInference;
+              pendingInference = null;
+              p.reject(new Error("Échec du modèle local"));
+            }
+          };
+          worker.onerror = () => stopWorker();
+          timer = setTimeout(stopWorker, 480000);
+          for (let i = 0; i < boxes.length; i++) {
+            const rect = boxes[i],
+              codes = LocalBrush.coverage(strokes, rect);
+            say("Analyse locale " + (i + 1) + "/" + boxes.length + "…");
+            const pixels = LocalBrush.crop(source.data, source.width, rect);
+            const image = new Blob([pixels], {
+              type: "image/x-rgba8;width=" + rect.w + ";height=" + rect.h,
+            });
+            const alpha = await new Promise((resolve, reject) => {
+              pendingInference = { resolve, reject };
+              worker.postMessage({ image });
+            });
+            patches.push(
+              LocalBrush.changes(
+                mask,
+                source.width,
+                source.data,
+                rect,
+                alpha,
+                codes,
+              ),
+            );
+          }
+          stopWorker();
+          $("cancel").hidden = true;
+          const count = patches.reduce((n, p) => n + p.indices.length, 0);
+          if (!count) {
+            strokes = [];
+            drawStrokes();
+            say(
+              "La prédiction locale ne propose aucun changement. Élargissez le trait ou son contexte ; ISNet peut confirmer la même erreur.",
+            );
+            return;
+          }
+          next = mask.slice();
+          for (const patch of patches) LocalBrush.apply(next, patch);
+          await showMask(next);
+          undoPatch = patches;
+          strokes = [];
+          drawStrokes();
+          say(
+            "Correction locale appliquée : " +
+              count +
+              " pixels ajustés. Le reste de l’image est conservé.",
+          );
+        } catch {
+          say(
+            "Correction locale interrompue ou échouée. Le résultat précédent et vos traits sont conservés ; vous pouvez réessayer.",
+            true,
+          );
+        } finally {
+          stopWorker();
+          lock(false);
+        }
+      }
+      $("correct").onclick = toggleEditing;
+      $("addBrush").onclick = () => setBrushMode("add");
+      $("removeBrush").onclick = () => setBrushMode("remove");
+      $("clearStrokes").onclick = () => {
+        strokes = [];
+        activeStroke = null;
+        drawStrokes();
+        updateRetouch();
+        say("Traits effacés. Le masque n’a pas été modifié.");
+      };
+      $("applyLocal").onclick = applyLocal;
+      $("undoLocal").onclick = async () => {
+        if (busy || !undoPatch || strokes.length) return;
+        lock(true);
+        $("cancel").hidden = true;
+        try {
+          const next = mask.slice();
+          for (const patch of undoPatch) LocalBrush.apply(next, patch, true);
+          await showMask(next);
+          undoPatch = null;
+          say("Dernière correction locale annulée.");
+        } catch {
+          say(
+            "Impossible d’annuler pour le moment. Le résultat courant est conservé.",
+            true,
+          );
+        } finally {
+          lock(false);
+        }
+      };
+      $("brushOverlay").addEventListener("pointerdown", (event) => {
+        if (busy || !editing || event.button !== 0 || brushPointer !== null)
+          return;
+        event.preventDefault();
+        brushPointer = event.pointerId;
+        $("brushOverlay").setPointerCapture(event.pointerId);
+        activeStroke = {
+          mode: brushMode,
+          radius:
+            (Number($("brushSize").value) * source.width) /
+            $("comparison").getBoundingClientRect().width /
+            2,
+          points: [brushPoint(event)],
+        };
+        strokes.push(activeStroke);
+        showCursor(event);
+        drawStrokes();
+        updateRetouch();
+      });
+      $("brushOverlay").addEventListener("pointermove", (event) => {
+        if (busy || !editing) return;
+        showCursor(event);
+        if (event.pointerId === brushPointer && activeStroke) {
+          for (const sample of event.getCoalescedEvents?.().length
+            ? event.getCoalescedEvents()
+            : [event])
+            activeStroke.points.push(brushPoint(sample));
+          drawStrokes();
+        }
+      });
+      for (const name of ["pointerup", "pointercancel", "lostpointercapture"])
+        $("brushOverlay").addEventListener(name, (event) => {
+          if (event.pointerId !== brushPointer) return;
+          if (name === "pointerup" && activeStroke)
+            activeStroke.points.push(brushPoint(event));
+          brushPointer = null;
+          activeStroke = null;
+          drawStrokes();
+          updateRetouch();
+        });
+      $("brushOverlay").addEventListener("pointerleave", () => {
+        $("brushCursor").hidden = true;
+      });
+      new ResizeObserver(() => drawStrokes()).observe($("comparison"));
       $("choose").onclick = $("change").onclick = () => {
         if (!busy) $("file").click();
       };
@@ -774,7 +1198,7 @@
           setBackground(event.target.value);
       });
       $("download").onclick = async () => {
-        if (!resultURL || busy) return;
+        if (!resultURL || busy || strokes.length) return;
         let url = resultURL,
           canvas = null;
         const selected = background;

@@ -1,15 +1,12 @@
 # Découpe AI — état opérationnel
 
-- Base du lot : `codex/simple-background-removal` V5.0.0, commit `c01667fe69a549afb084141d427b1cf3e106c76f`, synchronisé avec GitHub.
-- Travail : `codex/v5.1-compare-backgrounds`, candidate V5.1.0.
-- Périmètre : comparateur avant/après et trois fonds ; aucun pinceau ni modification IA.
-- Réalisé : cadre unique proportionnel ; résultat révélé à gauche, original à droite ; 0/50/100 %, souris/tactile par Pointer Events et capture, range accessible au clavier/ARIA ; contrôles masqués avant détourage et réinitialisés à chaque image.
-- Fonds : Transparent par défaut (damier CSS), Blanc, Noir ; changement instantané sans copie ni inférence. Export transparent réutilisé ; fond opaque composé à la demande par Canvas. Dimensions et couleurs du sujet conservées.
-- Ressources : un seul PNG détouré de référence ; Canvas opaque temporaire et URL de téléchargement nettoyés ; actions incompatibles bloquées pendant l’export.
-- Source : `outputs/decoupe.html` identique à `dist/index.html`. Worker et seuil alpha 128 inchangés par rapport à V5.0.0. Archives, favicon et `wrangler.jsonc` intacts.
-- Validation locale : 3 tests pixels/cohérence, 13 tests navigateur (5 existants + 8 nouveaux) ; clavier, souris, véritables événements tactiles émulés, alignement portrait/paysage, desktop/mobile, exports redécodés 0/255 ou opaques, aucun recalcul IA, imports répétés. Test photographique IA opt-in non relancé : le moteur est inchangé, résultats V5 conservés dans docs/TESTS.md.
-- Vérification visuelle : desktop 1440 px et mobile 390 px, portrait avec son masque réel V5 réutilisé. Pas de test sur téléphone physique.
-- Validation finale : build, contrôle PowerShell, syntaxe et `git diff --check` réussis. IA, seuillage et Cloudflare comparés à la V5 : identiques. CI étendue à cette branche, sans déploiement.
-- Publication : conserver `http://127.0.0.1:4173/decoupe-ia/` pour les essais locaux. Pages reste sur `preview/github-pages-v4.0.0` ; aucune modification demandée dans ce lot.
-- Production : `main` reste a00a3169ad66c6c38af5f38884d8c664b7a35735 ; aucun merge, tag ni déploiement Cloudflare.
-- Livraison sur la branche dédiée ; consulter Git pour le commit courant. Aucun développement restant dans ce lot.
+- Base : `codex/v5.1-compare-backgrounds`, V5.1.0 `a684aafa94c42831cae7d553a5f3de4beb59f884`.
+- Lot : V5.2.0 `codex/v5.2-smart-local-brush`, corrections locales après détourage.
+- Réalisé : Corriger / Ajouter / Supprimer, taille, traits différés, effacement, application locale, annulation d’une correction ; souris/tactile, curseur et feedback. Comparateur et fonds conservés. Export bloqué si des traits attendent l’application.
+- IA : worker ISNet FP16 V5 inchangé. Bounding boxes des traits + contexte, regroupement des zones proches, crops originaux, inférences locales séquentielles dans un worker réutilisé puis libéré. Fusion uniquement dans les indications, seuil 128, alpha 0/255. Pas de gomme brute.
+- Limite : ISNet ne comprend pas un prompt de trait ; une prédiction inchangée peut laisser la correction sans effet. Supprimer ne force pas la suppression d’un objet prédit sujet. Message explicite et documentation.
+- Atomicité : masque courant conservé jusqu’à validation des crops et du PNG ; erreurs/annulation préservent résultat et traits. Historique minimal des seules différences. RGB et dimensions originaux conservés.
+- Fichiers : source `outputs/decoupe.html`, module pur `outputs/local-brush.js`, copies dans `dist/`. Tests et docs ajoutés, CI étendue à cette branche.
+- Vérifié : suite complète avec 9 tests unitaires et 17 tests navigateur réussis (2 essais IA opt-in exclus de la suite standard) ; tests ajout/correction/export desktop-mobile, retrait et panne atomique, vrai geste tactile émulé. Essai IA réel : crop 372×342 sur portrait 600×900 avec 2 erreurs injectées ; 100 pixels récupérés, 100 supprimés, zéro changement hors indications et zéro alpha intermédiaire ; undo réussi. Voir docs/TESTS.md et docs/validation-local.json.
+- Revue finale : affichages desktop et mobile inspectés ; diff et synchronisation source/distribution vérifiés. Livraison par commit/push sur la branche dédiée ; aucun changement des branches historiques.
+- Local : conserver http://127.0.0.1:4173/decoupe-ia/ . Pages et Cloudflare inchangés ; pas de merge main, tag ou déploiement.

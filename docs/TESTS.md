@@ -56,3 +56,13 @@ Essai IA complémentaire : chaussure exécutée avec viewport mobile 390 × 844,
 - Un seul Worker créé pour chaque détourage, URL du résultat inchangée malgré le déplacement et les fonds : aucune nouvelle inférence.
 
 Validation : `npm run check`, `npm run test:browser` et `./scripts/check.ps1`. Les tests de ce lot simulent uniquement la réponse IA pour isoler la comparaison et les exports ; les essais photographiques réels V5 ci-dessus restent historiques. Aucun modèle, seuil ou code worker n’est modifié. Vérification visuelle de la nouvelle interface en 1440 px et 390 px, avec le portrait et son masque réel déjà calculé lors de V5. L’émulation tactile ne remplace pas un essai sur téléphone physique.
+
+## V5.2.0 — corrections locales
+
+- 6 nouveaux tests unitaires : régions séparées/contextes regroupés, extraction RGBA depuis l’original, continuité des traits et priorité du dernier mode, fusion binaire monotone, protection hors indications, seuil 127/128, alpha original transparent, annulation et cohérence de distribution.
+- 4 nouveaux parcours navigateur : apparition des outils après détourage, dessin différé, crop local issu de l’original, ajout et suppression localisés, panne sans mutation partielle, conservation des traits, effacement, annulation, exports trois fonds et comparateur après correction ; desktop/mobile et vrai geste tactile émulé Chrome.
+- Essai réel ISNet sur le portrait V5 : deux erreurs de masque délibérément introduites pour isoler la capacité de correction (100 pixels de sujet manquants, 100 pixels de fond conservés). Le recalcul reçoit un crop **372 × 342** sur une image **600 × 900**, depuis l’original. **100 pixels récupérés, 100 supprimés, 0 modification hors indications, 0 alpha intermédiaire**. Annulation vérifiée. Recalcul/encodage local observé : **11,5 s** sur l’ordinateur de test, avec poids préchargés sur le miroir local vérifié de V5. Ce test contrôlé ne prouve pas que toutes les erreurs naturelles d’ISNet sont corrigibles.
+
+Mesures brutes : [validation-local.json](validation-local.json). Reproduction du test réel : préparer le portrait via scripts/test-images.mjs, puis définir LOCAL_AI=1 et lancer npm run test:browser -- --grep 'real ISNet local'. AI_MODEL_MIRROR reste optionnel. Les autres tests simulent la sortie IA pour isoler la géométrie, la fusion et l’UX.
+
+La suppression d’un objet toujours prédit comme sujet est intentionnellement sans effet : ce cas est vérifié par un test unitaire. ISNet n’est pas une segmentation interactive conditionnée par les traits. Les anciennes observations de qualité V5 restent applicables. Aucun test sur téléphone physique n’a été réalisé.
