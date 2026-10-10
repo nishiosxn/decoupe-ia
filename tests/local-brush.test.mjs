@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import "../outputs/local-brush.js";
+import "../src/core/local-brush.js";
 import { readFileSync } from "node:fs";
 const B = globalThis.LocalBrush;
 const stroke = (mode, x, y, r = 2) => ({ mode, radius: r, points: [{ x, y }] });
@@ -82,6 +82,6 @@ test("no forced erase when local model still predicts subject; invisible origina
 });
 test("local brush distribution is synchronized", () =>
   assert.equal(
-    readFileSync("outputs/local-brush.js", "utf8"),
+    readFileSync("src/core/local-brush.js", "utf8"),
     readFileSync("dist/local-brush.js", "utf8"),
   ));

@@ -1,68 +1,51 @@
-# Découpe AI — détourage simple
+# Découpe AI
 
-Candidate **v5.2.0**, construite depuis `codex/v5.1-compare-backgrounds` (`a684aaf`) sur `codex/v5.2-smart-local-brush`.
+Version stable actuelle : **v3.1.0**, conservée sur main (a00a316). Le tag v3.1.0 désigne la release initiale9105f4b. Production Cloudflare inchangée.
 
-1. Déposer une image ou cliquer sur **Choisir une image** (JPG, PNG, WebP).
-2. Cliquer sur **Supprimer le fond**.
-3. Glisser le comparateur : 0 % = originale, 50 % = détourée à gauche / originale à droite, 100 % = détourée. Le curseur démarre au centre et fonctionne aussi au clavier.
-4. Si nécessaire, ouvrir **Corriger**, peindre en **Ajouter** ou **Supprimer**, puis **Appliquer la correction locale**. Effacer les traits n’affecte pas le résultat ; la dernière correction appliquée peut être annulée.
-5. Quitter la correction pour retrouver le comparateur, choisir **Transparent**, **Blanc** ou **Noir**, puis télécharger le PNG à la résolution originale.
+Candidate : **v5.2.0**, sur develop, avec comparateur, fonds, corrections locales et filigrane. Cette candidate n’est pas une release production validée par l’utilisateur.
 
-Le parcours de base reste simple ; les corrections locales n’apparaissent qu’après un détourage réussi. L’original et le résultat sont superposés dans un seul cadre, à la même taille. Le fond choisi ne concerne que le résultat ; changer de fond ou déplacer le curseur ne relance jamais l’IA. Traitement local, sans compte ni clé API. Le modèle et le moteur sont téléchargés depuis jsDelivr et Static IMG.LY ; les pixels ne sont pas envoyés à un serveur IA.
+## Utilisation
 
-## Moteur et export
+Importer une image JPG/PNG/WebP, supprimer le fond, comparer puis télécharger un PNG à la résolution originale. Choisir un fond transparent, blanc ou noir. Après traitement, Corriger propose Ajouter/Supprimer : peindre les indications puis appliquer le recalcul local ; la dernière correction peut être annulée. L’original à20 % derrière le résultat aide à retrouver les éléments supprimés ; ce guide est désactivable et reste absent des exports.
 
-ISNet FP16, via `@imgly/background-removal` **1.7.0**, reconnaît le premier plan. Il ne compare pas simplement les couleurs au fond. Inférence à 1024 × 1024 puis masque rééchantillonné à la taille originale. Le seuil interne de 128/255 produit exclusivement des alpha **0 ou 255**. Les RGB proviennent des pixels originaux décodés par le navigateur, jamais de la sortie colorée du modèle. Aucun lissage d’alpha après seuillage. En export transparent, le masque courant est exporté sans transparence intermédiaire. En export blanc/noir, un Canvas compose le résultat sur la couleur pure choisie et produit un PNG entièrement opaque ; le damier et le comparateur ne sont jamais exportés.
+Tout le traitement est local au navigateur. ISNet FP16 via @imgly/background-removal1.7.0 télécharge son runtime/modèle au premier traitement (~100 Mo). Aucune clé ni backend. Alpha transparent strictement0/255, RGB originaux conservés. Limites : sujets ambigus et détails fins ; ISNet n’est pas conditionné par les traits, donc une correction peut ne rien changer. Images limitées à32 MP et16384 pixels par côté ; mémoire dépendante de l’appareil. Voir docs/VALIDATION.md.
 
-Ce choix impose des contours plus nets : cheveux, transparences physiques et très petits éléments restent difficiles. Le modèle peut se tromper sur le sujet. Les couleurs similaires au fond ne sont pas une règle de suppression. Aucun remplissage automatique des trous n’est appliqué : cela boucherait aussi de vraies ouvertures.
+## Installation et commandes
 
-Images acceptées jusqu’à 32 MP et 16384 px par côté : au-delà, l’import est refusé explicitement, jamais réduit silencieusement. Sur appareil peu doté, une image sous cette limite peut encore dépasser la mémoire disponible. L’annulation interrompt le worker et libère le modèle. Le premier lancement télécharge environ 88 Mo de poids et 12 Mo de runtime ; les suivants dépendent du cache HTTP.
+Node.js22 ou plus, Chrome installé pour les tests locaux (Chromium en CI).
 
-## Corrections locales
+    npm ci
+    npm run check
+    npm run dev
+    npm run test:browser
 
-Le pinceau dessine des **indications temporaires**, jamais un effacement direct. La taille est celle du trait à l’écran. On peut peindre plusieurs zones et mélanger les modes avant d’appliquer. Le téléchargement est bloqué tant que des traits restent en attente, pour ne pas exporter un résultat qui ne les prend pas en compte.
+Test local : http://127.0.0.1:4173/decoupe-ia/ .
 
-Chaque trait définit une bounding box, augmentée d’une marge de contexte de 64 pixels minimum ou trois rayons du trait, à la résolution originale. Les crops proches sont regroupés ; les zones éloignées sont traitées séparément. ISNet repart uniquement des pixels originaux de ces crops. Le contexte aide l’analyse mais **seuls les pixels indiqués** peuvent être modifiés :
+- npm run build : générer dist/ depuis src/.
+- npm run validate : syntaxe JS, ressources, versions et distribution identique.
+- npm run check : build, validation, tests unitaires.
+- npm run test:browser : import/export, comparaison, corrections, filigrane, desktop/mobile/tactile émulé.
+- npm run build:pages : staging .pages/ depuis dist/ et archives Git vérifiées ; checkout avec tags requis.
+- npm run check:release : contrôle supplémentaire stable=candidate, uniquement après validation utilisateur.
 
-- Ajouter remet de l’alpha 255 si la prédiction locale reconnaît du sujet (seuil 128).
-- Supprimer met de l’alpha 0 si la prédiction locale reconnaît du fond.
-- En dehors des indications, le masque global reste exactement inchangé.
+## Arborescence
 
-Les traits superposés utilisent le dernier mode peint. Toutes les régions d’une correction sont validées avant publication du résultat ; échec ou annulation préserve le résultat et les traits. Un historique minimal garde les différences de la dernière correction appliquée. Pour les exports, les RGB restent ceux de l’original.
+    src/index.html, styles.css, app.js, favicon.svg
+    src/ai/background-worker.js
+    src/core/pixels.js, local-brush.js
+    dist/                 distribution générée, versionnée et contrôlée
+    scripts/              build, validation, serveur et fixtures
+    tests/                unitaires et Playwright
+    docs/                 architecture, workflow, historique, validation, audit
 
-**Limite essentielle : ISNet n’est pas un modèle conditionné par des clics ou des traits.** Le trait choisit où réanalyser, pas ce que le modèle doit obligatoirement considérer comme sujet/fond. Un objet que le modèle reconnaît encore comme sujet ne sera pas supprimé de force. Une prédiction inchangée produit un message explicite. Ce système corrige des erreurs sensibles au contexte ; il ne garantit pas la sélection arbitraire d’un objet. Le contexte d’une indication couvrant presque toute une petite image peut naturellement atteindre ses bords.
+src/ est l’unique source officielle. Ne pas modifier dist/ directement. Les anciennes sources outputs/ et snapshots sont récupérables dans les tags archive/* ; voir docs/REPOSITORY_AUDIT.md.
 
-## Développement
+## Git et publications
 
-Node.js 22 ou plus, puis :
+main = stable/Cloudflare ; develop = travail courant et preview. Aucun merge ni déploiement production automatique depuis develop. GitHub Actions teste develop et main ; seule develop peut publier Pages. La preview conserve https://nishiosxn.github.io/decoupe-ia/ ; les anciennes previews restent disponibles sous previews/v4.0.0/ et previews/v3.2.0/ après migration vérifiée.
 
-```sh
-npm ci
-npm run check
-npm run dev
-npm run test:browser
-```
+Lire [WORK_STATE.md](WORK_STATE.md) pour reprendre. [Architecture](docs/ARCHITECTURE.md), [workflow](docs/WORKFLOW.md), [changelog](docs/CHANGELOG.md), [validation](docs/VALIDATION.md), [audit et archives](docs/REPOSITORY_AUDIT.md).
 
-Ouvrir http://127.0.0.1:4173/decoupe-ia/ . Tests locaux avec Chrome installé ; en CI, Chromium Playwright.
+Méthode inspirée de [GamePanel](https://github.com/MrMekouil/GamePanel) : checkpoints récupérables, état compact, preuves et validation avant release, sans importer son architecture Python ni ses branches par lot.
 
-- `outputs/decoupe.html` : source active, interface et orchestration.
-- `outputs/background-worker.js` : segmentation isolée et annulable, inchangée depuis V5 ; session ISNet réutilisée pour les crops successifs d’une correction.
-- `outputs/local-brush.js` : géométrie des crops, couverture des traits, fusion binaire et patchs d’annulation, sans DOM.
-- `dist/` : copie générée par `npm run build`, sans bundler.
-- `tests/` : pixels et parcours navigateur.
-- `scripts/check.ps1` : contrôle historique source/distribution et archives.
-- `outputs/versions/` : archives immuables conservées.
-
-Une séparation supplémentaire du code n’est nécessaire que lorsque de nouvelles fonctions la justifieront. Ne pas éditer `dist/` à la main. Voir [architecture](docs/ARCHITECTURE.md) et [tests](docs/TESTS.md).
-
-## Publication
-
-Cloudflare conserve sa configuration `wrangler.jsonc` et sa branche de production `main`. Ce travail ne fusionne rien, ne crée aucun tag et ne déploie pas Cloudflare.
-
-GitHub Pages sert déjà une autre preview depuis une branche dédiée. Un dépôt ne possède qu’un site Pages ; remplacer sa source affecterait la preview existante. Cette candidate fournit `dist/` et un artefact CI statique prêts à publier, sans changer cette configuration. Une publication simultanée demanderait soit un autre dépôt Pages, soit l’ajout d’un sous-dossier dans la branche de publication existante. Ces actions ne font pas partie de cette livraison.
-
-Bibliothèque IMG.LY sous AGPL-3.0 : [source et licence](https://github.com/imgly/background-removal-js). Les conditions de cette dépendance restent applicables.
-
-### Guide visuel en correction
-
-En mode Corriger, l’original apparaît à 20 % derrière le résultat opaque et les traits. Le contrôle « Afficher l’original en filigrane » est activé par défaut pour chaque nouvelle image ; son choix reste mémorisé tant que cette image est ouverte. Il agit uniquement sur la prévisualisation, sans inférence, modification du masque ou inclusion dans les PNG. Hors correction, le comparateur habituel est restauré.
+Bibliothèque IMG.LY sous AGPL-3.0 : [source et licence](https://github.com/imgly/background-removal-js).

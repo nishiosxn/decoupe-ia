@@ -1,9 +1,5 @@
-import { copyFile } from "node:fs/promises";
-for (const [source, target] of [
-  ["decoupe.html", "index.html"],
-  ["favicon.svg", "favicon.svg"],
-  ["background-worker.js", "background-worker.js"],
-  ["local-brush.js", "local-brush.js"],
-])
-  await copyFile("outputs/" + source, "dist/" + target);
-console.log("Distribution synchronized.");
+import { copyFile, mkdir } from 'node:fs/promises';
+import { siteFiles } from './site-files.mjs';
+await mkdir('dist', { recursive: true });
+for (const [source, target] of Object.entries(siteFiles)) await copyFile(source, 'dist/' + target);
+console.log('Distribution generated from src/.');

@@ -1,3 +1,7 @@
+# Validation et limites
+
+Les sections V5 à filigrane ci-dessous sont des preuves historiques acquises avant réorganisation. Les anciens chemins outputs/ y désignent les sources archivées ; le code courant est dans src/.
+
 # Validation de la candidate simple
 
 ## Vérifications automatiques
@@ -70,3 +74,11 @@ La suppression d’un objet toujours prédit comme sujet est intentionnellement 
 ## Filigrane en correction
 
 Deux parcours desktop/mobile vérifient les couches alignées, l’opacité 20 %, les événements traversants, la différence visuelle dans le fond supprimé et l’opacité intacte du sujet. Ils contrôlent le masque et l’URL résultat inchangés, aucune nouvelle inférence au basculement, la préférence entre ouvertures et sa remise à zéro au nouvel import, les PNG strictement identiques (octet par octet) pour les trois fonds, et un ajout dans une zone visible uniquement en filigrane. Les tests V5.2 de suppression et d’annulation restent applicables. Réponses IA simulées : le moteur est inchangé.
+
+## Réorganisation main/develop — 2026-10-10
+
+PASS : npm ci (3 packages, audit sans vulnérabilité), build déterministe, validation syntaxe/ressources/versions, 9 tests unitaires et 19 parcours Playwright (desktop/mobile/tactile émulé). Deux tests IA opt-in exclus de la suite standard ; l’essai local réel a ensuite été exécuté séparément avec ISNet et les poids du miroir local : global600×900 puis crop372×342, 100 pixels récupérés,100 retirés, aucun changement hors indications, alpha binaire et undo vérifié. Cas contrôlé, pas une nouvelle qualification de qualité sur cinq images. Le worker déplacé conserve exactement le blob Git bc6908d0c5d41ee2c58d41cd474f6b6b4e37a13a.
+
+PASS : récupération indépendante des9 archives distantes, git fsck, égalité des pointes et présence des14 fichiers snapshots. Build Pages avec anciennes previews généré localement. Dry-run wrangler4.132.0 :7 assets reconnus, aucun déploiement. URL locale /decoupe-ia/ et toutes les fonctionnalités couvertes par les tests navigateur.
+
+Non exécuté : téléphone physique, nouvelle campagne IA sur cinq photographies, release/merge/tag stable, déploiement Cloudflare. Production observée en lecture seule : V3.1.0. Liaison Git Cloudflare dans le dashboard non accessible ; branche technique conservée sur décision utilisateur. La publication Pages et CI distante seront consignées après vérification.
