@@ -22,9 +22,13 @@ for (const model of models) {
     r.fulfill({
       contentType: "text/javascript",
       path:
-        model === "baseline"
-          ? "work/v53/baseline.js"
-          : "scripts/benchmark/candidate-worker.js",
+        model === "roi"
+          ? "scripts/benchmark/roi-worker.js"
+          : model === "v53"
+            ? "src/ai/background-worker.js"
+            : model === "baseline"
+              ? "work/v53/baseline.js"
+              : "scripts/benchmark/candidate-worker.js",
     }),
   );
   await page.goto(process.env.BENCH_URL || "http://127.0.0.1:4180/decoupe-ia/");

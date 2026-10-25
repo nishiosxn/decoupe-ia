@@ -45,6 +45,18 @@ globalThis.MaskRefinement = (() => {
     for (let k = 0; k < 3; k++) sum += (rgb[a * 4 + k] - rgb[b * 4 + k]) ** 2;
     return sum;
   }
+  function flatColorRisk(rgb) {
+    // A safety veto, not a semantic classifier: false positives merely skip RGB editing.
+    const n = rgb.length / 4,
+      step = Math.max(1, Math.floor(n / 4096));
+    let flat = 0,
+      count = 0;
+    for (let i = 0; i < n - 1; i += step) {
+      count++;
+      if (colorDistance(rgb, i, i + 1) < 4) flat++;
+    }
+    return count > 0 && flat / count > 0.4;
+  }
   function refine(
     confidence,
     rgb,
@@ -142,5 +154,5 @@ globalThis.MaskRefinement = (() => {
       colors: Uint8Array.from(colors),
     };
   }
-  return { resize, refine, decontaminate };
+  return { resize, refine, decontaminate, flatColorRisk };
 })();

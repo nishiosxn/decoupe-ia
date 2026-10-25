@@ -54,3 +54,21 @@ test("decontamination changes a provable mixture, preserves confident coloured o
     0,
   );
 });
+test("flat coloured artwork veto prevents RGB repair of intentionally drawn lines", () => {
+  const rgba = new Uint8ClampedArray(400).fill(255);
+  for (let i = 0; i < 100; i++) {
+    rgba[i * 4] = 20;
+    rgba[i * 4 + 1] = 120;
+    rgba[i * 4 + 2] = 240;
+  }
+  assert.equal(MaskRefinement.flatColorRisk(rgba), true);
+});
+test("uncertain one-pixel hole can close without filling a confident legitimate opening", () => {
+  const rgb = new Uint8ClampedArray(11 * 11 * 4).fill(255),
+    p = new Float32Array(121).fill(0.99);
+  p[60] = 0.49;
+  p[24] = 0.01;
+  const { alpha } = MaskRefinement.refine(p, rgb, 11, 11, { radius: 2 });
+  assert.equal(alpha[60], 255);
+  assert.equal(alpha[24], 0);
+});

@@ -1,0 +1,608 @@
+[
+  {
+    "image": "anime-complex",
+    "rows": [
+      {
+        "radius": 0,
+        "iou": 0.9662142319951295,
+        "fp": 4117,
+        "fn": 600,
+        "ms": 42.19999999925494,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 46,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 55,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      },
+      {
+        "radius": 1,
+        "iou": 0.9680144580386982,
+        "fp": 3940,
+        "fn": 520,
+        "ms": 29,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 46,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 55,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      },
+      {
+        "radius": 2,
+        "iou": 0.9684991355376525,
+        "fp": 3895,
+        "fn": 496,
+        "ms": 24.699999999254942,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 47,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 56,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      },
+      {
+        "radius": 3,
+        "iou": 0.9688419421042812,
+        "fp": 3856,
+        "fn": 486,
+        "ms": 30.699999999254942,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 47,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 56,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "image": "anime-hat",
+    "rows": [
+      {
+        "radius": 0,
+        "iou": 0.9699555286563865,
+        "fp": 3553,
+        "fn": 1014,
+        "ms": 11.300000000745058,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 3,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 93,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 115,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      },
+      {
+        "radius": 1,
+        "iou": 0.9714739136447146,
+        "fp": 3406,
+        "fn": 926,
+        "ms": 18.600000001490116,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 3,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 92,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 114,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      },
+      {
+        "radius": 2,
+        "iou": 0.9720114351961637,
+        "fp": 3357,
+        "fn": 892,
+        "ms": 16.100000001490116,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 3,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 94,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 115,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      },
+      {
+        "radius": 3,
+        "iou": 0.9723404535691225,
+        "fp": 3319,
+        "fn": 879,
+        "ms": 13.800000000745058,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 3,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 94,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 115,
+            "notOnReferenceBoundary": 6
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "image": "fine-lines",
+    "rows": [
+      {
+        "radius": 0,
+        "iou": 0.8455734561983982,
+        "fp": 22817,
+        "fn": 2153,
+        "ms": 10.700000002980232,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 57,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 70,
+            "notOnReferenceBoundary": 4
+          }
+        ]
+      },
+      {
+        "radius": 1,
+        "iou": 0.8474755796163351,
+        "fp": 22565,
+        "fn": 2059,
+        "ms": 12,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 56,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 69,
+            "notOnReferenceBoundary": 4
+          }
+        ]
+      },
+      {
+        "radius": 2,
+        "iou": 0.8484403282997347,
+        "fp": 22438,
+        "fn": 2011,
+        "ms": 14.099999997764826,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 57,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 70,
+            "notOnReferenceBoundary": 4
+          }
+        ]
+      },
+      {
+        "radius": 3,
+        "iou": 0.8489035522921214,
+        "fp": 22370,
+        "fn": 1994,
+        "ms": 14.600000001490116,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 2,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 57,
+            "notOnReferenceBoundary": 1
+          },
+          {
+            "band": 3,
+            "corrected": 70,
+            "notOnReferenceBoundary": 4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "image": "internal-openings",
+    "rows": [
+      {
+        "radius": 0,
+        "iou": 0.9954280644684311,
+        "fp": 276,
+        "fn": 497,
+        "ms": 10.399999998509884,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 4,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 294,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 296,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      },
+      {
+        "radius": 1,
+        "iou": 0.9967931271152344,
+        "fp": 213,
+        "fn": 329,
+        "ms": 10.699999999254942,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 4,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 295,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 297,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      },
+      {
+        "radius": 2,
+        "iou": 0.9974198740709179,
+        "fp": 185,
+        "fn": 251,
+        "ms": 11.300000000745058,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 4,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 297,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 299,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      },
+      {
+        "radius": 3,
+        "iou": 0.9977213676528903,
+        "fp": 162,
+        "fn": 223,
+        "ms": 12.600000001490116,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 5,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 298,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 300,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "image": "similar-colors",
+    "rows": [
+      {
+        "radius": 0,
+        "iou": 0.09317440564307326,
+        "fp": 754,
+        "fn": 153001,
+        "ms": 12.199999999254942,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 64,
+            "notOnReferenceBoundary": 41
+          },
+          {
+            "band": 2,
+            "corrected": 597,
+            "notOnReferenceBoundary": 302
+          },
+          {
+            "band": 3,
+            "corrected": 643,
+            "notOnReferenceBoundary": 330
+          }
+        ]
+      },
+      {
+        "radius": 1,
+        "iou": 0.09329001772002363,
+        "fp": 501,
+        "fn": 153005,
+        "ms": 14.600000001490116,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 66,
+            "notOnReferenceBoundary": 43
+          },
+          {
+            "band": 2,
+            "corrected": 603,
+            "notOnReferenceBoundary": 306
+          },
+          {
+            "band": 3,
+            "corrected": 649,
+            "notOnReferenceBoundary": 334
+          }
+        ]
+      },
+      {
+        "radius": 2,
+        "iou": 0.09338052386213905,
+        "fp": 444,
+        "fn": 152995,
+        "ms": 13.199999999254942,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 66,
+            "notOnReferenceBoundary": 43
+          },
+          {
+            "band": 2,
+            "corrected": 607,
+            "notOnReferenceBoundary": 308
+          },
+          {
+            "band": 3,
+            "corrected": 654,
+            "notOnReferenceBoundary": 336
+          }
+        ]
+      },
+      {
+        "radius": 3,
+        "iou": 0.0934766677698454,
+        "fp": 409,
+        "fn": 152982,
+        "ms": 16.300000000745058,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 66,
+            "notOnReferenceBoundary": 43
+          },
+          {
+            "band": 2,
+            "corrected": 611,
+            "notOnReferenceBoundary": 309
+          },
+          {
+            "band": 3,
+            "corrected": 659,
+            "notOnReferenceBoundary": 337
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "image": "high-resolution",
+    "rows": [
+      {
+        "radius": 0,
+        "iou": 0.9668441192915735,
+        "fp": 46517,
+        "fn": 9698,
+        "ms": 135.5,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 33,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      },
+      {
+        "radius": 1,
+        "iou": 0.9676800687364311,
+        "fp": 45630,
+        "fn": 9139,
+        "ms": 169.69999999925494,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 33,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      },
+      {
+        "radius": 2,
+        "iou": 0.9683168749376427,
+        "fp": 44908,
+        "fn": 8759,
+        "ms": 171.59999999776483,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 33,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      },
+      {
+        "radius": 3,
+        "iou": 0.9688096095812344,
+        "fp": 44351,
+        "fn": 8464,
+        "ms": 205.30000000074506,
+        "bands": [
+          {
+            "band": 1,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 2,
+            "corrected": 0,
+            "notOnReferenceBoundary": 0
+          },
+          {
+            "band": 3,
+            "corrected": 33,
+            "notOnReferenceBoundary": 0
+          }
+        ]
+      }
+    ]
+  }
+]

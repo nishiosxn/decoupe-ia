@@ -44,10 +44,21 @@ self.onmessage = async ({ data }) => {
       rgb,
       width,
       height,
-      { radius: data.refine === false ? 0 : 1 },
+      {
+        radius:
+          data.refine === false
+            ? 0
+            : Math.min(
+                3,
+                Math.max(1, Math.round(Math.max(width, height) / 512)),
+              ),
+      },
     );
     const corrections =
-      key === "isnet" || data.local || data.decontaminate === false
+      key === "isnet" ||
+      data.local ||
+      data.decontaminate === false ||
+      MaskRefinement.flatColorRisk(rgb)
         ? { indices: new Uint32Array(), colors: new Uint8Array() }
         : MaskRefinement.decontaminate(
             rgb,

@@ -7,6 +7,7 @@
 - Limites connues : cas ton sur ton raté ; traits artificiels fins régressent, bords haute résolution limités. Image exacte de l’utilisateur absente. Détails : docs/QUALITY_BENCHMARK.md et docs/AI_AUDIT_V53.md.
 - Validations CP1 : scripts de benchmark exécutés et SHA256 modèles/entrées vérifiés ; aucun masque simulé pour comparer les moteurs. Pas encore de validation du nouveau runtime intégré.
 - CP2 terminé : BiRef512 FP16 qualifié sur11 images, notices et runtime indépendant intégrés, secours ISNet prévu. Inférence réelle via CDN, PNG600×900 binaire, RGB internes intacts. check12 unitaires et19 Playwright PASS (2 opt-in exclus).
-- En cours : CP3 ablation contours/RGB/haute résolution ; CP4 sessions/cache/mémoire/secours réel ; CP5 validation/preview.
+- CP3 terminé : rayons1/2/3 mesurés, masque guidé adaptatif, veto RGB aplats, trous confiants préservés. Expérience2 crops (~41s, sans gain IoU face au filtre) exclue de l’app. Métriques frontières précision/rappel/F1 et erreurs intérieures disponibles. Tests ciblés15 PASS après correction d’un cas de test de tolérance (pas de bug métrique).
+- En cours : CP4 sessions/cache/mémoire/secours réel ; CP5 validation/preview.
 - Publications : Pages existant autorisé sur work ; aucune autorisation main/tag V5.3/Cloudflare. Archives et codex/cloudflare-static-hosting inchangés.
-- Prochaine action exacte : mesurer le raffinement sur les six masques de référence et comparer les bandes RGB1/2/3 avant CP3.
+- Prochaine action exacte : réutiliser la session au sein d’une image, mesurer cache/WebGPU/mémoire et valider le secours avant CP4.
