@@ -6,11 +6,13 @@ V5.2.0 apporte le comparateur, les fonds transparent/blanc/noir, les corrections
 
 Production : https://decoupe-ia.nishiosamauwu.workers.dev/ . Preview : https://nishiosxn.github.io/decoupe-ia/ .
 
+Candidate : **v5.3.0**, sur work/v5.3.0-quality-segmentation. Cette candidate n’est pas une release production validée. Benchmark et limites : [qualité](docs/QUALITY_BENCHMARK.md), [audit et licences](docs/AI_AUDIT_V53.md).
+
 ## Utilisation
 
 Importer une image JPG/PNG/WebP, supprimer le fond, comparer puis télécharger un PNG à la résolution originale. Choisir un fond transparent, blanc ou noir. Après traitement, Corriger propose Ajouter/Supprimer : peindre les indications puis appliquer le recalcul local ; la dernière correction peut être annulée. L’original à20 % derrière le résultat aide à retrouver les éléments supprimés ; ce guide est désactivable et reste absent des exports.
 
-Tout le traitement est local au navigateur. ISNet FP16 via @imgly/background-removal1.7.0 télécharge son runtime/modèle au premier traitement (~100 Mo). Aucune clé ni backend. Alpha transparent strictement0/255, RGB originaux conservés. Limites : sujets ambigus et détails fins ; ISNet n’est pas conditionné par les traits, donc une correction peut ne rien changer. Images limitées à32 MP et16384 pixels par côté ; mémoire dépendante de l’appareil. Voir docs/VALIDATION.md.
+La candidate V5.3 utilise BiRefNet Lite512 FP16 via ONNX Runtime Web1.22.0, localement (~98,5Mo de poids). ISNet FP16 (~88,2Mo) reste disponible en secours et via « Essayer le résultat classique ». Aucun modèle n’est téléchargé avant traitement. Aucune clé, API payante ou inférence serveur. Alpha0/255 et dimensions originales ; RGB intérieurs préservés, décontamination limitée aux pixels de bord mélangés très probables. La V5.2 stable conserve son moteur historique. Limites connues : traits très fins, objets ton sur ton, résolution native512 ; voir docs/QUALITY_BENCHMARK.md. Images limitées à32MP et16384pixels par côté, sans réduction irréversible de l’export.
 
 ## Installation et commandes
 
@@ -52,4 +54,4 @@ Lire [WORK_STATE.md](WORK_STATE.md) pour reprendre. [Architecture](docs/ARCHITEC
 
 Méthode inspirée de [GamePanel](https://github.com/MrMekouil/GamePanel) : checkpoints récupérables, état compact, preuves et validation avant release, sans importer son architecture Python.
 
-Bibliothèque IMG.LY sous AGPL-3.0 : [source et licence](https://github.com/imgly/background-removal-js).
+Modèles et obligations : [audit des licences](docs/AI_AUDIT_V53.md), notices accessibles dans le site. Le runtime de la candidate ne charge plus la bibliothèque AGPL IMG.LY.

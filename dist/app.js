@@ -11,6 +11,8 @@ let source = null,
   downloadURL = null,
   downloadTimer = null,
   dragPointer = null;
+let colorCorrections = null,
+  resultModel = null;
 let mask = null,
   strokes = [],
   editing = false,
@@ -28,6 +30,7 @@ function lock(value) {
   for (const id of ["choose", "file", "change", "remove", "download"])
     $(id).disabled = value;
   $("backgrounds").disabled = value;
+  $("classic").disabled = value;
   $("compare").disabled = value;
   $("cancel").hidden = !value;
   $("progress").hidden = !value;
@@ -69,6 +72,8 @@ function releaseDownload() {
   downloadURL = null;
 }
 function releaseResult() {
+  colorCorrections = null;
+  resultModel = null;
   resetRetouch();
   releaseDownload();
   if (resultURL) URL.revokeObjectURL(resultURL);
@@ -76,6 +81,7 @@ function releaseResult() {
   $("result").removeAttribute("src");
   $("result").hidden = true;
   $("download").hidden = true;
+  $("classic").hidden = true;
   for (const id of [
     "reveal",
     "compare",
@@ -136,8 +142,7 @@ async function importImage(file) {
     $("previews").hidden = false;
     $("actions").hidden = false;
     $("info").hidden = false;
-    $("info").textContent =
-      file.name + " · " + width + " × " + height + " px";
+    $("info").textContent = file.name + " · " + width + " × " + height + " px";
     $("remove").hidden = false;
     $("remove").textContent = "Supprimer le fond";
     say("Image prête. Cliquez sur « Supprimer le fond ».");
@@ -159,7 +164,7 @@ function fail(message) {
   say(message, true);
   $("remove").textContent = "Réessayer";
 }
-async function processImage() {
+async function processImage(requestedModel = null) {
   if (busy || !source) return;
   lock(true);
   say(
@@ -194,13 +199,18 @@ async function processImage() {
       $("cancel").hidden = true;
       say("Préparation du PNG transparent…");
       try {
-        const nextMask = Uint8Array.from(
-          new Uint8Array(data.alpha),
-          (a, i) => (a >= 128 && source.data[i * 4 + 3] > 0 ? 255 : 0),
+        const nextMask = Uint8Array.from(new Uint8Array(data.alpha), (a, i) =>
+          a >= 128 && source.data[i * 4 + 3] > 0 ? 255 : 0,
         );
         const pixels = binaryComposite(
           source.data,
           new Uint8Array(data.alpha),
+          data.correctionIndices
+            ? {
+                indices: new Uint32Array(data.correctionIndices),
+                colors: new Uint8Array(data.correctionColors),
+              }
+            : null,
         );
         const canvas = document.createElement("canvas");
         canvas.width = source.width;
@@ -218,6 +228,13 @@ async function processImage() {
         canvas.width = canvas.height = 1;
         if (!blob) throw new Error("PNG non créé");
         releaseResult();
+        colorCorrections = data.correctionIndices
+          ? {
+              indices: new Uint32Array(data.correctionIndices),
+              colors: new Uint8Array(data.correctionColors),
+            }
+          : null;
+        resultModel = data.model || null;
         mask = nextMask;
         resultURL = URL.createObjectURL(blob);
         $("result").src = resultURL;
@@ -233,10 +250,12 @@ async function processImage() {
         ])
           $(id).hidden = false;
         $("download").hidden = false;
+        $("classic").hidden = false;
         $("remove").hidden = true;
         $("retouch").hidden = false;
         say(
-          "Fond supprimé. Comparez, choisissez votre fond et téléchargez le PNG.",
+          (data.fallback ? "Moteur de secours utilisé. " : "") +
+            "Fond supprimé. Comparez, choisissez votre fond et téléchargez le PNG.",
         );
       } catch {
         say(
@@ -249,13 +268,12 @@ async function processImage() {
     };
     // Original RGBA stays immutable; only the predicted alpha comes back.
     const input = new Blob([source.data], {
-      type:
-        "image/x-rgba8;width=" +
-        source.width +
-        ";height=" +
-        source.height,
+      type: "image/x-rgba8;width=" + source.width + ";height=" + source.height,
     });
-    worker.postMessage({ image: input });
+    worker.postMessage({
+      image: input,
+      model: typeof requestedModel === "string" ? requestedModel : "biref",
+    });
   } catch {
     fail(
       "Votre navigateur ne peut pas lancer ce traitement. Essayez Chrome, Edge, Firefox ou Safari à jour.",
@@ -287,15 +305,13 @@ function updateRetouch() {
   $("applyLocal").disabled = busy || !strokes.length || !!activeStroke;
   $("undoLocal").disabled = busy || !undoPatch || !!strokes.length;
   $("download").disabled = busy || !!strokes.length;
+  $("classic").disabled = busy || !!strokes.length;
   $("brushOverlay").style.pointerEvents = busy ? "none" : "auto";
 }
 function setBrushMode(mode) {
   brushMode = mode;
   $("addBrush").setAttribute("aria-pressed", String(mode === "add"));
-  $("removeBrush").setAttribute(
-    "aria-pressed",
-    String(mode === "remove"),
-  );
+  $("removeBrush").setAttribute("aria-pressed", String(mode === "remove"));
   $("brushCursor").classList.toggle("remove", mode === "remove");
 }
 function drawStrokes() {
@@ -360,9 +376,7 @@ function toggleEditing() {
   if (busy || !mask) return;
   editing = !editing;
   updateOriginalGuide();
-  $("correct").textContent = editing
-    ? "Quitter la correction"
-    : "Corriger";
+  $("correct").textContent = editing ? "Quitter la correction" : "Corriger";
   $("correct").setAttribute("aria-expanded", String(editing));
   $("retouchTools").hidden = !editing;
   $("brushOverlay").hidden = !editing;
@@ -389,7 +403,7 @@ async function showMask(nextMask) {
       .getContext("2d")
       .putImageData(
         new ImageData(
-          binaryComposite(source.data, nextMask),
+          binaryComposite(source.data, nextMask, colorCorrections),
           source.width,
           source.height,
         ),
@@ -422,11 +436,7 @@ async function applyLocal() {
   say("Recalcul de la segmentation locale…");
   let next = null;
   try {
-    const boxes = LocalBrush.regions(
-        strokes,
-        source.width,
-        source.height,
-      ),
+    const boxes = LocalBrush.regions(strokes, source.width, source.height),
       patches = [];
     worker = new Worker(new URL("background-worker.js", location.href));
     worker.onmessage = ({ data }) => {
@@ -454,17 +464,10 @@ async function applyLocal() {
       });
       const alpha = await new Promise((resolve, reject) => {
         pendingInference = { resolve, reject };
-        worker.postMessage({ image });
+        worker.postMessage({ image, model: resultModel, local: true });
       });
       patches.push(
-        LocalBrush.changes(
-          mask,
-          source.width,
-          source.data,
-          rect,
-          alpha,
-          codes,
-        ),
+        LocalBrush.changes(mask, source.width, source.data, rect, alpha, codes),
       );
     }
     stopWorker();
@@ -474,7 +477,7 @@ async function applyLocal() {
       strokes = [];
       drawStrokes();
       say(
-        "La prédiction locale ne propose aucun changement. Élargissez le trait ou son contexte ; ISNet peut confirmer la même erreur.",
+        "La prédiction locale ne propose aucun changement. Élargissez le trait ou son contexte ; le modèle peut confirmer la même erreur.",
       );
       return;
     }
@@ -530,8 +533,7 @@ $("undoLocal").onclick = async () => {
   }
 };
 $("brushOverlay").addEventListener("pointerdown", (event) => {
-  if (busy || !editing || event.button !== 0 || brushPointer !== null)
-    return;
+  if (busy || !editing || event.button !== 0 || brushPointer !== null) return;
   event.preventDefault();
   brushPointer = event.pointerId;
   $("brushOverlay").setPointerCapture(event.pointerId);
@@ -674,3 +676,5 @@ window.addEventListener("pagehide", () => {
   stopWorker();
   releaseSource();
 });
+
+$("classic").onclick = () => processImage("isnet");

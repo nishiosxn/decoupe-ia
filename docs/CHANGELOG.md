@@ -1,5 +1,13 @@
 # Historique fonctionnel
 
+## Candidate V5.3.0
+
+- BiRefNet Lite512 FP16, runtime ONNX indépendant, probabilités conservées jusqu’à la binarisation ; export à résolution originale.
+- Secours ISNet et comparaison à la demande avec le résultat classique ; aucune classification opaque ni double inférence systématique.
+- Benchmark attribué11 images, comparaison réelle ISNet/SkyTNT/BiRef FP32 et FP16 ; limites et régressions conservées.
+- Filtrage guidé uniquement des zones incertaines et décontamination RGB de bord très conservatrice, sans remplissage systématique des trous.
+- Candidate non autorisée en production ; main et tag V5.2 inchangés.
+
 ## Stable V5.2.0
 
 - Détourage local ISNet avec alpha binaire, import et PNG à la résolution originale (base V5).

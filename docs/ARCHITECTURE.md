@@ -1,23 +1,13 @@
 # Architecture
 
-## Sources et distribution
+Source unique src/, distribution versionnée dist/ générée par scripts/build.mjs et contrôlée par scripts/validate.mjs. scripts/site-files.mjs maintient les URL plates compatibles /decoupe-ia/ et Cloudflare. Aucun bundler ni backend. licenses.html sert les notices complètes.
 
-src/index.html contient le DOM ; styles.css le design responsive ; app.js orchestre import, état, preview, worker, correction et téléchargement. Les scripts restent classiques pour préserver le comportement du checkpoint8ffac19 et les tests existants. Aucune dépendance ou bundler supplémentaire.
+app.js conserve le parcours V5.2 : RGBA original immuable, comparaison, fonds, filigrane20%, traits, patches atomiques, annulation et exports. background-worker.js orchestre segmentation et préparation du masque. models.js fixe artefacts, tailles, révisions et SHA256. segmentation.js fournit prétraitement, chargement ONNX, cache local vérifié, session et inférence ; aucun code IMG.LY AGPL importé. isnet-model.json décrit les chunks de poids de secours.
 
-src/ai/background-worker.js : segmentation ISNet FP161.7.0, CPU/WASM, segmentForeground et sortie RGBA brute. Son contenu est conservé intégralement. src/core/pixels.js expose binaryComposite ; src/core/local-brush.js expose la géométrie, la couverture des traits et les patchs binaires. Ces modules purs ne connaissent ni le DOM ni les publications.
+BiRef512 FP16 : RGB redimensionné512×512, ImageNet mean/std, NCHW float32 ; sortie logits convertie par sigmoid, float conservé. ISNet FP16 : étirement1024, (RGB-128)/256, probabilité directe ; poids identiques à la référence V5.2, runtime indépendant. Les poids arrivent des CDN statiques épinglés, jamais des pixels utilisateur. Un seul modèle résident à la fois ; changement de modèle libère la session précédente. Les tenseurs sont libérés explicitement. Échec du candidat → tentative ISNet ; erreur récupérable si le secours échoue aussi. Le bouton classique peut relancer explicitement ISNet.
 
-scripts/site-files.mjs est la table source → dist. Les scripts sont copiés à la racine publique pour conserver background-worker.js et les autres URLs relatives, y compris sous /decoupe-ia/. scripts/build.mjs génère dist/ ; scripts/validate.mjs vérifie toutes les copies et ressources locales, la syntaxe et les versions. dist/ reste versionné pour le déploiement Cloudflare existant ; CI refuse une distribution désynchronisée.
+MaskRefinement reconstruit la confiance float aux dimensions originales, traite seulement les pixels incertains avec un filtre bilatéral guidé RGB, puis produit alpha0/255. Aucun remplissage général des trous, érosion ou flou alpha final. La décontamination requiert des témoins sujet/fond très confiants et un mélange RGB cohérent ; patch RGB séparé, sans mutation source. Désactivée pour le secours et pour les crops de correction. binaryComposite applique seulement les corrections autorisées sur des pixels encore conservés. Le reste des RGB demeure identique à la source décodée.
 
-## Flux et garanties
+Les corrections utilisent le modèle ayant produit le résultat, des crops depuis l’original et des modifications limitées aux indications. showMask applique le même patch RGB de bord ; annulation restaure le masque précédent. Guide, fonds et comparaison restent visuels : aucune inférence, aucun filigrane exporté. Blanc/noir composés à partir du même PNG détouré.
 
-Import → décodage RGBA original immuable → worker ISNet → alpha → binaryComposite → PNG. Seul le masque est rééchantillonné depuis la résolution d’inférence1024×1024. L’export conserve dimensions et RGB décodés ; alpha=255 si prédiction>=128 et alpha original>0, sinon0. Aucun filtre de couleur ni alpha partiel.
-
-Les traits ne mutent pas le masque. Bounding boxes + contexte max(64px,3 rayons), regroupement si recouvrement, crop de l’original → segmentation locale → patch uniquement sous les indications. Ajouter suit les prédictions sujet, Supprimer les prédictions fond. Les patches de toutes les régions sont validés avant remplacement atomique du résultat ; une annulation conserve les seules différences de la dernière correction. Échec/annulation du worker conserve résultat et traits. ISNet ne comprend pas de prompts de pinceau : absence de changement possible.
-
-Preview : même cadre et ratio pour original, résultat et overlay. Comparateur clip-path hors correction ; en correction, fond sélectionné → original20 % optionnel → résultat100 % → traits/curseur. Le guide n’intercepte pas les événements et n’est jamais encodé. Blanc/noir sont composés uniquement au téléchargement ; transparent réutilise le PNG binaire. Le téléchargement est bloqué si des traits restent en attente.
-
-URL d’objets révoquées à remplacement, canvases temporaires libérés, bitmaps fermés. Le worker est terminé après succès, erreur, annulation ou8minutes ; les crops successifs réutilisent sa session pendant un lot. Aucun backend, secret ou envoi des pixels aux fournisseurs de modèles.
-
-## Publications
-
-wrangler.jsonc reste inchangé et sert dist/ ; main contient la stable et déclenche le déploiement Cloudflare existant. GitHub Pages reçoit .pages/ via Actions après les validations des branches work/** ou main. Le staging ajoute les previews historiques en lisant leurs tags Git, sans créer une seconde source active ou une branche de publication. Les tags sont nécessaires au build Pages ; leur absence est bloquante, jamais ignorée.
+Main sert la stable Cloudflare. Actions work/** valide et publie Pages avec les archives Git historiques. Aucun changement de workflow/publication dans la V5.3 ; aucun tag stable ni déploiement Cloudflare autorisé pour cette candidate.

@@ -15,4 +15,3 @@ self.onmessage=async({data})=>{try {
  ctx.putImageData(new ImageData(gray,size,size),0,0);const original=new OffscreenCanvas(w,h);original.getContext('2d').drawImage(small,x,y,rw,rh,0,0,w,h);const d=original.getContext('2d').getImageData(0,0,w,h).data;const alpha=Uint8Array.from({length:w*h},(_,i)=>d[i*4]);
  self.postMessage({type:'result',alpha:alpha.buffer,ms:performance.now()-start},[alpha.buffer]);t.dispose();for(const v of Object.values(out))v.dispose();
 }catch(e){self.postMessage({type:'error',message:String(e),stack:e.stack});}};
-
