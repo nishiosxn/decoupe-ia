@@ -1,0 +1,1619 @@
+{
+  "date": "2026-10-25",
+  "runtime": "Chrome Windows, ONNX Runtime Web 1.22.0 CPU/WASM; baseline IMG.LY 1.7.0",
+  "distribution": "candidate weights mirrored on localhost, SHA256 checked; inference remains actual browser execution",
+  "baselineTag": "v5.2.0",
+  "report": [
+    {
+      "model": "baseline",
+      "image": "anime-complex",
+      "width": 700,
+      "height": 900,
+      "totalMs": 20864.199999999255,
+      "inferenceMs": null,
+      "kept": 132947,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9297557496880015,
+          "dice": 0.96359940872136,
+          "fp": 4727,
+          "fn": 5123,
+          "tp": 130375,
+          "tn": 489775,
+          "boundaryRecall2px": 0.7741251325556734,
+          "thinRecall": 0.9311475409836065
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9287390197144411,
+          "dice": 0.9630530727292957,
+          "fp": 4298,
+          "fn": 5664,
+          "tp": 129834,
+          "tn": 490204,
+          "boundaryRecall2px": 0.7802226935312832,
+          "thinRecall": 0.9032786885245901
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9254411131831874,
+          "dice": 0.9612769841122017,
+          "fp": 3922,
+          "fn": 6473,
+          "tp": 129025,
+          "tn": 490580,
+          "boundaryRecall2px": 0.7887062566277837,
+          "thinRecall": 0.8778688524590164
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9213900935695226,
+          "dice": 0.959086961729652,
+          "fp": 3543,
+          "fn": 7387,
+          "tp": 128111,
+          "tn": 490959,
+          "boundaryRecall2px": 0.7940084835630965,
+          "thinRecall": 0.8139344262295082
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9186600453292142,
+          "dice": 0.9576058536952392,
+          "fp": 3044,
+          "fn": 8225,
+          "tp": 127273,
+          "tn": 491458,
+          "boundaryRecall2px": 0.7887062566277837,
+          "thinRecall": 0.7442622950819672
+        }
+      ],
+      "heap": 18989288
+    },
+    {
+      "model": "baseline",
+      "image": "anime-hat",
+      "width": 700,
+      "height": 900,
+      "totalMs": 10755.5,
+      "inferenceMs": null,
+      "kept": 140736,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9319749009247028,
+          "dice": 0.9647898639662771,
+          "fp": 2945,
+          "fn": 7354,
+          "tp": 141101,
+          "tn": 478600,
+          "boundaryRecall2px": 0.8448186528497409,
+          "thinRecall": 0.928388746803069
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9260914471854765,
+          "dice": 0.9616277031277393,
+          "fp": 2583,
+          "fn": 8580,
+          "tp": 139875,
+          "tn": 478962,
+          "boundaryRecall2px": 0.8401554404145077,
+          "thinRecall": 0.9019607843137255
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9183228083209509,
+          "dice": 0.9574226030547285,
+          "fp": 2297,
+          "fn": 10016,
+          "tp": 138439,
+          "tn": 479248,
+          "boundaryRecall2px": 0.8538860103626943,
+          "thinRecall": 0.8644501278772379
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9081697066347719,
+          "dice": 0.9518751958770066,
+          "fp": 2040,
+          "fn": 11780,
+          "tp": 136675,
+          "tn": 479505,
+          "boundaryRecall2px": 0.8572538860103627,
+          "thinRecall": 0.7885763000852515
+        },
+        {
+          "threshold": 160,
+          "iou": 0.8995580581180198,
+          "dice": 0.9471235209407115,
+          "fp": 1791,
+          "fn": 13300,
+          "tp": 135155,
+          "tn": 479754,
+          "boundaryRecall2px": 0.8466321243523316,
+          "thinRecall": 0.6999147485080989
+        }
+      ],
+      "heap": 28644557
+    },
+    {
+      "model": "baseline",
+      "image": "fine-lines",
+      "width": 700,
+      "height": 900,
+      "totalMs": 11484.10000000149,
+      "inferenceMs": null,
+      "kept": 134991,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.921004848931774,
+          "dice": 0.9588782136015153,
+          "fp": 4865,
+          "fn": 6490,
+          "tp": 132388,
+          "tn": 486257,
+          "boundaryRecall2px": 0.7581629539212694,
+          "thinRecall": 0.7475806451612903
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9204017629514769,
+          "dice": 0.958551258083523,
+          "fp": 4291,
+          "fn": 7105,
+          "tp": 131773,
+          "tn": 486831,
+          "boundaryRecall2px": 0.759688739700946,
+          "thinRecall": 0.7318548387096774
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9191403184213477,
+          "dice": 0.9578667172991466,
+          "fp": 3826,
+          "fn": 7713,
+          "tp": 131165,
+          "tn": 487296,
+          "boundaryRecall2px": 0.7618248397924932,
+          "thinRecall": 0.7056451612903226
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9160897161051795,
+          "dice": 0.9562075391410251,
+          "fp": 3393,
+          "fn": 8545,
+          "tp": 130333,
+          "tn": 487729,
+          "boundaryRecall2px": 0.767165090021361,
+          "thinRecall": 0.6717741935483871
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9116027164446451,
+          "dice": 0.953757502646908,
+          "fp": 2925,
+          "fn": 9610,
+          "tp": 129268,
+          "tn": 488197,
+          "boundaryRecall2px": 0.7683857186451022,
+          "thinRecall": 0.6258064516129033
+        }
+      ],
+      "heap": 19243486
+    },
+    {
+      "model": "baseline",
+      "image": "internal-openings",
+      "width": 800,
+      "height": 800,
+      "totalMs": 10666.800000000745,
+      "inferenceMs": null,
+      "kept": 216645,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.7782557378258504,
+          "dice": 0.8753023777978859,
+          "fp": 48095,
+          "fn": 0,
+          "tp": 168799,
+          "tn": 423106,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 1
+        },
+        {
+          "threshold": 112,
+          "iou": 0.7786901505261264,
+          "dice": 0.8755770647246169,
+          "fp": 47974,
+          "fn": 0,
+          "tp": 168799,
+          "tn": 423227,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 1
+        },
+        {
+          "threshold": 128,
+          "iou": 0.7791502227145791,
+          "dice": 0.8758678303463019,
+          "fp": 47846,
+          "fn": 0,
+          "tp": 168799,
+          "tn": 423355,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 1
+        },
+        {
+          "threshold": 144,
+          "iou": 0.7794972683652216,
+          "dice": 0.876087063714715,
+          "fp": 47738,
+          "fn": 9,
+          "tp": 168790,
+          "tn": 423463,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 0.9904458598726115
+        },
+        {
+          "threshold": 160,
+          "iou": 0.7797100377930346,
+          "dice": 0.8762214307224224,
+          "fp": 47643,
+          "fn": 37,
+          "tp": 168762,
+          "tn": 423558,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 0.9607218683651805
+        }
+      ],
+      "heap": 32433805
+    },
+    {
+      "model": "baseline",
+      "image": "similar-colors",
+      "width": 800,
+      "height": 800,
+      "totalMs": 10536.199999999255,
+      "inferenceMs": null,
+      "kept": 16637,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.09700823971803425,
+          "dice": 0.17685963734049698,
+          "fp": 867,
+          "fn": 152340,
+          "tp": 16459,
+          "tn": 470334,
+          "boundaryRecall2px": 0.9365482233502538,
+          "thinRecall": 0.9097664543524416
+        },
+        {
+          "threshold": 112,
+          "iou": 0.09621920135938827,
+          "dice": 0.17554737453981786,
+          "fp": 689,
+          "fn": 152491,
+          "tp": 16308,
+          "tn": 470512,
+          "boundaryRecall2px": 0.9365482233502538,
+          "thinRecall": 0.9097664543524416
+        },
+        {
+          "threshold": 128,
+          "iou": 0.09520659595076661,
+          "dice": 0.17386052330723267,
+          "fp": 517,
+          "fn": 152679,
+          "tp": 16120,
+          "tn": 470684,
+          "boundaryRecall2px": 0.9365482233502538,
+          "thinRecall": 0.9097664543524416
+        },
+        {
+          "threshold": 144,
+          "iou": 0.09404761201000242,
+          "dice": 0.17192599476949014,
+          "fp": 360,
+          "fn": 152890,
+          "tp": 15909,
+          "tn": 470841,
+          "boundaryRecall2px": 0.9365482233502538,
+          "thinRecall": 0.9065817409766455
+        },
+        {
+          "threshold": 160,
+          "iou": 0.09291854761890675,
+          "dice": 0.17003746129360559,
+          "fp": 220,
+          "fn": 153094,
+          "tp": 15705,
+          "tn": 470981,
+          "boundaryRecall2px": 0.9365482233502538,
+          "thinRecall": 0.8938428874734607
+        }
+      ],
+      "heap": 28688738
+    },
+    {
+      "model": "baseline",
+      "image": "high-resolution",
+      "width": 2400,
+      "height": 3200,
+      "totalMs": 11132.900000002235,
+      "inferenceMs": null,
+      "kept": 1679702,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9152935037411406,
+          "dice": 0.9557736210698766,
+          "fp": 98770,
+          "fn": 49274,
+          "tp": 1599685,
+          "tn": 5932271,
+          "boundaryRecall2px": 0.6913698127065736,
+          "thinRecall": 0.8938794507796137
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9127994769057439,
+          "dice": 0.9544120938200398,
+          "fp": 96042,
+          "fn": 56123,
+          "tp": 1592836,
+          "tn": 5934999,
+          "boundaryRecall2px": 0.6945280940139552,
+          "thinRecall": 0.8510588782871771
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9102295780022898,
+          "dice": 0.9530054277080183,
+          "fp": 93586,
+          "fn": 62843,
+          "tp": 1586116,
+          "tn": 5937455,
+          "boundaryRecall2px": 0.6877708409842086,
+          "thinRecall": 0.7854316965324645
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9076377074639626,
+          "dice": 0.9515828963882115,
+          "fp": 91524,
+          "fn": 69231,
+          "tp": 1579728,
+          "tn": 5939517,
+          "boundaryRecall2px": 0.6650752846125597,
+          "thinRecall": 0.6851291598789854
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9043920352669345,
+          "dice": 0.9497960698414366,
+          "fp": 90007,
+          "fn": 76252,
+          "tp": 1572707,
+          "tn": 5941034,
+          "boundaryRecall2px": 0.6442159383033419,
+          "thinRecall": 0.5566674424016755
+        }
+      ],
+      "heap": 216668199
+    },
+    {
+      "model": "baseline",
+      "image": "portrait",
+      "width": 600,
+      "height": 900,
+      "totalMs": 10778.199999999255,
+      "inferenceMs": null,
+      "kept": 359918,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 94193072
+    },
+    {
+      "model": "baseline",
+      "image": "fur",
+      "width": 600,
+      "height": 450,
+      "totalMs": 10677.699999999255,
+      "inferenceMs": null,
+      "kept": 107243,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 10255745
+    },
+    {
+      "model": "baseline",
+      "image": "object-plain",
+      "width": 600,
+      "height": 436,
+      "totalMs": 10408.400000002235,
+      "inferenceMs": null,
+      "kept": 46694,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 8206377
+    },
+    {
+      "model": "baseline",
+      "image": "object-complex",
+      "width": 600,
+      "height": 400,
+      "totalMs": 10983.199999999255,
+      "inferenceMs": null,
+      "kept": 59398,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 8850966
+    },
+    {
+      "model": "baseline",
+      "image": "red-shoe",
+      "width": 600,
+      "height": 400,
+      "totalMs": 11145.099999997765,
+      "inferenceMs": null,
+      "kept": 60460,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 7621003
+    },
+    {
+      "model": "anime",
+      "image": "anime-complex",
+      "width": 700,
+      "height": 900,
+      "totalMs": 14332.70000000298,
+      "inferenceMs": 12119.10000000149,
+      "kept": 133263,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9445872854683866,
+          "dice": 0.971504125864802,
+          "fp": 3351,
+          "fn": 4343,
+          "tp": 131155,
+          "tn": 491151,
+          "boundaryRecall2px": 0.8109756097560976,
+          "thinRecall": 0.8885245901639345
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9451443588503274,
+          "dice": 0.971798678643011,
+          "fp": 3011,
+          "fn": 4587,
+          "tp": 130911,
+          "tn": 491491,
+          "boundaryRecall2px": 0.8194591728525981,
+          "thinRecall": 0.8122950819672131
+        },
+        {
+          "threshold": 128,
+          "iou": 0.945640134650885,
+          "dice": 0.9720606784466497,
+          "fp": 2637,
+          "fn": 4872,
+          "tp": 130626,
+          "tn": 491865,
+          "boundaryRecall2px": 0.8290031813361611,
+          "thinRecall": 0.730327868852459
+        },
+        {
+          "threshold": 144,
+          "iou": 0.945957524051552,
+          "dice": 0.9722283373195476,
+          "fp": 2227,
+          "fn": 5216,
+          "tp": 130282,
+          "tn": 492275,
+          "boundaryRecall2px": 0.8462354188759279,
+          "thinRecall": 0.639344262295082
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9457853262057011,
+          "dice": 0.972137381722362,
+          "fp": 1808,
+          "fn": 5636,
+          "tp": 129862,
+          "tn": 492694,
+          "boundaryRecall2px": 0.8618769883351007,
+          "thinRecall": 0.5032786885245901
+        }
+      ],
+      "heap": 18860076
+    },
+    {
+      "model": "anime",
+      "image": "anime-hat",
+      "width": 700,
+      "height": 900,
+      "totalMs": 14757,
+      "inferenceMs": 12809.400000002235,
+      "kept": 145675,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.950487864413936,
+          "dice": 0.9746155121037162,
+          "fp": 3124,
+          "fn": 4381,
+          "tp": 144074,
+          "tn": 478421,
+          "boundaryRecall2px": 0.8272020725388601,
+          "thinRecall": 0.8925831202046036
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9512270932670243,
+          "dice": 0.9750039824163608,
+          "fp": 2756,
+          "fn": 4619,
+          "tp": 143836,
+          "tn": 478789,
+          "boundaryRecall2px": 0.8424870466321244,
+          "thinRecall": 0.8277919863597613
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9530025762927944,
+          "dice": 0.9759358106959508,
+          "fp": 2149,
+          "fn": 4929,
+          "tp": 143526,
+          "tn": 479396,
+          "boundaryRecall2px": 0.8606217616580311,
+          "thinRecall": 0.7374254049445865
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9535577531382147,
+          "dice": 0.9762268370171396,
+          "fp": 1710,
+          "fn": 5264,
+          "tp": 143191,
+          "tn": 479835,
+          "boundaryRecall2px": 0.8717616580310881,
+          "thinRecall": 0.638533674339301
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9523602973560933,
+          "dice": 0.9755989185457106,
+          "fp": 1399,
+          "fn": 5740,
+          "tp": 142715,
+          "tn": 480146,
+          "boundaryRecall2px": 0.877720207253886,
+          "thinRecall": 0.5029838022165388
+        }
+      ],
+      "heap": 15374472
+    },
+    {
+      "model": "anime",
+      "image": "fine-lines",
+      "width": 700,
+      "height": 900,
+      "totalMs": 12131,
+      "inferenceMs": 12008.79999999702,
+      "kept": 154133,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.8210686196739658,
+          "dice": 0.9017437462855908,
+          "fp": 23743,
+          "fn": 5355,
+          "tp": 133523,
+          "tn": 467379,
+          "boundaryRecall2px": 0.5602685382972231,
+          "thinRecall": 0.7217741935483871
+        },
+        {
+          "threshold": 112,
+          "iou": 0.8230724064402485,
+          "dice": 0.9029508685805725,
+          "fp": 22917,
+          "fn": 5709,
+          "tp": 133169,
+          "tn": 468205,
+          "boundaryRecall2px": 0.5703387244430882,
+          "thinRecall": 0.6774193548387096
+        },
+        {
+          "threshold": 128,
+          "iou": 0.8283476850118557,
+          "dice": 0.9061161526359078,
+          "fp": 21382,
+          "fn": 6127,
+          "tp": 132751,
+          "tn": 469740,
+          "boundaryRecall2px": 0.5793408605431798,
+          "thinRecall": 0.6290322580645161
+        },
+        {
+          "threshold": 144,
+          "iou": 0.8336462967397195,
+          "dice": 0.9092771034653397,
+          "fp": 19820,
+          "fn": 6580,
+          "tp": 132298,
+          "tn": 471302,
+          "boundaryRecall2px": 0.588037839487336,
+          "thinRecall": 0.5782258064516129
+        },
+        {
+          "threshold": 160,
+          "iou": 0.8352139461172742,
+          "dice": 0.9102088046838569,
+          "fp": 18872,
+          "fn": 7123,
+          "tp": 131755,
+          "tn": 472250,
+          "boundaryRecall2px": 0.590631675312786,
+          "thinRecall": 0.5137096774193548
+        }
+      ],
+      "heap": 24515867
+    },
+    {
+      "model": "anime",
+      "image": "internal-openings",
+      "width": 800,
+      "height": 800,
+      "totalMs": 12269.5,
+      "inferenceMs": 12168,
+      "kept": 126665,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.7383335572055193,
+          "dice": 0.8494728231472871,
+          "fp": 47098,
+          "fn": 9395,
+          "tp": 159404,
+          "tn": 424103,
+          "boundaryRecall2px": 0.36125211505922167,
+          "thinRecall": 0.34182590233545646
+        },
+        {
+          "threshold": 112,
+          "iou": 0.6706205191363025,
+          "dice": 0.8028400363273498,
+          "fp": 44748,
+          "fn": 25590,
+          "tp": 143209,
+          "tn": 426453,
+          "boundaryRecall2px": 0.3126057529610829,
+          "thinRecall": 0.3205944798301486
+        },
+        {
+          "threshold": 128,
+          "iou": 0.47373146388543896,
+          "dice": 0.6429006579481764,
+          "fp": 31688,
+          "fn": 73822,
+          "tp": 94977,
+          "tn": 439513,
+          "boundaryRecall2px": 0.2973773265651438,
+          "thinRecall": 0.23991507430997877
+        },
+        {
+          "threshold": 144,
+          "iou": 0.030605605309546063,
+          "dice": 0.05939343848290746,
+          "fp": 255,
+          "fn": 163625,
+          "tp": 5174,
+          "tn": 470946,
+          "boundaryRecall2px": 0.12436548223350254,
+          "thinRecall": 0.022292993630573247
+        },
+        {
+          "threshold": 160,
+          "iou": 0.001279628433817736,
+          "dice": 0.0025559861550749933,
+          "fp": 0,
+          "fn": 168583,
+          "tp": 216,
+          "tn": 471201,
+          "boundaryRecall2px": 0.00338409475465313,
+          "thinRecall": 0
+        }
+      ],
+      "heap": 18888241
+    },
+    {
+      "model": "anime",
+      "image": "similar-colors",
+      "width": 800,
+      "height": 800,
+      "totalMs": 12110.099999997765,
+      "inferenceMs": 11959.699999999255,
+      "kept": 215661,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.7791666281445596,
+          "dice": 0.8758781958012887,
+          "fp": 47527,
+          "fn": 245,
+          "tp": 168554,
+          "tn": 423674,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 0.8014861995753716
+        },
+        {
+          "threshold": 112,
+          "iou": 0.7781563339327567,
+          "dice": 0.8752395040673445,
+          "fp": 47520,
+          "fn": 469,
+          "tp": 168330,
+          "tn": 423681,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 0.6496815286624203
+        },
+        {
+          "threshold": 128,
+          "iou": 0.7772908403369114,
+          "dice": 0.8746917754772928,
+          "fp": 47519,
+          "fn": 657,
+          "tp": 168142,
+          "tn": 423682,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 0.5222929936305732
+        },
+        {
+          "threshold": 144,
+          "iou": 0.7763339158091328,
+          "dice": 0.8740855634178523,
+          "fp": 47519,
+          "fn": 864,
+          "tp": 167935,
+          "tn": 423682,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 0.440552016985138
+        },
+        {
+          "threshold": 160,
+          "iou": 0.7753168945718802,
+          "dice": 0.8734405637015569,
+          "fp": 47519,
+          "fn": 1084,
+          "tp": 167715,
+          "tn": 423682,
+          "boundaryRecall2px": 0.6311336717428088,
+          "thinRecall": 0.37791932059447986
+        }
+      ],
+      "heap": 47701533
+    },
+    {
+      "model": "anime",
+      "image": "high-resolution",
+      "width": 2400,
+      "height": 3200,
+      "totalMs": 12935.300000000745,
+      "inferenceMs": 12213.39999999851,
+      "kept": 1614469,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9535059984757824,
+          "dice": 0.9761997139704233,
+          "fp": 27967,
+          "fn": 50000,
+          "tp": 1598959,
+          "tn": 6003074,
+          "boundaryRecall2px": 0.7459419757620271,
+          "thinRecall": 0.7481964161042588
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9537250318627759,
+          "dice": 0.9763144928879253,
+          "fp": 24624,
+          "fn": 52821,
+          "tp": 1596138,
+          "tn": 6006417,
+          "boundaryRecall2px": 0.7548292324641939,
+          "thinRecall": 0.632767046776821
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9533519564776279,
+          "dice": 0.9761189767324421,
+          "fp": 21722,
+          "fn": 56212,
+          "tp": 1592747,
+          "tn": 6009319,
+          "boundaryRecall2px": 0.7488064634594197,
+          "thinRecall": 0.5101233418664184
+        },
+        {
+          "threshold": 144,
+          "iou": 0.952047417345403,
+          "dice": 0.9754347244700603,
+          "fp": 19460,
+          "fn": 60545,
+          "tp": 1588414,
+          "tn": 6011581,
+          "boundaryRecall2px": 0.7335291957399926,
+          "thinRecall": 0.3863160344426344
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9510574740399419,
+          "dice": 0.9749148722622119,
+          "fp": 15810,
+          "fn": 65668,
+          "tp": 1583291,
+          "tn": 6015231,
+          "boundaryRecall2px": 0.7078222548659566,
+          "thinRecall": 0.2794973237142192
+        }
+      ],
+      "heap": 141865015
+    },
+    {
+      "model": "anime",
+      "image": "portrait",
+      "width": 600,
+      "height": 900,
+      "totalMs": 11514.699999999255,
+      "inferenceMs": 11480.300000000745,
+      "kept": 0,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 11036078
+    },
+    {
+      "model": "anime",
+      "image": "fur",
+      "width": 600,
+      "height": 450,
+      "totalMs": 11820.89999999851,
+      "inferenceMs": 11767.10000000149,
+      "kept": 0,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 6959980
+    },
+    {
+      "model": "anime",
+      "image": "object-plain",
+      "width": 600,
+      "height": 436,
+      "totalMs": 11271.699999999255,
+      "inferenceMs": 11245.89999999851,
+      "kept": 0,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 10191642
+    },
+    {
+      "model": "anime",
+      "image": "object-complex",
+      "width": 600,
+      "height": 400,
+      "totalMs": 11087.699999999255,
+      "inferenceMs": 11061.5,
+      "kept": 0,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 8783444
+    },
+    {
+      "model": "anime",
+      "image": "red-shoe",
+      "width": 600,
+      "height": 400,
+      "totalMs": 11277.900000002235,
+      "inferenceMs": 11259.300000000745,
+      "kept": 0,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 11057675
+    },
+    {
+      "model": "biref",
+      "image": "anime-complex",
+      "width": 700,
+      "height": 900,
+      "totalMs": 14935.800000000745,
+      "inferenceMs": 9276.39999999851,
+      "kept": 139015,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9643201061409078,
+          "dice": 0.9818360084247222,
+          "fp": 4693,
+          "fn": 309,
+          "tp": 135189,
+          "tn": 489809,
+          "boundaryRecall2px": 0.725609756097561,
+          "thinRecall": 0.8967213114754098
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9653811787411988,
+          "dice": 0.9823856961523494,
+          "fp": 4397,
+          "fn": 446,
+          "tp": 135052,
+          "tn": 490105,
+          "boundaryRecall2px": 0.7301166489925769,
+          "thinRecall": 0.8573770491803279
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9662423986305,
+          "dice": 0.9828314141771064,
+          "fp": 4115,
+          "fn": 598,
+          "tp": 134900,
+          "tn": 490387,
+          "boundaryRecall2px": 0.7346235418875928,
+          "thinRecall": 0.8049180327868852
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9662009009267495,
+          "dice": 0.982809946299323,
+          "fp": 3914,
+          "fn": 798,
+          "tp": 134700,
+          "tn": 490588,
+          "boundaryRecall2px": 0.7386002120890774,
+          "thinRecall": 0.7245901639344262
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9655920310827989,
+          "dice": 0.982494857339116,
+          "fp": 3743,
+          "fn": 1048,
+          "tp": 134450,
+          "tn": 490759,
+          "boundaryRecall2px": 0.7415164369034994,
+          "thinRecall": 0.6360655737704918
+        }
+      ],
+      "heap": 14301412
+    },
+    {
+      "model": "biref",
+      "image": "anime-hat",
+      "width": 700,
+      "height": 900,
+      "totalMs": 8164,
+      "inferenceMs": 8062.300000000745,
+      "kept": 150993,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9691060961697329,
+          "dice": 0.984310696162913,
+          "fp": 4067,
+          "fn": 645,
+          "tp": 147810,
+          "tn": 477478,
+          "boundaryRecall2px": 0.7575129533678756,
+          "thinRecall": 0.8576300085251491
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9698560130323971,
+          "dice": 0.9846973653058025,
+          "fp": 3781,
+          "fn": 808,
+          "tp": 147647,
+          "tn": 477764,
+          "boundaryRecall2px": 0.7590673575129534,
+          "thinRecall": 0.8056265984654731
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9699878293477189,
+          "dice": 0.9847653014880714,
+          "fp": 3550,
+          "fn": 1012,
+          "tp": 147443,
+          "tn": 477995,
+          "boundaryRecall2px": 0.761139896373057,
+          "thinRecall": 0.7442455242966752
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9694654477434992,
+          "dice": 0.9844960203330881,
+          "fp": 3373,
+          "fn": 1263,
+          "tp": 147192,
+          "tn": 478172,
+          "boundaryRecall2px": 0.7626943005181347,
+          "thinRecall": 0.6530264279624893
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9679499011206328,
+          "dice": 0.9837139660612719,
+          "fp": 3245,
+          "fn": 1617,
+          "tp": 146838,
+          "tn": 478300,
+          "boundaryRecall2px": 0.7637305699481866,
+          "thinRecall": 0.5549872122762148
+        }
+      ],
+      "heap": 26904698
+    },
+    {
+      "model": "biref",
+      "image": "fine-lines",
+      "width": 700,
+      "height": 900,
+      "totalMs": 7637.900000002235,
+      "inferenceMs": 7573,
+      "kept": 159534,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.8438257254265225,
+          "dice": 0.915298787504795,
+          "fp": 23716,
+          "fn": 1677,
+          "tp": 137201,
+          "tn": 467406,
+          "boundaryRecall2px": 0.5825450106805005,
+          "thinRecall": 0.8491935483870968
+        },
+        {
+          "threshold": 112,
+          "iou": 0.8448997970651551,
+          "dice": 0.9159302834866281,
+          "fp": 23243,
+          "fn": 1902,
+          "tp": 136976,
+          "tn": 467879,
+          "boundaryRecall2px": 0.5819346963686298,
+          "thinRecall": 0.8088709677419355
+        },
+        {
+          "threshold": 128,
+          "iou": 0.8456038790757509,
+          "dice": 0.9163438467621946,
+          "fp": 22810,
+          "fn": 2154,
+          "tp": 136724,
+          "tn": 468312,
+          "boundaryRecall2px": 0.5791882819652121,
+          "thinRecall": 0.7673387096774194
+        },
+        {
+          "threshold": 144,
+          "iou": 0.8460889889089342,
+          "dice": 0.9166286067379507,
+          "fp": 22423,
+          "fn": 2403,
+          "tp": 136475,
+          "tn": 468699,
+          "boundaryRecall2px": 0.5790357033872444,
+          "thinRecall": 0.714516129032258
+        },
+        {
+          "threshold": 160,
+          "iou": 0.8457089610187918,
+          "dice": 0.9164055426723166,
+          "fp": 22097,
+          "fn": 2740,
+          "tp": 136138,
+          "tn": 469025,
+          "boundaryRecall2px": 0.5735428745804089,
+          "thinRecall": 0.6524193548387097
+        }
+      ],
+      "heap": 17090974
+    },
+    {
+      "model": "biref",
+      "image": "internal-openings",
+      "width": 800,
+      "height": 800,
+      "totalMs": 7430.39999999851,
+      "inferenceMs": 7306.900000002235,
+      "kept": 168576,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9943742370722445,
+          "dice": 0.9971791839148433,
+          "fp": 778,
+          "fn": 176,
+          "tp": 168623,
+          "tn": 470423,
+          "boundaryRecall2px": 0.9961928934010152,
+          "thinRecall": 0.9076433121019108
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9950627199924406,
+          "dice": 0.9975252507311759,
+          "fp": 525,
+          "fn": 311,
+          "tp": 168488,
+          "tn": 470676,
+          "boundaryRecall2px": 0.9961928934010152,
+          "thinRecall": 0.8290870488322718
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9954280374273986,
+          "dice": 0.9977087810300111,
+          "fp": 275,
+          "fn": 498,
+          "tp": 168301,
+          "tn": 470926,
+          "boundaryRecall2px": 0.9966159052453468,
+          "thinRecall": 0.7165605095541401
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9948085620249568,
+          "dice": 0.9973975257205767,
+          "fp": 133,
+          "fn": 744,
+          "tp": 168055,
+          "tn": 471068,
+          "boundaryRecall2px": 0.9970389170896785,
+          "thinRecall": 0.5849256900212314
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9934202733755004,
+          "dice": 0.996699277762758,
+          "fp": 53,
+          "fn": 1058,
+          "tp": 167741,
+          "tn": 471148,
+          "boundaryRecall2px": 0.9970389170896785,
+          "thinRecall": 0.40976645435244163
+        }
+      ],
+      "heap": 25215917
+    },
+    {
+      "model": "biref",
+      "image": "similar-colors",
+      "width": 800,
+      "height": 800,
+      "totalMs": 7784.300000000745,
+      "inferenceMs": 7651.400000002235,
+      "kept": 16563,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.09764499782488566,
+          "dice": 0.17791726472289465,
+          "fp": 1307,
+          "fn": 152189,
+          "tp": 16610,
+          "tn": 469894,
+          "boundaryRecall2px": 0.9615059221658206,
+          "thinRecall": 0.8726114649681529
+        },
+        {
+          "threshold": 112,
+          "iou": 0.09554072599407472,
+          "dice": 0.17441747938194213,
+          "fp": 982,
+          "fn": 152578,
+          "tp": 16221,
+          "tn": 470219,
+          "boundaryRecall2px": 0.9593908629441624,
+          "thinRecall": 0.8280254777070064
+        },
+        {
+          "threshold": 128,
+          "iou": 0.09324572992356327,
+          "dice": 0.17058512532234224,
+          "fp": 753,
+          "fn": 152989,
+          "tp": 15810,
+          "tn": 470448,
+          "boundaryRecall2px": 0.9564297800338409,
+          "thinRecall": 0.7632696390658175
+        },
+        {
+          "threshold": 144,
+          "iou": 0.09090211268437275,
+          "dice": 0.1666549392973321,
+          "fp": 559,
+          "fn": 153404,
+          "tp": 15395,
+          "tn": 470642,
+          "boundaryRecall2px": 0.9564297800338409,
+          "thinRecall": 0.6995753715498938
+        },
+        {
+          "threshold": 160,
+          "iou": 0.08818418252748551,
+          "dice": 0.1620758396297644,
+          "fp": 381,
+          "fn": 153880,
+          "tp": 14919,
+          "tn": 470820,
+          "boundaryRecall2px": 0.9560067681895094,
+          "thinRecall": 0.6093418259023354
+        }
+      ],
+      "heap": 21532669
+    },
+    {
+      "model": "biref",
+      "image": "high-resolution",
+      "width": 2400,
+      "height": 3200,
+      "totalMs": 8785,
+      "inferenceMs": 8046,
+      "kept": 1685668,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9651547334017853,
+          "dice": 0.9822684361664001,
+          "fp": 53453,
+          "fn": 5868,
+          "tp": 1643091,
+          "tn": 5977588,
+          "boundaryRecall2px": 0.5669482188762395,
+          "thinRecall": 0.8091691878054457
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9663563517420554,
+          "dice": 0.9828903605248669,
+          "fp": 49638,
+          "fn": 7509,
+          "tp": 1641450,
+          "tn": 5981403,
+          "boundaryRecall2px": 0.5746603011384502,
+          "thinRecall": 0.7521526646497556
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9669068507921004,
+          "dice": 0.9831750297709458,
+          "fp": 46407,
+          "fn": 9698,
+          "tp": 1639261,
+          "tn": 5984634,
+          "boundaryRecall2px": 0.5713551230260742,
+          "thinRecall": 0.6890854084244822
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9670771146777012,
+          "dice": 0.9832630428788791,
+          "fp": 43663,
+          "fn": 12063,
+          "tp": 1636896,
+          "tn": 5987378,
+          "boundaryRecall2px": 0.5666544252662504,
+          "thinRecall": 0.6202001396323016
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9665299318021553,
+          "dice": 0.9829801379289598,
+          "fp": 41417,
+          "fn": 15160,
+          "tp": 1633799,
+          "tn": 5989624,
+          "boundaryRecall2px": 0.5528461255967683,
+          "thinRecall": 0.5429369327437747
+        }
+      ],
+      "heap": 132111551
+    },
+    {
+      "model": "biref",
+      "image": "portrait",
+      "width": 600,
+      "height": 900,
+      "totalMs": 7419.300000000745,
+      "inferenceMs": 7397.5,
+      "kept": 362240,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 81462028
+    },
+    {
+      "model": "biref",
+      "image": "fur",
+      "width": 600,
+      "height": 450,
+      "totalMs": 7061,
+      "inferenceMs": 7041.099999997765,
+      "kept": 106741,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 18445087
+    },
+    {
+      "model": "biref",
+      "image": "object-plain",
+      "width": 600,
+      "height": 436,
+      "totalMs": 6948.199999999255,
+      "inferenceMs": 6933.300000000745,
+      "kept": 46655,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 6529693
+    },
+    {
+      "model": "biref",
+      "image": "object-complex",
+      "width": 600,
+      "height": 400,
+      "totalMs": 7389,
+      "inferenceMs": 7376.099999997765,
+      "kept": 60297,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 10230432
+    },
+    {
+      "model": "biref",
+      "image": "red-shoe",
+      "width": 600,
+      "height": 400,
+      "totalMs": 7382.60000000149,
+      "inferenceMs": 7359,
+      "kept": 59872,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 8941051
+    }
+  ]
+}

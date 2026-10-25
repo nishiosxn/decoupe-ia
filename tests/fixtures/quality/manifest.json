@@ -1,0 +1,113 @@
+[
+  {
+    "id": "anime-complex",
+    "file": "anime-complex.png",
+    "mask": "anime-complex-mask.png",
+    "category": "complex",
+    "width": 700,
+    "height": 900,
+    "license": "CC-BY-SA-3.0",
+    "groundTruth": "source alpha of deterministic composite; not a natural-scene annotation",
+    "sha256": "e9fa4f37073f3dcb05f86737a6f18a6b8bfb926f3d00920f5d6321d7d43f2f4a"
+  },
+  {
+    "id": "anime-hat",
+    "file": "anime-hat.png",
+    "mask": "anime-hat-mask.png",
+    "category": "hat",
+    "width": 700,
+    "height": 900,
+    "license": "CC-BY-SA-3.0",
+    "groundTruth": "source alpha of deterministic composite; not a natural-scene annotation",
+    "sha256": "bfb7f7334b2e55aa18cf9a17dca61466643dcfa89672b4dbb6f126259ef86f92"
+  },
+  {
+    "id": "fine-lines",
+    "file": "fine-lines.png",
+    "mask": "fine-lines-mask.png",
+    "category": "lines",
+    "width": 700,
+    "height": 900,
+    "license": "CC-BY-SA-3.0",
+    "groundTruth": "source alpha of deterministic composite; not a natural-scene annotation",
+    "sha256": "f4a2084f53548f79ab727a320038e04ac0bc1e288f0c54824ec93b24edfd9297"
+  },
+  {
+    "id": "internal-openings",
+    "file": "internal-openings.png",
+    "mask": "internal-openings-mask.png",
+    "category": "ring",
+    "width": 800,
+    "height": 800,
+    "license": "CC0-1.0",
+    "groundTruth": "source alpha of deterministic composite; not a natural-scene annotation",
+    "sha256": "49139c7f33634232652a8355e303cdfac7e2c5e7f6494831e2b01369191c98f8"
+  },
+  {
+    "id": "similar-colors",
+    "file": "similar-colors.png",
+    "mask": "similar-colors-mask.png",
+    "category": "similar",
+    "width": 800,
+    "height": 800,
+    "license": "CC0-1.0",
+    "groundTruth": "source alpha of deterministic composite; not a natural-scene annotation",
+    "sha256": "e7cfe5673767b9366bd95edd89a8930ff676c2c3ffa7369b6cf17e97a7a275ce"
+  },
+  {
+    "id": "high-resolution",
+    "file": "high-resolution.png",
+    "mask": "high-resolution-mask.png",
+    "category": "large",
+    "width": 2400,
+    "height": 3200,
+    "license": "CC-BY-SA-3.0",
+    "groundTruth": "source alpha of deterministic composite; not a natural-scene annotation",
+    "sha256": "3dcd77a0eebd13faedb5830170d7bf91699015ba37654d5a6482dbbe3c194f99"
+  },
+  {
+    "id": "portrait",
+    "file": "person.jpg",
+    "category": "portrait",
+    "mask": null,
+    "license": "Unsplash License",
+    "groundTruth": null,
+    "sha256": "fa8890c96be180dc3e1b51a7130b299640f8894e5e3030545dcc23ef9f457221"
+  },
+  {
+    "id": "fur",
+    "file": "corgi.jpg",
+    "category": "fur",
+    "mask": null,
+    "license": "Unsplash License",
+    "groundTruth": null,
+    "sha256": "f45f2d68cf2519a470fcd756edd1040601dc30904fc61cf3c17f1715cb111aaa"
+  },
+  {
+    "id": "object-plain",
+    "file": "watch.jpg",
+    "category": "object-plain",
+    "mask": null,
+    "license": "Unsplash License",
+    "groundTruth": null,
+    "sha256": "7e83bdf6050c50754fa34ab694acd843cefea54ed080e2f4bfd7cffc8802c82e"
+  },
+  {
+    "id": "object-complex",
+    "file": "car-1.jpg",
+    "category": "object-complex",
+    "mask": null,
+    "license": "Unsplash License",
+    "groundTruth": null,
+    "sha256": "6ec311f2551a64eb5af460586aa161b6bafa907850aa74eaf771f7d9ac2b7c03"
+  },
+  {
+    "id": "red-shoe",
+    "file": "shoe.jpg",
+    "category": "similar-colors-photo",
+    "mask": null,
+    "license": "Unsplash License",
+    "groundTruth": null,
+    "sha256": "ed5a3c6f301e9ccc26125fffaccaa888418b454c194f0f3d12e07e832c4a827a"
+  }
+]

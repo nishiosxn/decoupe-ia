@@ -1,10 +1,11 @@
 # Découpe AI — état opérationnel
 
-- Stable : **v5.2.0**, fonctionnement validé par l’utilisateur ; intégration et publication explicitement autorisées le2026-10-10. Main/Cloudflare encore V3.1.0 avant cette release.
-- Lot actif : work/v5.2.0-release depuis develop870fe95. Code src/ et dist/ identiques à la version approuvée ; aucun changement du moteur.
-- Méthode : main + une branche work temporaire par version ; aucune develop permanente après publication vérifiée.
-- Terminé : audit propre, références distantes vérifiées, documentation de release et CI main/work adaptées. Serveur localV5.2.0 HTTP200.
-- Validations PASS : npm ci, check (9 unitaires), check:release, 19 parcours Playwright desktop/mobile/tactile émulé, diff et source/distribution identiques à develop870fe95. Deux tests IA opt-in exclus de la suite standard.
-- Cloudflare : check Workers Builds sur main confirme Worker decoupe-ia, compte955bb4f9225dcdf53f583c87f4a62edd ; Wrangler local non authentifié. Attendre le déploiement automatique après merge, puis vérifier la production.
-- Restant : validations, push/PR/merge, tagv5.2.0, publication et parcours public, nettoyage develop/work et examen branche Cloudflare.
-- Prochaine action exacte : pousser la clôture et ouvrir la PR ; attendre les contrôles avant merge autorisé, puis publication et vérification publiques.
+- Stable : **v5.2.0**, main et tag v5.2.0 =4f01851 ; production Cloudflare inchangée.
+- Branche active : work/v5.3.0-quality-segmentation, créée depuis origin/main vérifié. PR #2 et branche work/v5.2.0-release conservées ; aucun nettoyage/merge implicite.
+- Lot : V5.3 qualité de segmentation, navigateur gratuit ; interface V5.2 et alpha binaire à préserver.
+- CP1 terminé : audit moteur/licences, corpus11 images attribuées,33 vraies inférences (ISNet/SkyTNT/BiRef512 FP32), seuils et scores reproductibles. Choix : BiRef512 généraliste, ISNet secours ; SkyTNT non retenu. BiRef1024 échoue en WASM.
+- Limites connues : cas ton sur ton raté ; traits artificiels fins régressent, bords haute résolution limités. Image exacte de l’utilisateur absente. Détails : docs/QUALITY_BENCHMARK.md et docs/AI_AUDIT_V53.md.
+- Validations CP1 : scripts de benchmark exécutés et SHA256 modèles/entrées vérifiés ; aucun masque simulé pour comparer les moteurs. Pas encore de validation du nouveau runtime intégré.
+- En cours : CP2 runtime ONNX indépendant et qualification FP16 ; CP3 confiance/contours/RGB ; CP4 cache/mémoire ; CP5 régression/preview.
+- Publications : Pages existant autorisé sur work ; aucune autorisation main/tag V5.3/Cloudflare. Archives et codex/cloudflare-static-hosting inchangés.
+- Prochaine action exacte : terminer la qualification FP16 et valider une inférence via le worker intégré avant CP2.
