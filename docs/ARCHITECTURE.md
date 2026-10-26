@@ -11,3 +11,7 @@ MaskRefinement reconstruit la confiance float aux dimensions originales, traite 
 Les corrections utilisent le modèle ayant produit le résultat, des crops depuis l’original et des modifications limitées aux indications. showMask applique le même patch RGB de bord ; annulation restaure le masque précédent. Guide, fonds et comparaison restent visuels : aucune inférence, aucun filigrane exporté. Blanc/noir composés à partir du même PNG détouré.
 
 Main sert la stable Cloudflare. Actions work/** valide et publie Pages avec les archives Git historiques. Aucun changement de workflow/publication dans la V5.3 ; aucun tag stable ni déploiement Cloudflare autorisé pour cette candidate.
+
+## Cycle de session V5.3
+
+app.js réutilise le worker pour l’image courante. Inactivité60s (15s si deviceMemory<=4), changement d’image, erreur et annulation terminent le worker. Les appareils signalant<=4Go utilisent directement ISNet ; autrement BiRef FP16. Worker défaillant : reprise classique dans un worker neuf, une seule fois. WASM est choisi par défaut ; WebGPU reste expérimental, avec contrôle de masque dégénéré et repli CPU. Voir les mesures et limites dans QUALITY_BENCHMARK.md. Le veto RGB sur aplats évite une décontamination risquée, sans servir de classificateur de modèle.

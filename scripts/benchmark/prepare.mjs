@@ -5,6 +5,11 @@ await mkdir("work/v53", { recursive: true });
 await mkdir("work/models", { recursive: true });
 const files = [
   [
+    "work/v53/biref-fp16.onnx",
+    "https://huggingface.co/studioludens/birefnet-lite-512/resolve/962e67969ec6acec9c19fab76acee4f5e22e990c/onnx/model_fp16.onnx",
+    "eff9216bb2f9d3f023d9c2b7196845a7485739ab1f231593633e4d2344ffc516",
+  ],
+  [
     "work/v53/anime.onnx",
     "https://huggingface.co/skytnt/anime-seg/resolve/493cb60893f47441b26ec4fb9a306bce9e342982/isnetis.onnx",
     "f15622d853e8260172812b657053460e20806f04b9e05147d49af7bed31a6e99",

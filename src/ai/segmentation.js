@@ -1,8 +1,23 @@
 "use strict";
 globalThis.Segmentation = (() => {
   const runtime = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/";
-  let ort, session, activeKey, backend;
-  const progress = (message) => self.postMessage({ type: "progress", message });
+  let ort,
+    session,
+    activeKey,
+    backend,
+    gpuFailed = false;
+  let lastProgress = 0;
+  const progress = (message) => {
+    const now = performance.now();
+    if (
+      message.endsWith("%") &&
+      !message.endsWith("100 %") &&
+      now - lastProgress < 100
+    )
+      return;
+    lastProgress = now;
+    self.postMessage({ type: "progress", message });
+  };
   async function digest(buffer) {
     return Array.from(
       new Uint8Array(await crypto.subtle.digest("SHA-256", buffer)),
@@ -81,9 +96,13 @@ globalThis.Segmentation = (() => {
     return buffer.buffer;
   }
   async function load(key, device = "wasm") {
+    if (device === "webgpu" && gpuFailed) device = "wasm";
     if (session && activeKey === key && backend === device) return;
     await dispose();
-    ort ||= await import(runtime + "ort.all.min.mjs");
+    ort ||= await import(
+      runtime +
+        (device === "webgpu" ? "ort.webgpu.min.mjs" : "ort.wasm.min.mjs")
+    );
     ort.env.wasm.wasmPaths = runtime;
     ort.env.wasm.numThreads = 1;
     ort.env.wasm.proxy = false;
@@ -97,6 +116,7 @@ globalThis.Segmentation = (() => {
       backend = device;
     } catch (error) {
       if (device !== "webgpu") throw error;
+      gpuFailed = true;
       progress("Accélération indisponible. Passage au moteur CPU…");
       session = await ort.InferenceSession.create(buffer, {
         executionProviders: ["wasm"],
@@ -179,13 +199,32 @@ globalThis.Segmentation = (() => {
     const start = performance.now();
     progress("Analyse du sujet et des détails…");
     try {
-      outputs = await session.run({ [spec.input]: tensor });
+      try {
+        outputs = await session.run({ [spec.input]: tensor });
+      } catch (error) {
+        if (backend !== "webgpu") throw error;
+        gpuFailed = true;
+        progress("Accélération interrompue. Reprise sur CPU…");
+        await load(key, "wasm");
+        outputs = await session.run({ [spec.input]: tensor });
+      }
       const raw = outputs[spec.output].data;
       const probabilities = new Float32Array(raw.length);
+      let foreground = 0;
       for (let i = 0; i < raw.length; i++) {
         const v = spec.logits ? 1 / (1 + Math.exp(-raw[i])) : raw[i];
         if (!Number.isFinite(v)) throw Error("Prédiction invalide");
         probabilities[i] = Math.max(0, Math.min(1, v));
+        if (v >= 0.5) foreground++;
+      }
+      if (
+        backend === "webgpu" &&
+        (foreground < raw.length * 0.001 || foreground > raw.length * 0.999)
+      ) {
+        gpuFailed = true;
+        progress("Résultat accéléré ambigu. Vérification sur CPU…");
+        await dispose();
+        return await predict(rgb, width, height, key, "wasm");
       }
       return {
         confidence: MaskRefinement.resize(

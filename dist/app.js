@@ -13,6 +13,7 @@ let source = null,
   dragPointer = null;
 let colorCorrections = null,
   resultModel = null;
+let idleTimer = null;
 let mask = null,
   strokes = [],
   editing = false,
@@ -38,6 +39,8 @@ function lock(value) {
   updateRetouch();
 }
 function stopWorker() {
+  clearTimeout(idleTimer);
+  idleTimer = null;
   clearTimeout(timer);
   timer = null;
   worker?.terminate();
@@ -46,6 +49,20 @@ function stopWorker() {
     pendingInference.reject(new Error("Traitement interrompu"));
     pendingInference = null;
   }
+}
+function acquireWorker() {
+  clearTimeout(idleTimer);
+  idleTimer = null;
+  return worker || new Worker(new URL("background-worker.js", location.href));
+}
+function idleWorker() {
+  clearTimeout(timer);
+  timer = null;
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(
+    stopWorker,
+    navigator.deviceMemory && navigator.deviceMemory <= 4 ? 15000 : 60000,
+  );
 }
 function setComparison(value) {
   const position = Math.max(0, Math.min(100, Math.round(Number(value))));
@@ -94,6 +111,7 @@ function releaseResult() {
   setBackground("transparent");
 }
 function releaseSource() {
+  stopWorker();
   source = null;
   if (sourceURL) URL.revokeObjectURL(sourceURL);
   sourceURL = null;
@@ -166,21 +184,34 @@ function fail(message) {
 }
 async function processImage(requestedModel = null) {
   if (busy || !source) return;
+  requestedModel =
+    typeof requestedModel === "string"
+      ? requestedModel
+      : navigator.deviceMemory && navigator.deviceMemory <= 4
+        ? "isnet"
+        : "biref";
   lock(true);
   say(
     "Chargement de l’IA… Le premier lancement peut prendre quelques minutes.",
   );
+  function recover(message) {
+    if (requestedModel !== "isnet") {
+      stopWorker();
+      lock(false);
+      processImage("isnet");
+    } else fail(message);
+  }
   try {
-    worker = new Worker(new URL("background-worker.js", location.href));
+    worker = acquireWorker();
     timer = setTimeout(
       () =>
-        fail(
+        recover(
           "Le traitement a pris trop de temps. Vérifiez votre connexion puis réessayez.",
         ),
       480000,
     );
     worker.onerror = () =>
-      fail(
+      recover(
         "Le moteur IA n’a pas pu démarrer. Vérifiez votre connexion et utilisez un navigateur récent.",
       );
     worker.onmessage = async ({ data }) => {
@@ -189,13 +220,13 @@ async function processImage(requestedModel = null) {
         return;
       }
       if (data.type === "error") {
-        fail(
+        recover(
           "Le détourage a échoué. Vérifiez votre connexion ou essayez une autre image.",
         );
         return;
       }
       if (data.type !== "result") return;
-      stopWorker();
+      idleWorker();
       $("cancel").hidden = true;
       say("Préparation du PNG transparent…");
       try {
@@ -254,7 +285,9 @@ async function processImage(requestedModel = null) {
         $("remove").hidden = true;
         $("retouch").hidden = false;
         say(
-          (data.fallback ? "Moteur de secours utilisé. " : "") +
+          (data.fallback || requestedModel === "isnet"
+            ? "Moteur classique utilisé. "
+            : "") +
             "Fond supprimé. Comparez, choisissez votre fond et téléchargez le PNG.",
         );
       } catch {
@@ -266,7 +299,7 @@ async function processImage(requestedModel = null) {
         lock(false);
       }
     };
-    // Original RGBA stays immutable; only the predicted alpha comes back.
+    // Original RGBA stays immutable; the worker returns a mask and sparse edge RGB corrections.
     const input = new Blob([source.data], {
       type: "image/x-rgba8;width=" + source.width + ";height=" + source.height,
     });
@@ -438,7 +471,7 @@ async function applyLocal() {
   try {
     const boxes = LocalBrush.regions(strokes, source.width, source.height),
       patches = [];
-    worker = new Worker(new URL("background-worker.js", location.href));
+    worker = acquireWorker();
     worker.onmessage = ({ data }) => {
       if (data.type === "progress")
         return say("Correction locale · " + data.message);
@@ -470,7 +503,7 @@ async function applyLocal() {
         LocalBrush.changes(mask, source.width, source.data, rect, alpha, codes),
       );
     }
-    stopWorker();
+    idleWorker();
     $("cancel").hidden = true;
     const count = patches.reduce((n, p) => n + p.indices.length, 0);
     if (!count) {
@@ -493,12 +526,13 @@ async function applyLocal() {
         " pixels ajustés. Le reste de l’image est conservé.",
     );
   } catch {
+    stopWorker();
     say(
       "Correction locale interrompue ou échouée. Le résultat précédent et vos traits sont conservés ; vous pouvez réessayer.",
       true,
     );
   } finally {
-    stopWorker();
+    if (worker) idleWorker();
     lock(false);
   }
 }

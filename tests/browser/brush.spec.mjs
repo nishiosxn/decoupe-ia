@@ -12,12 +12,10 @@ async function setup(page) {
       }
     };
   });
-  let count = 0;
   await page.route("**/background-worker.js", (r) => {
-    const global = ++count === 1;
     return r.fulfill({
       contentType: "text/javascript",
-      body: `onmessage=({data})=>{const w=Number(data.image.type.match(/width=(\\d+)/)[1]),h=Number(data.image.type.match(/height=(\\d+)/)[1]);const a=new Uint8Array(w*h);for(let i=0;i<a.length;i++)a[i]=${global ? "i%w>=w/2?255:0" : "255"};postMessage({type:'result',alpha:a.buffer})}`,
+      body: `onmessage=({data})=>{const w=Number(data.image.type.match(/width=(\\d+)/)[1]),h=Number(data.image.type.match(/height=(\\d+)/)[1]);const a=new Uint8Array(w*h);for(let i=0;i<a.length;i++)a[i]=data.local?255:(i%w>=w/2?255:0);postMessage({type:'result',alpha:a.buffer})}`,
     });
   });
   await page.goto("");
@@ -148,6 +146,8 @@ test("remove only predicted background, failure is atomic and preserves strokes"
   page,
 }) => {
   await setup(page);
+  // Evict the retained session before replacing the model fixture.
+  await page.evaluate(() => stopWorker());
   await page.route("**/background-worker.js", (r) =>
     r.fulfill({
       contentType: "text/javascript",
@@ -167,6 +167,7 @@ test("remove only predicted background, failure is atomic and preserves strokes"
   );
   expect(after.every((v, i) => i % 800 >= 500 || v === before[i])).toBe(true);
   await paint(page, 0.75);
+  await page.evaluate(() => stopWorker());
   await page.route("**/background-worker.js", (r) =>
     r.fulfill({
       contentType: "text/javascript",
@@ -316,13 +317,11 @@ for (const mobile of [false, true])
         ),
       ];
     });
-    await page
-      .locator("#file")
-      .setInputFiles({
-        name: "new.png",
-        mimeType: "image/png",
-        buffer: Buffer.from(pngBytes),
-      });
+    await page.locator("#file").setInputFiles({
+      name: "new.png",
+      mimeType: "image/png",
+      buffer: Buffer.from(pngBytes),
+    });
     await expect(toggle).toBeChecked();
     await expect(guide).toBeHidden();
   });

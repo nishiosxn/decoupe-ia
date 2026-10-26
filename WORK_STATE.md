@@ -8,6 +8,7 @@
 - Validations CP1 : scripts de benchmark exécutés et SHA256 modèles/entrées vérifiés ; aucun masque simulé pour comparer les moteurs. Pas encore de validation du nouveau runtime intégré.
 - CP2 terminé : BiRef512 FP16 qualifié sur11 images, notices et runtime indépendant intégrés, secours ISNet prévu. Inférence réelle via CDN, PNG600×900 binaire, RGB internes intacts. check12 unitaires et19 Playwright PASS (2 opt-in exclus).
 - CP3 terminé : rayons1/2/3 mesurés, masque guidé adaptatif, veto RGB aplats, trous confiants préservés. Expérience2 crops (~41s, sans gain IoU face au filtre) exclue de l’app. Métriques frontières précision/rappel/F1 et erreurs intérieures disponibles. Tests ciblés15 PASS après correction d’un cas de test de tolérance (pas de bug métrique).
-- En cours : CP4 sessions/cache/mémoire/secours réel ; CP5 validation/preview.
+- CP4 terminé : session réutilisée puis libérée, cache vérifié, WASM dédié, progression limitée, secours réel503→ISNet PASS.18 unitaires et7 parcours ciblés PASS. WebGPU testé puis non qualifié (sorties vides) ; garde CPU vérifiée. Mémoire élevée documentée et choix ISNet sur deviceMemory<=4.
+- En cours : CP5 validation finale et preview. Un ancien délai15s mal placé dans les scripts IA réels a été corrigé ; relance en cours, pas encore déclarée PASS.
 - Publications : Pages existant autorisé sur work ; aucune autorisation main/tag V5.3/Cloudflare. Archives et codex/cloudflare-static-hosting inchangés.
-- Prochaine action exacte : réutiliser la session au sein d’une image, mesurer cache/WebGPU/mémoire et valider le secours avant CP4.
+- Prochaine action exacte : terminer les tests IA réels, exécuter la régression complète et vérifier Pages avant CP5.

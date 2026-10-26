@@ -7,9 +7,20 @@ const browser = await chromium.launch({
   }),
   page = await browser.newPage();
 const requests = [];
+if (process.env.FORCE_FALLBACK === "1")
+  await page
+    .context()
+    .route("https://huggingface.co/**", (r) =>
+      r.fulfill({ status: 503, body: "Intentional model availability test" }),
+    );
 page
   .context()
-  .on("request", (r) => requests.push({ url: r.url(), method: r.method() }));
+  .on("request", (r) =>
+    requests.push({
+      url: new URL(r.url()).origin + new URL(r.url()).pathname,
+      method: r.method(),
+    }),
+  );
 page.on("console", (m) => {
   if (m.type() === "error") console.log(m.text().slice(0, 300));
 });

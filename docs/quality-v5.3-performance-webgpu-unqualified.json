@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-25",
+  "browser": "156.0.8078.47",
+  "platform": "win32",
+  "device": "webgpu",
+  "gpu": {
+    "vendor": "amd",
+    "architecture": "rdna-2",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false,
+    "shaderF16": true
+  },
+  "rows": [
+    {
+      "phase": "cold",
+      "ms": 24639.39999999851,
+      "backend": "webgpu",
+      "fallback": false,
+      "kept": 0,
+      "partial": 0,
+      "difference": 0,
+      "inferenceMs": 10060.900000002235,
+      "uncertain": 2,
+      "corrected": 0,
+      "externalRequests": 5
+    },
+    {
+      "phase": "warm",
+      "ms": 6711.5,
+      "backend": "webgpu",
+      "fallback": false,
+      "kept": 0,
+      "partial": 0,
+      "difference": 0,
+      "inferenceMs": 6680.300000000745,
+      "uncertain": 2,
+      "corrected": 0,
+      "externalRequests": 0
+    },
+    {
+      "phase": "cached-new-worker",
+      "ms": 17349.199999999255,
+      "backend": "webgpu",
+      "fallback": false,
+      "kept": 0,
+      "partial": 0,
+      "difference": 0,
+      "inferenceMs": 11978.699999999255,
+      "uncertain": 2,
+      "corrected": 0,
+      "externalRequests": 3
+    }
+  ],
+  "peakBrowserWorkingSetBytes": 4116934656,
+  "memorySamples": 37,
+  "memoryMethod": "Sampled Windows working set sum of this Chrome process tree every1500ms; not dedicated WASM allocation, may miss short peaks.",
+  "external": [
+    {
+      "host": "cdn.jsdelivr.net",
+      "path": "/npm/onnxruntime-web@1.22.0/dist/ort.webgpu.min.mjs",
+      "bytes": 94978
+    },
+    {
+      "host": "huggingface.co",
+      "path": "/studioludens/birefnet-lite-512/resolve/962e67969ec6acec9c19fab76acee4f5e22e990c/onnx/model_fp16.onnx",
+      "bytes": 1030
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "path": "/xet-bridge-us/69e255ee35355f8209919bea/4a06496d23340be158e1e1d8d1bc3dc7a6c8c2322fa00e4adc1ae0d37c8a069b",
+      "bytes": 98484532
+    },
+    {
+      "host": "cdn.jsdelivr.net",
+      "path": "/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.jsep.mjs",
+      "bytes": 15723
+    },
+    {
+      "host": "cdn.jsdelivr.net",
+      "path": "/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.jsep.wasm",
+      "bytes": 4175591
+    },
+    {
+      "host": "cdn.jsdelivr.net",
+      "path": "/npm/onnxruntime-web@1.22.0/dist/ort.webgpu.min.mjs",
+      "bytes": 94978
+    },
+    {
+      "host": "cdn.jsdelivr.net",
+      "path": "/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.jsep.mjs",
+      "bytes": 15723
+    },
+    {
+      "host": "cdn.jsdelivr.net",
+      "path": "/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.jsep.wasm",
+      "bytes": 4175591
+    }
+  ]
+}
