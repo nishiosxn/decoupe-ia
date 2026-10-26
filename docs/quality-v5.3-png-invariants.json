@@ -1,0 +1,181 @@
+{
+  "note": "Diagnostic PNGs from real integrated-model masks: dimensions/binary alpha checked. PNG source RGB exact; independently re-decoded JPEG RGB allows one rounding level (recorded). Strict in-memory RGB and edge patches are checked separately by live download tests.",
+  "report": [
+    {
+      "image": "anime-complex",
+      "original": [
+        700,
+        900
+      ],
+      "result": [
+        700,
+        900
+      ],
+      "partial": 0,
+      "kept": 138908,
+      "removed": 491092,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "anime-hat",
+      "original": [
+        700,
+        900
+      ],
+      "result": [
+        700,
+        900
+      ],
+      "partial": 0,
+      "kept": 150934,
+      "removed": 479066,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "fine-lines",
+      "original": [
+        700,
+        900
+      ],
+      "result": [
+        700,
+        900
+      ],
+      "partial": 0,
+      "kept": 159588,
+      "removed": 470412,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "internal-openings",
+      "original": [
+        800,
+        800
+      ],
+      "result": [
+        800,
+        800
+      ],
+      "partial": 0,
+      "kept": 168739,
+      "removed": 471261,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "similar-colors",
+      "original": [
+        800,
+        800
+      ],
+      "result": [
+        800,
+        800
+      ],
+      "partial": 0,
+      "kept": 15913,
+      "removed": 624087,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "high-resolution",
+      "original": [
+        2400,
+        3200
+      ],
+      "result": [
+        2400,
+        3200
+      ],
+      "partial": 0,
+      "kept": 1690912,
+      "removed": 5989088,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "portrait",
+      "original": [
+        600,
+        900
+      ],
+      "result": [
+        600,
+        900
+      ],
+      "partial": 0,
+      "kept": 362188,
+      "removed": 177812,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "fur",
+      "original": [
+        600,
+        450
+      ],
+      "result": [
+        600,
+        450
+      ],
+      "partial": 0,
+      "kept": 106747,
+      "removed": 163253,
+      "colorErrors": 13625,
+      "maxColorDelta": 1
+    },
+    {
+      "image": "object-plain",
+      "original": [
+        600,
+        436
+      ],
+      "result": [
+        600,
+        436
+      ],
+      "partial": 0,
+      "kept": 46611,
+      "removed": 214989,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "object-complex",
+      "original": [
+        600,
+        400
+      ],
+      "result": [
+        600,
+        400
+      ],
+      "partial": 0,
+      "kept": 60328,
+      "removed": 179672,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    },
+    {
+      "image": "red-shoe",
+      "original": [
+        600,
+        400
+      ],
+      "result": [
+        600,
+        400
+      ],
+      "partial": 0,
+      "kept": 59854,
+      "removed": 180146,
+      "colorErrors": 0,
+      "maxColorDelta": 0
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-26",
+  "url": "https://nishiosxn.github.io/decoupe-ia/",
+  "classic": false,
+  "ms": 21486,
+  "status": "Fond supprimé. Comparez, choisissez votre fond et téléchargez le PNG.",
+  "width": 600,
+  "height": 900,
+  "kept": 362188,
+  "removed": 177812,
+  "partial": 0,
+  "interiorColorErrors": 0,
+  "edgeChanges": 201,
+  "model": "biref",
+  "worker": {
+    "model": "biref",
+    "backend": "wasm",
+    "fallback": false,
+    "metrics": {
+      "inferenceMs": 8242.20000000298,
+      "uncertain": 4445,
+      "corrected": 67
+    }
+  },
+  "requests": [
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/styles.css",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/pixels.js",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/local-brush.js",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/app.js",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/favicon.svg",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.iohttps://nishiosxn.github.io/20a3a15e-8380-443e-9795-b0412d13dc54",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/background-worker.js",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/models.js",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/mask-refinement.js",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.io/decoupe-ia/segmentation.js",
+      "method": "GET"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.wasm.min.mjs",
+      "method": "GET"
+    },
+    {
+      "url": "https://huggingface.co/studioludens/birefnet-lite-512/resolve/962e67969ec6acec9c19fab76acee4f5e22e990c/onnx/model_fp16.onnx",
+      "method": "GET"
+    },
+    {
+      "url": "https://us.aws.cdn.hf.co/xet-bridge-us/69e255ee35355f8209919bea/4a06496d23340be158e1e1d8d1bc3dc7a6c8c2322fa00e4adc1ae0d37c8a069b",
+      "method": "GET"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.mjs",
+      "method": "GET"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.wasm",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.iohttps://nishiosxn.github.io/eac0cd67-d28b-442a-8481-ccb30d6eb456",
+      "method": "GET"
+    },
+    {
+      "url": "https://nishiosxn.github.iohttps://nishiosxn.github.io/eac0cd67-d28b-442a-8481-ccb30d6eb456",
+      "method": "GET"
+    }
+  ],
+  "codeCommit": "a59aca4beeaa0ac182f8f005e7d5df3fcdfeb199"
+}

@@ -1,16 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
-const cases = [
-  "person.jpg",
-  "watch.jpg",
-  "car-1.jpg",
-  "plants-1.jpg",
-  "shoe.jpg",
-];
-test("real ISNet representative images", async ({ page }) => {
+const cases = ["person.jpg", "watch.jpg", "car-1.jpg", "corgi.jpg", "shoe.jpg"];
+test("real browser model representative images", async ({ page }) => {
   test.skip(
     process.env.REAL_AI !== "1",
-    "Opt-in: downloads actual model, requires work/fixtures",
+    "Opt-in: downloads actual model, uses committed quality fixtures",
   );
   if (process.env.AI_MODEL_MIRROR)
     await page.context().route("https://staticimgly.com/**", (route) =>
@@ -34,7 +28,7 @@ test("real ISNet representative images", async ({ page }) => {
     if (name === "shoe.jpg")
       await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("");
-    await page.locator("#file").setInputFiles("work/fixtures/" + name);
+    await page.locator("#file").setInputFiles("tests/fixtures/quality/" + name);
     await expect(page.locator("#remove")).toBeVisible();
     const before = await page.evaluate(() => ({
       width: source.width,
@@ -46,6 +40,7 @@ test("real ISNet representative images", async ({ page }) => {
       () =>
         document.querySelector("#status").classList.contains("error") ||
         !document.querySelector("#download").hidden,
+      null,
       { timeout: 480000 },
     );
     await expect(page.locator("#download")).toBeVisible();
@@ -65,11 +60,16 @@ test("real ISNet representative images", async ({ page }) => {
         removed = 0,
         partial = 0,
         colorErrors = 0;
+      const allowed = new Set(colorCorrections?.indices || []);
+      let correctedColorChannels = 0;
       for (let i = 0; i < d.length; i += 4) {
         if (d[i + 3] === 255) {
           kept++;
           for (let k = 0; k < 3; k++)
-            if (d[i + k] !== source.data[i + k]) colorErrors++;
+            if (d[i + k] !== source.data[i + k]) {
+              if (allowed.has(i / 4)) correctedColorChannels++;
+              else colorErrors++;
+            }
         } else if (d[i + 3] === 0) removed++;
         else partial++;
       }
@@ -80,6 +80,8 @@ test("real ISNet representative images", async ({ page }) => {
         removed,
         partial,
         colorErrors,
+        correctedColorChannels,
+        model: resultModel,
       };
     }, before);
     expect(check.width).toBe(before.width);

@@ -1,14 +1,12 @@
 # Découpe AI — état opérationnel
 
-- Stable : **v5.2.0**, main et tag v5.2.0 =4f01851 ; production Cloudflare inchangée.
-- Branche active : work/v5.3.0-quality-segmentation, créée depuis origin/main vérifié. PR #2 et branche work/v5.2.0-release conservées ; aucun nettoyage/merge implicite.
-- Lot : V5.3 qualité de segmentation, navigateur gratuit ; interface V5.2 et alpha binaire à préserver.
-- CP1 terminé : audit moteur/licences, corpus11 images attribuées,33 vraies inférences (ISNet/SkyTNT/BiRef512 FP32), seuils et scores reproductibles. Choix : BiRef512 généraliste, ISNet secours ; SkyTNT non retenu. BiRef1024 échoue en WASM.
-- Limites connues : cas ton sur ton raté ; traits artificiels fins régressent, bords haute résolution limités. Image exacte de l’utilisateur absente. Détails : docs/QUALITY_BENCHMARK.md et docs/AI_AUDIT_V53.md.
-- Validations CP1 : scripts de benchmark exécutés et SHA256 modèles/entrées vérifiés ; aucun masque simulé pour comparer les moteurs. Pas encore de validation du nouveau runtime intégré.
-- CP2 terminé : BiRef512 FP16 qualifié sur11 images, notices et runtime indépendant intégrés, secours ISNet prévu. Inférence réelle via CDN, PNG600×900 binaire, RGB internes intacts. check12 unitaires et19 Playwright PASS (2 opt-in exclus).
-- CP3 terminé : rayons1/2/3 mesurés, masque guidé adaptatif, veto RGB aplats, trous confiants préservés. Expérience2 crops (~41s, sans gain IoU face au filtre) exclue de l’app. Métriques frontières précision/rappel/F1 et erreurs intérieures disponibles. Tests ciblés15 PASS après correction d’un cas de test de tolérance (pas de bug métrique).
-- CP4 terminé : session réutilisée puis libérée, cache vérifié, WASM dédié, progression limitée, secours réel503→ISNet PASS.18 unitaires et7 parcours ciblés PASS. WebGPU testé puis non qualifié (sorties vides) ; garde CPU vérifiée. Mémoire élevée documentée et choix ISNet sur deviceMemory<=4.
-- En cours : CP5 validation finale et preview. Un ancien délai15s mal placé dans les scripts IA réels a été corrigé ; relance en cours, pas encore déclarée PASS.
-- Publications : Pages existant autorisé sur work ; aucune autorisation main/tag V5.3/Cloudflare. Archives et codex/cloudflare-static-hosting inchangés.
-- Prochaine action exacte : terminer les tests IA réels, exécuter la régression complète et vérifier Pages avant CP5.
+- Stable : **v5.2.0**, main/tag v5.2.0 =4f01851 ; Cloudflare inchangé. Aucun merge, tag ou déploiement production V5.3.
+- Candidate : **v5.3.0**, work/v5.3.0-quality-segmentation, issue de main vérifié. PR #2 et branche work/v5.2.0-release antérieures préservées ; archives et codex/cloudflare-static-hosting inchangés.
+- CP1–CP5 terminés : audit/licences, corpus11 images, benchmark réel comparatif, BiRef512 FP16 intégré, ISNet secours/classique, confiance float et raffinement guidé, RGB de bord conservateur, cache/session et validation finale. Code applicatif CP4 a59aca4 ; CP5 clôture preuves/tests/docs.
+- Choix : WASM par défaut ; WebGPU AMD non qualifié (sorties vides), garde/repli CPU vérifié. Mémoire signalée<=4Go : ISNet direct. Un seul modèle résident, session60s max inactive (15s faible mémoire), libérée à remplacement/annulation/erreur.
+- PASS : npm ci (0 vulnérabilité), check18 unitaires,23 Playwright standards ;2 tests IA opt-in séparés (5 PNG réels + correction locale100/100, hors indications0, annulation exacte).11 PNG diagnostics binaires/dimensions conformes, nuance décodage JPEG explicitée dans le benchmark.
+- Pages : https://nishiosxn.github.io/decoupe-ia/ ;12 ressources conformes aux blobs Git et archives V3.2/V4 accessibles ; inférence réelle publique et téléchargement PASS. CI/Pages des checkpoints précédents PASS, contrôle automatique à chaque push.
+- Qualité : gains anime/chapeau/ouvertures et conservation globale haute résolution ; traits artificiels fins régressent, ton sur ton raté, bords fins/halos non garantis. Original exact de l’utilisateur absent. Aucune promesse de détourage parfait.
+- Performances PC mesurées :~9,6s chaud, premier lancement réseau variable ; pic Chrome~2,85Go BiRef/~1,65Go ISNet. Tests de détails : docs/QUALITY_BENCHMARK.md et docs/VALIDATION.md. Téléphone physique, Safari et Firefox non testés.
+- Tâches restantes : retour utilisateur et arbitrage des limites avant promotion stable ; aucun blocage technique de livraison.
+- Prochaine action exacte : attendre la validation utilisateur sur cette branche ; poursuivre ici les corrections demandées. Aucun merge main/tag/Cloudflare sans nouvelle autorisation explicite.

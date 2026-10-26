@@ -48,7 +48,7 @@
       "method": "GET"
     },
     {
-      "url": "blob:http://127.0.0.1:4173/a86769f7-0e61-46c8-9c46-0be16ec2181d",
+      "url": "http://127.0.0.1:4173http://127.0.0.1:4173/a86769f7-0e61-46c8-9c46-0be16ec2181d",
       "method": "GET"
     },
     {
@@ -76,7 +76,7 @@
       "method": "GET"
     },
     {
-      "url": "https://us.aws.cdn.hf.co/xet-bridge-us/69e255ee35355f8209919bea/4a06496d23340be158e1e1d8d1bc3dc7a6c8c2322fa00e4adc1ae0d37c8a069b?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27model_fp16.onnx%3B+filename%3D%22model_fp16.onnx%22%3B&X-Xet-Cas-Uid=public&user_id=public&xip=2-RfJ3yXeAg&Expires=1792893504&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjllMjU1ZWUzNTM1NWY4MjA5OTE5YmVhLzRhMDY0OTZkMjMzNDBiZTE1OGUxZTFkOGQxYmMzZGM3YTZjOGMyMzIyZmEwMGU0YWRjMWFlMGQzN2M4YTA2OWJcXD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3bW9kZWxfZnAxNi5vbm54JTNCK2ZpbGVuYW1lJTNEJTIybW9kZWxfZnAxNi5vbm54JTIyJTNCJlgtWGV0LUNhcy1VaWQ9cHVibGljJnVzZXJfaWQ9cHVibGljJnhpcD0yLVJmSjN5WGVBZyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRXBvY2hUaW1lIjoxNzkyODkzNTA0fX19XX0_&Signature=MEUCIEZWIxdVPuk0Nw1atQX8I3989bO%7EHmPl05FtnKpgyctZAiEA5pBwzGT8IXACSW3KApaHpLpsNDAKZxEESo1uCp73N-0_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F&Hash-Algorithm=SHA256",
+      "url": "https://us.aws.cdn.hf.co/xet-bridge-us/69e255ee35355f8209919bea/4a06496d23340be158e1e1d8d1bc3dc7a6c8c2322fa00e4adc1ae0d37c8a069b",
       "method": "GET"
     },
     {
@@ -88,11 +88,11 @@
       "method": "GET"
     },
     {
-      "url": "blob:http://127.0.0.1:4173/b1b46a8b-1bce-40ee-ae25-ec99378e4e6a",
+      "url": "http://127.0.0.1:4173http://127.0.0.1:4173/b1b46a8b-1bce-40ee-ae25-ec99378e4e6a",
       "method": "GET"
     },
     {
-      "url": "blob:http://127.0.0.1:4173/b1b46a8b-1bce-40ee-ae25-ec99378e4e6a",
+      "url": "http://127.0.0.1:4173http://127.0.0.1:4173/b1b46a8b-1bce-40ee-ae25-ec99378e4e6a",
       "method": "GET"
     }
   ]

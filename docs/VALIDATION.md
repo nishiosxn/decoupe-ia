@@ -1,5 +1,18 @@
 # Validation et limites
 
+## Candidate V5.3 — clôture du2026-10-26
+
+- npm ci reproductible :3 packages,0 vulnérabilité ; npm run check :18 tests unitaires PASS ; build et ressources synchronisés.
+- Playwright standard :23 PASS et2 opt-in volontairement exclus. JPG/PNG/WebP, annulation/erreur/reprise, classique, session/mémoire, comparateur/fonds, corrections/annulation/guide et desktop/mobile/tactile émulés.
+- Opt-in réels exécutés séparément :2 PASS (cinq photographies avec PNG téléchargés + correction locale100/100 et annulation exacte). Zéro alpha partiel, dimensions originales, zéro différence RGB non autorisée sur la source en mémoire.
+- Benchmark11 images, trois moteurs et variantes FP32/FP16/pipeline final. Scores seulement sur les six composites annotés, sources et licences conservées. Corpus photographique sans vérité terrain : pas de score inventé.
+- GitHub Pages :12 blobs exacts, deux archives accessibles, vraie inférence et téléchargement publics PASS. Code applicatif CP4 ; clôture CP5 documentaire/tests.
+- CPU/WASM retenu. WebGPU AMD testé avec sorties vides, donc non qualifié ; repli CPU vérifié. Expérience de deux crops coûteuse non retenue. Pas de téléphone physique, Firefox ou Safari testés.
+- Limites explicites : traits très fins en régression, ton sur ton raté, bords haute résolution et halos non garantis, mémoire élevée. Cette candidate nécessite une validation utilisateur avant toute release.
+
+Preuves actuelles : [benchmark](QUALITY_BENCHMARK.md), quality-v5.3-final.json, quality-v5.3-downloads.json, quality-v5.3-local.json et quality-v5.3-public.json. Les sections suivantes sont historiques ; leurs nombres et moteurs ne décrivent pas la candidate V5.3.
+
+
 Les sections V5 à filigrane ci-dessous sont des preuves historiques acquises avant réorganisation. Les anciens chemins outputs/ y désignent les sources archivées ; le code courant est dans src/.
 
 # Validation de la candidate simple

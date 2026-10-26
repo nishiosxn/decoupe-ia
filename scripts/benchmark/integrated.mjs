@@ -13,14 +13,12 @@ if (process.env.FORCE_FALLBACK === "1")
     .route("https://huggingface.co/**", (r) =>
       r.fulfill({ status: 503, body: "Intentional model availability test" }),
     );
-page
-  .context()
-  .on("request", (r) =>
-    requests.push({
-      url: new URL(r.url()).origin + new URL(r.url()).pathname,
-      method: r.method(),
-    }),
-  );
+page.context().on("request", (r) =>
+  requests.push({
+    url: new URL(r.url()).origin + new URL(r.url()).pathname,
+    method: r.method(),
+  }),
+);
 page.on("console", (m) => {
   if (m.type() === "error") console.log(m.text().slice(0, 300));
 });
@@ -119,7 +117,7 @@ for (const [file, classic] of [
   )
     throw Error(JSON.stringify(check));
   const result = {
-    date: "2026-10-25",
+    date: new Date().toISOString().slice(0, 10),
     url: page.url(),
     classic,
     ms: Date.now() - start,

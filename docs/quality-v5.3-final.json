@@ -1,0 +1,543 @@
+{
+  "date": "2026-10-25",
+  "note": "Actual integrated worker CPU/WASM on eleven committed fixtures. RGB patches validated separately in live downloads.",
+  "report": [
+    {
+      "model": "v53",
+      "image": "anime-complex",
+      "width": 700,
+      "height": 900,
+      "totalMs": 25441.60000000149,
+      "inferenceMs": null,
+      "kept": 138908,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9688746663605315,
+          "dice": 0.9841913077702382,
+          "fp": 3874,
+          "fn": 464,
+          "tp": 135034,
+          "tn": 490628,
+          "boundaryRecall2px": 0.7338282078472959,
+          "thinRecall": 0.851639344262295
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9688746663605315,
+          "dice": 0.9841913077702382,
+          "fp": 3874,
+          "fn": 464,
+          "tp": 135034,
+          "tn": 490628,
+          "boundaryRecall2px": 0.7338282078472959,
+          "thinRecall": 0.851639344262295
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9688746663605315,
+          "dice": 0.9841913077702382,
+          "fp": 3874,
+          "fn": 464,
+          "tp": 135034,
+          "tn": 490628,
+          "boundaryRecall2px": 0.7338282078472959,
+          "thinRecall": 0.851639344262295
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9688746663605315,
+          "dice": 0.9841913077702382,
+          "fp": 3874,
+          "fn": 464,
+          "tp": 135034,
+          "tn": 490628,
+          "boundaryRecall2px": 0.7338282078472959,
+          "thinRecall": 0.851639344262295
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9688746663605315,
+          "dice": 0.9841913077702382,
+          "fp": 3874,
+          "fn": 464,
+          "tp": 135034,
+          "tn": 490628,
+          "boundaryRecall2px": 0.7338282078472959,
+          "thinRecall": 0.851639344262295
+        }
+      ],
+      "heap": 14424744
+    },
+    {
+      "model": "v53",
+      "image": "anime-hat",
+      "width": 700,
+      "height": 900,
+      "totalMs": 10710.199999999255,
+      "inferenceMs": null,
+      "kept": 150934,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9721426265899914,
+          "dice": 0.985874564529759,
+          "fp": 3354,
+          "fn": 875,
+          "tp": 147580,
+          "tn": 478191,
+          "boundaryRecall2px": 0.760880829015544,
+          "thinRecall": 0.7953964194373402
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9721426265899914,
+          "dice": 0.985874564529759,
+          "fp": 3354,
+          "fn": 875,
+          "tp": 147580,
+          "tn": 478191,
+          "boundaryRecall2px": 0.760880829015544,
+          "thinRecall": 0.7953964194373402
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9721426265899914,
+          "dice": 0.985874564529759,
+          "fp": 3354,
+          "fn": 875,
+          "tp": 147580,
+          "tn": 478191,
+          "boundaryRecall2px": 0.760880829015544,
+          "thinRecall": 0.7953964194373402
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9721426265899914,
+          "dice": 0.985874564529759,
+          "fp": 3354,
+          "fn": 875,
+          "tp": 147580,
+          "tn": 478191,
+          "boundaryRecall2px": 0.760880829015544,
+          "thinRecall": 0.7953964194373402
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9721426265899914,
+          "dice": 0.985874564529759,
+          "fp": 3354,
+          "fn": 875,
+          "tp": 147580,
+          "tn": 478191,
+          "boundaryRecall2px": 0.760880829015544,
+          "thinRecall": 0.7953964194373402
+        }
+      ],
+      "heap": 24828126
+    },
+    {
+      "model": "v53",
+      "image": "fine-lines",
+      "width": 700,
+      "height": 900,
+      "totalMs": 10420.20000000298,
+      "inferenceMs": null,
+      "kept": 159588,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.8479837036945309,
+          "dice": 0.9177393739990485,
+          "fp": 22631,
+          "fn": 1921,
+          "tp": 136957,
+          "tn": 468491,
+          "boundaryRecall2px": 0.5755263960939884,
+          "thinRecall": 0.8032258064516129
+        },
+        {
+          "threshold": 112,
+          "iou": 0.8479837036945309,
+          "dice": 0.9177393739990485,
+          "fp": 22631,
+          "fn": 1921,
+          "tp": 136957,
+          "tn": 468491,
+          "boundaryRecall2px": 0.5755263960939884,
+          "thinRecall": 0.8032258064516129
+        },
+        {
+          "threshold": 128,
+          "iou": 0.8479837036945309,
+          "dice": 0.9177393739990485,
+          "fp": 22631,
+          "fn": 1921,
+          "tp": 136957,
+          "tn": 468491,
+          "boundaryRecall2px": 0.5755263960939884,
+          "thinRecall": 0.8032258064516129
+        },
+        {
+          "threshold": 144,
+          "iou": 0.8479837036945309,
+          "dice": 0.9177393739990485,
+          "fp": 22631,
+          "fn": 1921,
+          "tp": 136957,
+          "tn": 468491,
+          "boundaryRecall2px": 0.5755263960939884,
+          "thinRecall": 0.8032258064516129
+        },
+        {
+          "threshold": 160,
+          "iou": 0.8479837036945309,
+          "dice": 0.9177393739990485,
+          "fp": 22631,
+          "fn": 1921,
+          "tp": 136957,
+          "tn": 468491,
+          "boundaryRecall2px": 0.5755263960939884,
+          "thinRecall": 0.8032258064516129
+        }
+      ],
+      "heap": 26504588
+    },
+    {
+      "model": "v53",
+      "image": "internal-openings",
+      "width": 800,
+      "height": 800,
+      "totalMs": 10008.800000000745,
+      "inferenceMs": null,
+      "kept": 168739,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9974790214342356,
+          "dice": 0.9987379198786507,
+          "fp": 183,
+          "fn": 243,
+          "tp": 168556,
+          "tn": 471018,
+          "boundaryRecall2px": 0.9966159052453468,
+          "thinRecall": 0.8121019108280255
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9974790214342356,
+          "dice": 0.9987379198786507,
+          "fp": 183,
+          "fn": 243,
+          "tp": 168556,
+          "tn": 471018,
+          "boundaryRecall2px": 0.9966159052453468,
+          "thinRecall": 0.8121019108280255
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9974790214342356,
+          "dice": 0.9987379198786507,
+          "fp": 183,
+          "fn": 243,
+          "tp": 168556,
+          "tn": 471018,
+          "boundaryRecall2px": 0.9966159052453468,
+          "thinRecall": 0.8121019108280255
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9974790214342356,
+          "dice": 0.9987379198786507,
+          "fp": 183,
+          "fn": 243,
+          "tp": 168556,
+          "tn": 471018,
+          "boundaryRecall2px": 0.9966159052453468,
+          "thinRecall": 0.8121019108280255
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9974790214342356,
+          "dice": 0.9987379198786507,
+          "fp": 183,
+          "fn": 243,
+          "tp": 168556,
+          "tn": 471018,
+          "boundaryRecall2px": 0.9966159052453468,
+          "thinRecall": 0.8121019108280255
+        }
+      ],
+      "heap": 19013321
+    },
+    {
+      "model": "v53",
+      "image": "similar-colors",
+      "width": 800,
+      "height": 800,
+      "totalMs": 10055.29999999702,
+      "inferenceMs": null,
+      "kept": 15913,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.09118835511236088,
+          "dice": 0.16713586556368834,
+          "fp": 477,
+          "fn": 153363,
+          "tp": 15436,
+          "tn": 470724,
+          "boundaryRecall2px": 0.937394247038917,
+          "thinRecall": 0.8312101910828026
+        },
+        {
+          "threshold": 112,
+          "iou": 0.09118835511236088,
+          "dice": 0.16713586556368834,
+          "fp": 477,
+          "fn": 153363,
+          "tp": 15436,
+          "tn": 470724,
+          "boundaryRecall2px": 0.937394247038917,
+          "thinRecall": 0.8312101910828026
+        },
+        {
+          "threshold": 128,
+          "iou": 0.09118835511236088,
+          "dice": 0.16713586556368834,
+          "fp": 477,
+          "fn": 153363,
+          "tp": 15436,
+          "tn": 470724,
+          "boundaryRecall2px": 0.937394247038917,
+          "thinRecall": 0.8312101910828026
+        },
+        {
+          "threshold": 144,
+          "iou": 0.09118835511236088,
+          "dice": 0.16713586556368834,
+          "fp": 477,
+          "fn": 153363,
+          "tp": 15436,
+          "tn": 470724,
+          "boundaryRecall2px": 0.937394247038917,
+          "thinRecall": 0.8312101910828026
+        },
+        {
+          "threshold": 160,
+          "iou": 0.09118835511236088,
+          "dice": 0.16713586556368834,
+          "fp": 477,
+          "fn": 153363,
+          "tp": 15436,
+          "tn": 470724,
+          "boundaryRecall2px": 0.937394247038917,
+          "thinRecall": 0.8312101910828026
+        }
+      ],
+      "heap": 48188613
+    },
+    {
+      "model": "v53",
+      "image": "high-resolution",
+      "width": 2400,
+      "height": 3200,
+      "totalMs": 11048.5,
+      "inferenceMs": null,
+      "kept": 1690912,
+      "metrics": [
+        {
+          "threshold": 96,
+          "iou": 0.9653525560867966,
+          "dice": 0.9823708760008995,
+          "fp": 50416,
+          "fn": 8463,
+          "tp": 1640496,
+          "tn": 5980625,
+          "boundaryRecall2px": 0.5666544252662504,
+          "thinRecall": 0.725622527344659
+        },
+        {
+          "threshold": 112,
+          "iou": 0.9653525560867966,
+          "dice": 0.9823708760008995,
+          "fp": 50416,
+          "fn": 8463,
+          "tp": 1640496,
+          "tn": 5980625,
+          "boundaryRecall2px": 0.5666544252662504,
+          "thinRecall": 0.725622527344659
+        },
+        {
+          "threshold": 128,
+          "iou": 0.9653525560867966,
+          "dice": 0.9823708760008995,
+          "fp": 50416,
+          "fn": 8463,
+          "tp": 1640496,
+          "tn": 5980625,
+          "boundaryRecall2px": 0.5666544252662504,
+          "thinRecall": 0.725622527344659
+        },
+        {
+          "threshold": 144,
+          "iou": 0.9653525560867966,
+          "dice": 0.9823708760008995,
+          "fp": 50416,
+          "fn": 8463,
+          "tp": 1640496,
+          "tn": 5980625,
+          "boundaryRecall2px": 0.5666544252662504,
+          "thinRecall": 0.725622527344659
+        },
+        {
+          "threshold": 160,
+          "iou": 0.9653525560867966,
+          "dice": 0.9823708760008995,
+          "fp": 50416,
+          "fn": 8463,
+          "tp": 1640496,
+          "tn": 5980625,
+          "boundaryRecall2px": 0.5666544252662504,
+          "thinRecall": 0.725622527344659
+        }
+      ],
+      "heap": 143153695
+    },
+    {
+      "model": "v53",
+      "image": "portrait",
+      "width": 600,
+      "height": 900,
+      "totalMs": 9813.300000000745,
+      "inferenceMs": null,
+      "kept": 362188,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 81470613
+    },
+    {
+      "model": "v53",
+      "image": "fur",
+      "width": 600,
+      "height": 450,
+      "totalMs": 9758.89999999851,
+      "inferenceMs": null,
+      "kept": 106747,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 6629281
+    },
+    {
+      "model": "v53",
+      "image": "object-plain",
+      "width": 600,
+      "height": 436,
+      "totalMs": 9459.599999997765,
+      "inferenceMs": null,
+      "kept": 46611,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 9933091
+    },
+    {
+      "model": "v53",
+      "image": "object-complex",
+      "width": 600,
+      "height": 400,
+      "totalMs": 9394.10000000149,
+      "inferenceMs": null,
+      "kept": 60328,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 9020820
+    },
+    {
+      "model": "v53",
+      "image": "red-shoe",
+      "width": 600,
+      "height": 400,
+      "totalMs": 8963.599999997765,
+      "inferenceMs": null,
+      "kept": 59854,
+      "metrics": [
+        {
+          "threshold": 96
+        },
+        {
+          "threshold": 112
+        },
+        {
+          "threshold": 128
+        },
+        {
+          "threshold": 144
+        },
+        {
+          "threshold": 160
+        }
+      ],
+      "heap": 11682401
+    }
+  ]
+}

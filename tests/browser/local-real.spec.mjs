@@ -1,26 +1,26 @@
 import { test, expect } from "@playwright/test";
 import { writeFile, mkdir } from "node:fs/promises";
-test("real ISNet local repair of controlled mask errors", async ({ page }) => {
+test("real active model local repair of controlled mask errors", async ({
+  page,
+}) => {
   test.skip(
     process.env.LOCAL_AI !== "1",
-    "Opt-in actual ISNet inference on a photograph",
+    "Opt-in actual browser model inference on a photograph",
   );
   if (process.env.AI_MODEL_MIRROR)
-    await page
-      .context()
-      .route("https://staticimgly.com/**", (r) =>
-        r.fulfill({
-          status: 302,
-          headers: {
-            location:
-              process.env.AI_MODEL_MIRROR +
-              "/" +
-              new URL(r.request().url()).pathname.split("/").pop(),
-            "Access-Control-Allow-Origin": "*",
-          },
-          body: "",
-        }),
-      );
+    await page.context().route("https://staticimgly.com/**", (r) =>
+      r.fulfill({
+        status: 302,
+        headers: {
+          location:
+            process.env.AI_MODEL_MIRROR +
+            "/" +
+            new URL(r.request().url()).pathname.split("/").pop(),
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: "",
+      }),
+    );
   await page.addInitScript(() => {
     window.cropRequests = [];
     const W = Worker;
@@ -32,12 +32,15 @@ test("real ISNet local repair of controlled mask errors", async ({ page }) => {
     };
   });
   await page.goto("");
-  await page.locator("#file").setInputFiles("work/fixtures/person.jpg");
+  await page
+    .locator("#file")
+    .setInputFiles("tests/fixtures/quality/person.jpg");
   await page.locator("#remove").click();
   await page.waitForFunction(
     () =>
       document.querySelector("#status").classList.contains("error") ||
       !document.querySelector("#download").hidden,
+    null,
     { timeout: 480000 },
   );
   await expect(page.locator("#correct")).toBeVisible();
@@ -64,7 +67,7 @@ test("real ISNet local repair of controlled mask errors", async ({ page }) => {
   expect(controls).toEqual({ fg: 255, bg: 0 });
   const start = Date.now();
   await page.locator("#applyLocal").click();
-  await page.waitForFunction(() => !busy, { timeout: 480000 });
+  await page.waitForFunction(() => !busy, null, { timeout: 480000 });
   await expect(page.locator("#status")).toContainText(
     "Correction locale appliquée",
   );
@@ -95,6 +98,7 @@ test("real ISNet local repair of controlled mask errors", async ({ page }) => {
       width: source.width,
       height: source.height,
       requests: cropRequests,
+      model: resultModel,
       fg: mask[450 * source.width + 300],
       bg: mask[300 * source.width + 120],
     };
@@ -108,7 +112,7 @@ test("real ISNet local repair of controlled mask errors", async ({ page }) => {
   expect(stats.requests.slice(1)).not.toContain(
     "image/x-rgba8;width=600;height=900",
   );
-  await page.screenshot({ path: "work/v52-real-local.png", fullPage: true });
+  await page.screenshot({ path: "work/v53-real-local.png", fullPage: true });
   await mkdir("work/results", { recursive: true });
   await writeFile(
     "work/results/local-real.json",

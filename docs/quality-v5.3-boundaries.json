@@ -52,6 +52,19 @@
     "boundaryF1": 0.8353363163972286
   },
   {
+    "model": "v53",
+    "image": "anime-complex",
+    "iou": 0.9688746663605315,
+    "dice": 0.9841913077702382,
+    "tp": 135034,
+    "fp": 3874,
+    "fn": 464,
+    "interiorFalseNegative": 0,
+    "boundaryPrecision2px": 0.9696428571428571,
+    "boundaryRecall2px": 0.7338282078472959,
+    "boundaryF1": 0.8354134035299127
+  },
+  {
     "model": "baseline",
     "image": "anime-hat",
     "iou": 0.9183228083209509,
@@ -102,6 +115,19 @@
     "boundaryPrecision2px": 0.9713322091062394,
     "boundaryRecall2px": 0.761139896373057,
     "boundaryF1": 0.853485253407182
+  },
+  {
+    "model": "v53",
+    "image": "anime-hat",
+    "iou": 0.9721426265899914,
+    "dice": 0.985874564529759,
+    "tp": 147580,
+    "fp": 3354,
+    "fn": 875,
+    "interiorFalseNegative": 261,
+    "boundaryPrecision2px": 0.9722879351132139,
+    "boundaryRecall2px": 0.760880829015544,
+    "boundaryF1": 0.8536909566133791
   },
   {
     "model": "baseline",
@@ -156,6 +182,19 @@
     "boundaryF1": 0.693647791080451
   },
   {
+    "model": "v53",
+    "image": "fine-lines",
+    "iou": 0.8479837036945309,
+    "dice": 0.9177393739990485,
+    "tp": 136957,
+    "fp": 22631,
+    "fn": 1921,
+    "interiorFalseNegative": 743,
+    "boundaryPrecision2px": 0.8648354636932282,
+    "boundaryRecall2px": 0.5755263960939884,
+    "boundaryF1": 0.6911258226556583
+  },
+  {
     "model": "baseline",
     "image": "internal-openings",
     "iou": 0.7791502227145791,
@@ -202,6 +241,19 @@
     "tp": 168302,
     "fp": 276,
     "fn": 497,
+    "interiorFalseNegative": 0,
+    "boundaryPrecision2px": 1,
+    "boundaryRecall2px": 0.9966159052453468,
+    "boundaryF1": 0.9983050847457626
+  },
+  {
+    "model": "v53",
+    "image": "internal-openings",
+    "iou": 0.9974790214342356,
+    "dice": 0.9987379198786507,
+    "tp": 168556,
+    "fp": 183,
+    "fn": 243,
     "interiorFalseNegative": 0,
     "boundaryPrecision2px": 1,
     "boundaryRecall2px": 0.9966159052453468,
@@ -260,6 +312,19 @@
     "boundaryF1": 0.660476183563474
   },
   {
+    "model": "v53",
+    "image": "similar-colors",
+    "iou": 0.09118835511236088,
+    "dice": 0.16713586556368834,
+    "tp": 15436,
+    "fp": 477,
+    "fn": 153363,
+    "interiorFalseNegative": 152802,
+    "boundaryPrecision2px": 0.5027223230490018,
+    "boundaryRecall2px": 0.937394247038917,
+    "boundaryF1": 0.6544595392793857
+  },
+  {
     "model": "baseline",
     "image": "high-resolution",
     "iou": 0.9102295780022898,
@@ -310,6 +375,19 @@
     "boundaryPrecision2px": 0.7707432166732207,
     "boundaryRecall2px": 0.5714285714285714,
     "boundaryF1": 0.6562866231374519
+  },
+  {
+    "model": "v53",
+    "image": "high-resolution",
+    "iou": 0.9653525560867966,
+    "dice": 0.9823708760008995,
+    "tp": 1640496,
+    "fp": 50416,
+    "fn": 8463,
+    "interiorFalseNegative": 2175,
+    "boundaryPrecision2px": 0.7399154821359969,
+    "boundaryRecall2px": 0.5666544252662504,
+    "boundaryF1": 0.641797090075324
   },
   {
     "model": "roi",

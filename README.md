@@ -1,6 +1,6 @@
 # Découpe AI
 
-Version stable actuelle : **v5.2.0**, validée par l’utilisateur. Clôture de release et publication en cours ; voir WORK_STATE.md pour l’état vérifié.
+Version stable actuelle : **v5.2.0**, publiée sur Cloudflare ; main et tag v5.2.0 au commit4f01851. La PR documentaire #2 antérieure reste conservée, sans merge implicite. Voir WORK_STATE.md.
 
 V5.2.0 apporte le comparateur, les fonds transparent/blanc/noir, les corrections locales et le filigrane. La release conserve ISNet et le masque strictement binaire.
 
@@ -12,7 +12,7 @@ Candidate : **v5.3.0**, sur work/v5.3.0-quality-segmentation. Cette candidate n�
 
 Importer une image JPG/PNG/WebP, supprimer le fond, comparer puis télécharger un PNG à la résolution originale. Choisir un fond transparent, blanc ou noir. Après traitement, Corriger propose Ajouter/Supprimer : peindre les indications puis appliquer le recalcul local ; la dernière correction peut être annulée. L’original à20 % derrière le résultat aide à retrouver les éléments supprimés ; ce guide est désactivable et reste absent des exports.
 
-La candidate V5.3 utilise BiRefNet Lite512 FP16 via ONNX Runtime Web1.22.0, localement (~98,5Mo de poids). ISNet FP16 (~88,2Mo) reste disponible en secours et via « Essayer le résultat classique ». Aucun modèle n’est téléchargé avant traitement. Aucune clé, API payante ou inférence serveur. Alpha0/255 et dimensions originales ; RGB intérieurs préservés, décontamination limitée aux pixels de bord mélangés très probables. La V5.2 stable conserve son moteur historique. Limites connues : traits très fins, objets ton sur ton, résolution native512 ; voir docs/QUALITY_BENCHMARK.md. Images limitées à32MP et16384pixels par côté, sans réduction irréversible de l’export.
+La candidate V5.3 utilise BiRefNet Lite512 FP16 via ONNX Runtime Web1.22.0, localement (~98,5Mo de poids). ISNet FP16 (~88,2Mo) reste disponible en secours et via « Essayer le résultat classique ». Les appareils signalant au plus4Go utilisent ISNet directement. Aucun modèle n’est téléchargé avant traitement. Aucune clé, API payante ou inférence serveur. Alpha0/255 et dimensions originales ; RGB intérieurs préservés, décontamination limitée aux pixels de bord mélangés très probables. La V5.2 stable conserve son moteur historique. Limites connues : traits très fins, objets ton sur ton, résolution native512 ; voir docs/QUALITY_BENCHMARK.md. Images limitées à32MP et16384pixels par côté, sans réduction irréversible de l’export.
 
 ## Installation et commandes
 
@@ -43,6 +43,12 @@ Test local : http://127.0.0.1:4173/decoupe-ia/ .
     docs/                 architecture, workflow, historique, validation, audit
 
 src/ est l’unique source officielle. Ne pas modifier dist/ directement. Les anciennes sources outputs/ et snapshots sont récupérables dans les tags archive/* ; voir docs/REPOSITORY_AUDIT.md.
+
+## Benchmark et limites V5.3
+
+Comparaison réelle sur11 images : anime/chapeau/ouvertures améliorés ; régressions sur traits artificiels très fins et échec ton sur ton conservés dans le corpus. Photos : appréciation visuelle, sans scores inventés. Modèle98,5Mo, environ9,6s à chaud sur le PC testé ; premier téléchargement variable. Pic Chrome observé~2,85Go, donc aucune garantie mémoire sur téléphone. WebGPU non qualifié, WASM par défaut. [Résultats complets](docs/QUALITY_BENCHMARK.md).
+
+Tests IA réels opt-in : REAL_AI=1 et/ou LOCAL_AI=1 avec npm run test:browser. Ils téléchargent les vrais poids et utilisent les fixtures commises. Les tests rapides ordinaires simulent seulement le modèle pour vérifier l’interface. Reproduction des comparaisons : docs/QUALITY_BENCHMARK.md.
 
 ## Git et publications
 

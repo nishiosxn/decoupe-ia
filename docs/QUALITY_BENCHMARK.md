@@ -51,3 +51,28 @@ WebGPU réel AMD RDNA2, shader-f16 présent : trois sorties vides sur le portrai
 Session réutilisée au sein d’une image, y compris pour les corrections, puis worker terminé après60s d’inactivité (15s si faible mémoire signalée), à remplacement, erreur ou annulation. Un seul modèle résident ; changement de modèle libère la session. Runtime WASM dédié plus petit, progressions réseau limitées à10Hz, buffers natifs/tensors libérés. Poids vérifiés avant cache ; échec de quota permet tout de même le traitement. Aucune précharge à l’ouverture. INT8 non intégré faute de qualification de qualité.
 
 Secours automatique réellement testé avec réponse503 volontaire sur le téléchargement BiRef puis vraie inférence ISNet : PNG600×900, alpha binaire, source intacte, statut explicite. Le superviseur peut aussi recréer un worker classique si le worker candidat échoue ; annulation utilisateur ne relance pas d’inférence. Les tests de contrat simulés vérifient les erreurs, pas la qualité IA.
+
+## CP5 — comparaison du pipeline réellement livré
+
+Le tableau suivant concerne le worker intégré, pas seulement le modèle brut ou l’ablation. Les différences de prétraitement/reconstruction expliquent les petits écarts avec les tableaux précédents ; ce tableau est la référence de la candidate livrée.
+
+| Image | V5.2 IoU | V5.3 IoU | V5.2 F1 bord2px | V5.3 F1 bord2px |
+|---|---:|---:|---:|---:|
+| anime-complex | 92.54 % | 96.89 % | 78.05 % | 83.54 % |
+| anime-hat | 91.83 % | 97.21 % | 72.19 % | 85.37 % |
+| fine-lines | 91.91 % | 84.80 % | 79.72 % | 69.11 % |
+| internal-openings | 77.92 % | 99.75 % | 77.39 % | 99.83 % |
+| similar-colors | 9.52 % | 9.12 % | 65.43 % | 65.45 % |
+| high-resolution | 91.02 % | 96.54 % | 67.63 % | 64.18 % |
+
+Les cinq photos n’ont pas de vérité terrain ; les observations du tableau CP1 restent comparables avec le pipeline final. Cinq vrais parcours import→inférence→téléchargement validés le2026-10-26 : dimensions originales, alpha0/255 et zéro différence RGB hors corrections autorisées par rapport à la source en mémoire. Portrait :67 pixels de bord corrigés (201 canaux), aucun intérieur touché ; autres photos : aucune correction RGB. Détails : quality-v5.3-downloads.json.
+
+Les11 PNG de diagnostic du benchmark sont aussi redécodés : dimensions/alpha PASS ; RGB des sources PNG exacts. Un nouveau décodage indépendant du JPEG du chien diffère d’un niveau sur certains canaux, enregistré explicitement ; ce contrôle ne remplace pas les assertions RGB strictes du parcours réel sur la source en mémoire. Voir quality-v5.3-png-invariants.json.
+
+Correction réelle BiRef :100 pixels rétablis et100 supprimés sur deux défauts volontairement injectés, crop372×342 depuis l’original,0 changement hors indications,0 alpha partiel, annulation exacte. Ce test contrôle la correction locale, pas la qualité naturelle de la segmentation. Un ancien timeout de test mal positionné a d’abord interrompu l’attente à15s ; corrigé, puis les deux tests IA opt-in réussissent.
+
+Preview GitHub Pages vérifiée :12 ressources identiques aux blobs Git de la candidate, archives V3.2/V4 accessibles ; vraie inférence via CDN et PNG téléchargé depuis l’URL publique,600×900, alpha binaire, RGB internes conservés (~21,5s dont8,2s d’inférence sur ce poste). Code applicatif figé en CP4 ; CP5 ajoute preuves, documentation et tests. Aucun changement Cloudflare/main/tag.
+
+Bilan : amélioration démontrée de plusieurs cas, mais pas de garantie de précision universelle. Régression des traits artificiels très fins, cas ton sur ton raté, précision de bord haute résolution encore limitée et mémoire élevée : ces limites empêchent de présenter la candidate comme parfaite ou de la promouvoir automatiquement en stable. Téléphone physique, Safari et Firefox non testés.
+
+Planche du pipeline livré : [original / V5.2 / V5.3 sur11 images](quality-v5.3-final-contact.png). Les adaptations de Wikipe-tan et leurs dérivés restent CC BY-SA3.0, attribution dans tests/fixtures/quality/README.md ; photographies selon la licence Unsplash.

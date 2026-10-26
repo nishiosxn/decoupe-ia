@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-26",
+  "note": "Five real model runs, downloaded PNGs decoded against the exact in-memory original. Only authorized RGB edge patches may differ.",
+  "report": [
+    {
+      "name": "person.jpg",
+      "width": 600,
+      "height": 900,
+      "kept": 362188,
+      "removed": 177812,
+      "partial": 0,
+      "colorErrors": 0,
+      "correctedColorChannels": 201,
+      "model": "biref",
+      "ms": 21669
+    },
+    {
+      "name": "watch.jpg",
+      "width": 600,
+      "height": 436,
+      "kept": 46611,
+      "removed": 214989,
+      "partial": 0,
+      "colorErrors": 0,
+      "correctedColorChannels": 0,
+      "model": "biref",
+      "ms": 11798
+    },
+    {
+      "name": "car-1.jpg",
+      "width": 600,
+      "height": 400,
+      "kept": 60328,
+      "removed": 179672,
+      "partial": 0,
+      "colorErrors": 0,
+      "correctedColorChannels": 0,
+      "model": "biref",
+      "ms": 11128
+    },
+    {
+      "name": "corgi.jpg",
+      "width": 600,
+      "height": 450,
+      "kept": 106747,
+      "removed": 163253,
+      "partial": 0,
+      "colorErrors": 0,
+      "correctedColorChannels": 0,
+      "model": "biref",
+      "ms": 11514
+    },
+    {
+      "name": "shoe.jpg",
+      "width": 600,
+      "height": 400,
+      "kept": 59854,
+      "removed": 180146,
+      "partial": 0,
+      "colorErrors": 0,
+      "correctedColorChannels": 0,
+      "model": "biref",
+      "ms": 12960
+    }
+  ]
+}

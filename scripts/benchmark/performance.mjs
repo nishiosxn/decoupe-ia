@@ -139,7 +139,7 @@ try {
 }
 await mkdir("work/v53", { recursive: true });
 const report = {
-  date: "2026-10-25",
+  date: new Date().toISOString().slice(0, 10),
   browser: browser.version(),
   platform: process.platform,
   device,
